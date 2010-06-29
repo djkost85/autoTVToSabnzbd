@@ -20,7 +20,7 @@
                     <option value="41">TV: HD</option>
                     <option value="7">TV: Sport/Event</option>
                     <option value="8">TV: Other</option>
-                    <!--<option value="movies-all" style="font-weight: bold;">Movies: ALL</option>
+                    <option value="movies-all" style="font-weight: bold;">Movies: ALL</option>
                     <option value="1">Movies: DVD</option>
                     <option value="2">Movies: Divx/Xvid</option>
                     <option value="54">Movies: BRRip</option>
@@ -28,7 +28,7 @@
                     <option value="50">Movies: HD (Image)</option>
                     <option value="48">Movies: WMV-HD</option>
                     <option value="3">Movies: SVCD/VCD</option>
-                    <option value="4">Movies: Other</option>-->
+                    <option value="4">Movies: Other</option>
                 </select>
             </li>
             <li>
@@ -134,7 +134,7 @@ function getImages(search) {
 
 $('input[type="submit"]').click(function () {
     $(this).attr("disabled", true);
-    $(this).val('Vänta...');
+    $(this).val('<?php echo __('Wait')?>...');
 });
 </script>
 

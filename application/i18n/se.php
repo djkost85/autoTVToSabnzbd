@@ -8,6 +8,7 @@ return array(
     'Delete' => 'Radera',
     'delete all' => 'Radera alla',
     'Serie name' => 'Seriens namn',
+    'Wait' => 'Vänta',
     'Download catagory' => 'Nerladdnings kategori',
     'alredy exists' => 'Finns redan',
     'Categories do not match' => 'Kategorierna matchar inte',
