@@ -45,7 +45,7 @@ class Controller_Update extends Controller_Xhtml {
         Head::instance()->set_title(__('Update all series'));
         $menu = new View('menu');
 
-        $xhtml = Xhtml::instance('update/all');
+        $xhtml = Xhtml::instance('update/i18n/' . I18n::lang());
         $xhtml->body->set('title', __('Update all series'))
                 ->set('menu', $menu);
 

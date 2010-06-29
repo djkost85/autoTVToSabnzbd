@@ -56,7 +56,8 @@ Kohana::init(array(
     ));
 
 
-Kohana::$environment = Kohana::STAGING;
+//Kohana::$environment = Kohana::DEVELOPMENT;
+Kohana::$environment = Kohana::PRODUCTION;
 
 /**
  * Attach the file write to logging. Multiple writers are supported.
@@ -80,7 +81,7 @@ if(isset($_GET['lang']) && in_array($_GET['lang'], $languages)) {
     $session->set('lang', $_GET['lang']);
 }
 
-I18n::lang($session->get('lang', 'se-sv'));
+I18n::lang($session->get('lang', 'en-us'));
 
 
 /**

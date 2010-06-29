@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 echo $menu;
 ?>
 
@@ -11,7 +11,7 @@ div {
 }
 </style>
 <div>
-    <p>Alla avsnitt som blir uppdaterade och är markerade som nerladdade, kommer inte längre vara markerade som nerladdade.</p>
+    <p>Alla avsnitt som blir uppdaterade och är markerade som nerladdade, kommer inte längre vara markerade som nedladdade.</p>
     <p>Klicka <a href="<?php echo URL::site('update/doAll')?>" id="update">här</a> om du vill updatera alla serier.</p>
     <p>Denna åtgärd kan ta flera minuter.</p>
 </div>
