@@ -69,7 +69,7 @@ return array(
 
 ?>";
 
-        file_put_contents('application/config/default.php', $config);
+        file_put_contents('application/config/default2.php', $config);
         $get['db_pass'] = (empty($get['db_pass'])) ? "FALSE": "'{$get['db_pass']}'";
         $config = "<?php defined('SYSPATH') or die('No direct access allowed.');
 
@@ -125,7 +125,7 @@ return array
 	),
 );";
  
-        file_put_contents('application/config/database.php', $config);
+        file_put_contents('application/config/database2.php', $config);
 
         $configSaved = true;
     }
@@ -407,6 +407,7 @@ return array
 			Remove or rename the <code>install<?php echo EXT ?></code> file now.</p>
         <?php } else { ?>
         <h2>Fields marked in red are important</h2>
+        <p>Follow the instructions <a href="http://sourceforge.net/apps/trac/autotvtosab/">here</a> before continuing.</p>
         <p id="error">You have an error in the installation form</p>
         <form action="#" method="get">
         <ol class="message_list">
