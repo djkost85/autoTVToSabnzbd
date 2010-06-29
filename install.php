@@ -427,7 +427,7 @@ return array
                         <input type="text" name="db_pass" id="db_pass" size="35" class="needsfilled" />
                     </div>
                     <div>
-                        <label for="db_dbname">Databas name</label>
+                        <label for="db_dbname">Database name</label>
                         <input type="text" name="db_dbname" id="db_dbname" size="35" class="needsfilled" />
                     </div>
                 </div>
