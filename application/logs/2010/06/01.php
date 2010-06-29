@@ -1,0 +1,15 @@
+<?php defined('SYSPATH') or die('No direct script access.'); ?>
+
+2010-06-01 18:08:51 --- ERROR: Kohana_Request_Exception [ 0 ]: Unable to find a route to match the URI: episodes/listSpecials/index.php/http:/thetvdb.com/banners/142 ~ SYSPATH/classes\kohana\request.php [ 579 ]
+2010-06-01 18:34:20 --- ERROR: Kohana_Request_Exception [ 0 ]: Unable to find a route to match the URI: episodes/index.php/http:/thetvdb.com/banners/142 ~ SYSPATH/classes\kohana\request.php [ 579 ]
+2010-06-01 18:50:06 --- ERROR: ErrorException [ 8 ]: Undefined index: sabUrl ~ APPPATH/classes\queue\sabnzbd.php [ 144 ]
+2010-06-01 18:50:47 --- ERROR: ErrorException [ 8 ]: Undefined property: Queue_Sabnzbd::$sabUrl ~ APPPATH/classes\queue\sabnzbd.php [ 23 ]
+2010-06-01 18:52:24 --- ERROR: ErrorException [ 1 ]: Call to private method Sabnzbd::send() from context 'Queue_Sabnzbd' ~ APPPATH/classes\queue\sabnzbd.php [ 24 ]
+2010-06-01 19:34:39 --- ERROR: ErrorException [ 8 ]: Undefined property: stdClass::$paused ~ APPPATH/views\queue\index.php [ 32 ]
+2010-06-01 22:01:18 --- ERROR: Kohana_Request_Exception [ 0 ]: Unable to find a route to match the URI: episodes/index.php/http:/thetvdb.com/banners/142 ~ SYSPATH/classes\kohana\request.php [ 579 ]
+2010-06-01 22:15:34 --- ERROR: ErrorException [ 4096 ]: Argument 1 passed to LimitIterator::__construct() must implement interface Iterator, instance of ArrayObject given ~ APPPATH/classes\controller\welcome.php [ 53 ]
+2010-06-01 22:15:59 --- ERROR: ErrorException [ 4096 ]: Argument 1 passed to LimitIterator::__construct() must implement interface Iterator, instance of ArrayObject given ~ APPPATH/classes\controller\welcome.php [ 53 ]
+2010-06-01 22:24:04 --- ERROR: ErrorException [ 8 ]: Undefined variable: sorted ~ APPPATH/classes\model\sortFirstAired.php [ 39 ]
+2010-06-01 23:01:24 --- ERROR: ErrorException [ 8 ]: Undefined property: stdClass::$get_cats ~ APPPATH/classes\sabnzbd.php [ 56 ]
+2010-06-01 23:03:07 --- ERROR: ErrorException [ 8 ]: Undefined property: stdClass::$get_cats ~ APPPATH/classes\sabnzbd.php [ 60 ]
+2010-06-01 23:05:02 --- ERROR: ErrorException [ 8 ]: Undefined property: stdClass::$categories ~ APPPATH/classes\sabnzbd.php [ 61 ]

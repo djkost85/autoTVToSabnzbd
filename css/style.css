@@ -1,0 +1,352 @@
+/* 
+    Document   : newCascadeStyleSheet
+    Created on : 2010-maj-02, 19:07:49
+    Author     : Morre95
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Georgia;
+}
+
+h1 {
+    font-style: italic;
+}
+
+h2 {
+    font-size: 17px;
+}
+
+a:link{
+    color:#333333;
+    text-decoration:none;
+}
+
+a:visited{
+    color:#333333;
+    text-decoration:none;
+}
+
+a:hover{
+    color:#666666;
+    text-decoration:underline;
+}
+
+a:active{
+    color:#666666;
+    text-decoration:underline;
+}
+
+#nav {
+    list-style-type: none;
+    width: 756px ;
+    margin-right: auto;
+    margin-left: auto;
+    padding-top: 20px;
+}
+
+#nav li {
+    display: inline;
+    margin: 5px 10px 5px 5px;
+    position: relative;
+}
+
+#nav li img { margin-right: 20px; }
+
+#nav li ul { display: none; }
+
+#nav li ul img { border: none; }
+
+#nav li:hover ul {
+    display: inline;
+    position: absolute;
+}
+#nav li:hover li {
+    float: none;
+    top: -5px;
+    left: 20px;
+}
+
+
+
+.page-title {
+    /*width: 700px ;*/
+    width: 748px;
+    padding: 20px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.episodes-title {
+    width: 885px;
+}
+
+.episodes-title img {
+    border: none;
+}
+
+#download-list-wropper {
+    position: absolute;
+    top: 80px;
+    left: 30px;
+}
+
+#wrong_category {
+    list-style-type: none;
+    width: 700px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-top: 5px;
+    border-top: 1px solid #ccc;
+}
+
+#wrong_category li {
+    padding-left: 15px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #ccc;
+}
+
+.list {
+    list-style-type: none;
+    width: 725px;
+    height: 159px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 10px;
+    padding-left: 15px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #ccc;
+    clear: both;
+}
+
+.episodes {
+    width: 890px;
+    height: 154px;
+}
+
+.list li {
+    float: left;
+}
+
+.list .img {
+    padding-top: 4px;
+    clear: both;
+    width: 100px;
+}
+.list .img img {
+    max-width: 110px;
+}
+
+.episodes .img {
+    width: 255px;
+}
+
+.episodes .img img {
+    max-width: 255px;
+}
+
+.list .title {
+    padding-top: 4px;
+    padding-left: 20px;
+    width: 240px;
+}
+
+.list .title ul {
+    list-style-type: none;
+}
+
+.list .title li {
+    float: none;
+}
+
+.list .text {
+    padding-top: 10px;
+    width: 360px;
+}
+
+p.msg {
+    color: olive;
+    width: 400px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+p.error {
+    color: maroon;
+}
+
+div#banner {
+    width: 900px;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 10px;
+}
+
+.pagination {
+    width: 750px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+.border-under-me {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #ccc;
+}
+
+#add-contents {
+    width: 700px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 25px;
+}
+
+fieldset {
+    margin: 1.5em 0 0 0;
+    padding: 0;
+    clear: both;
+}
+legend {
+    margin-left: 1em;
+    color: #000000;
+    font-weight: bold;
+}
+fieldset ol {
+    padding: 1em 1em 0 2em;
+    list-style: none;
+}
+fieldset li {
+    padding-bottom: 1em;
+}
+fieldset.submit {
+    border-style: none;
+}
+label {
+    float: left;
+    width: 175px;
+    margin-right: 10px;
+}
+
+.search label {
+    width: 55px;
+}
+
+.matrix label {
+    width: 175px;
+}
+
+
+img.select-img, img.select-poster, img.select-fanart, img.select-banner {
+    border: 1px solid #000;
+    margin: 2px;
+}
+
+img.select-img:hover, img.select-poster:hover, img.select-fanart:hover, img.select-banner:hover, img.selected {
+    border: 3px solid #000;
+    margin: 0;
+}
+
+img.select-poster, img.select-fanart {
+    width: 125px;
+}
+
+img.select-banner {
+    width: 300px;
+}
+
+
+#tooltip {
+    background: #e3e3e3 url(../images/move-spinner.gif) no-repeat 5px 50%;
+    border: 1px solid #BFBFBF;
+    float: left;
+    font-size: 12px;
+    max-width: 280px;
+    padding: 1em 1em 1em 1em;
+    position: absolute;
+}
+
+#tooltip.ready {
+    background: #e3e3e3 url(../images/search.png) no-repeat 5px 50%;
+    padding: 1em 1em 1em 3em;
+}
+
+.rounded {
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+.tip {
+    width: 395px;
+    padding-top: 34px;
+    display: none;
+    position: absolute;
+    background: transparent url(../images/tipTop.gif) no-repeat top;}
+
+.tipMid {
+    background: transparent url(../images/tipMid.gif) repeat-y;
+    padding: 0 25px 20px 25px;
+}
+.tipBtm {
+    background: transparent url(../images/tipBtm.gif) no-repeat bottom;
+    height: 54px;
+}
+
+
+
+
+
+
+/*** progressBar ***/
+
+dl.progress {
+    padding: 1px;
+    border: 1px solid #ddd;
+    height: 20px;
+    width: 270px;
+}
+
+.progress dt {
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.progress .done,
+.progress .remain {
+    height: 100%;
+    float: left;
+}
+
+.progress .done {
+    background-color: #9DB029;
+}
+
+.progress .done {
+    width: 0%;
+}
+.progress .remain {
+    width: 0%;
+}
+
+.progress a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-indent: -9000px;
+}
+
