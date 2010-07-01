@@ -58,6 +58,8 @@ class Controller_Rss extends Controller {
             }
         }
 
+        set_time_limit(0);
+
         $rss->truncate();
         $i = 0;
 
@@ -92,6 +94,8 @@ class Controller_Rss extends Controller {
 
                                 $rss->save();
                                 $i++;
+
+                                sleep(2);
                             }
                         }
                     }

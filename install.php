@@ -484,7 +484,7 @@ return array
                     <p>Do not touch unless you know what you are doing</p>
                     <div>
                         <label for="rss_num_results">Rss number of results</label>
-                        <input type="text" name="rss_num_results" id="rss_num_results" value="5" />
+                        <input type="text" name="rss_num_results" id="rss_num_results" value="10" />
                     </div>
                     <div>
                         <label for="rss_how_old">How old the results should be</label>
