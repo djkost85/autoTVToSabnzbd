@@ -168,6 +168,7 @@ ul {
                 <dt>Remaining:</dt>
                 <dd class="remain"></dd>
             </dl>
+            <p></p>
         </a>
     </li>
     <li>Hastighet: <a href="<?php echo URL::site('queue/index')?>" id="speed"><?php echo $speed?></a></li>

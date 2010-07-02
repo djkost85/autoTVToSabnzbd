@@ -13,25 +13,24 @@
 //$modelEp = ORM::factory('episode');
 
 //echo $pagination;
-$ids = array();
+$i = (isset($_GET['page']) && $_GET['page'] > 1) ? 100: 1;
 foreach ($series as $ser) {
     $poster = $ser->poster . '/147';
     if ($poster == "images/poster.png/147"){
         $poster = 'image/noPoster.png';
     }
 
-//    $ep = ORM::factory('episode');
-//    var_dump($ep->getPreviousAired($ser->series_id));
-//    var_dump($ser->ep_id);
-//    var_dump($ser->ep_num);
-//    var_dump($ser->ep_sea);
-//    var_dump($ser->ep_aired);
+    $paperClip = "";
+    if ($i <= 10 && $rss->inFeed(sprintf("%s S%02dE%02d", $ser->series_name, $ser->season, $ser->episode))) {
+        $i++;
+        $paperClip = "<span></span><em>In RSS</em>";
+    }
     ?>
     <ul class="list">
         <li class="img">
             <?php echo HTML::anchor(
                     "http://www.thetvdb.com/?tab=series&id=$ser->tvdb_id",
-                    HTML::image('index.php/' . $poster, array('alt' => 'Poster for ' . $ser->series_name)),
+                    $paperClip . HTML::image('index.php/' . $poster, array('alt' => 'Poster for ' . $ser->series_name)),
                     array('class' => 'ajaxTooltip', 'rel' => URL::site("series/getInfo/$ser->id"))
                 );?>
         </li>
@@ -40,13 +39,6 @@ foreach ($series as $ser) {
             <ul>
                 <li><?php
                     echo __('Last episode') . ': ';
-//                    echo ($modelEp->isDownloaded($ser->episode_id)) ?
-//                        __('is downloaded') :
-//                        HTML::anchor($ser->download_link, sprintf("S%02dE%02d",$ser->season, $ser->episode), array(
-//                            'id' => $ser->episode_id,
-//                            'class' => 'downloadable'
-//                            ));
-
 
                     echo HTML::anchor($ser->download_link, sprintf("S%02dE%02d",$ser->season, $ser->episode), array(
                             'id' => $ser->episode_id,
@@ -57,9 +49,6 @@ foreach ($series as $ser) {
                 <li>
                     <?php echo __('Next') . ': ' . $ser->next_episode?>
                 </li>
-                <!--<li>
-                    <?php /*echo __('Airs') . ': ' . $ser->airs_at;*//*__('Previous') . ': ' . $ser->first_aired;*/ ?>
-                </li>-->
                 <li>
                     <?php echo HTML::anchor("series/update/$ser->id", $update)?>
                 </li>

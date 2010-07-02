@@ -24,6 +24,14 @@ class Model_Rss extends ORM {
                 ->execute($this->_db);
     }
 
+    public function inFeed($q) {
+        $query = "SELECT COUNT(*) AS num FROM rsses WHERE title LIKE :q";
+        return (DB::query(Database::SELECT, $query)
+                ->param(':q', "%$q%")
+                ->execute($this->_db)
+                ->get('num') > 0);
+    }
+
     public function alreadySaved($q) {
         return ($this->search($q)->count() > 0);
     }

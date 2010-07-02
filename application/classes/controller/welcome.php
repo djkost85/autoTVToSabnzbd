@@ -60,6 +60,7 @@ class Controller_Welcome extends Controller_Xhtml {
                 ->set('delete', __('Delete'))
                 ->set('listAllSpecials', __('List all specials'))
                 ->set('banner', ORM::factory('series')->getRandBanner())
+                ->set('rss', ORM::factory('rss'))
                 ->set('series', ($seriesNum > 0) ? new LimitIterator($series, $pagination->offset, $pagination->items_per_page) : array());
 //                ->set('series', $series->getByFirtAired($pagination->items_per_page, $pagination->offset));
 

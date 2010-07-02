@@ -62,15 +62,20 @@ a:active{
     position: relative;
 }
 
-#nav li img { margin-right: 20px; }
 
 #nav li ul { display: none; }
+
+#nav li ul a { padding-left: 4px; }
 
 #nav li ul img { border: none; }
 
 #nav li:hover ul {
     display: inline;
     position: absolute;
+}
+
+#nav li ul:hover {
+    display: inline;
 }
 #nav li:hover li {
     float: none;
@@ -349,4 +354,32 @@ dl.progress {
     height: 100%;
     text-indent: -9000px;
 }
+
+
+.list li { position: relative; }
+
+.img em {
+	background: #fff;
+	color: #000;
+	font-style: normal;
+	padding: 0 6px 1px 8px;
+	display: block;
+	position: absolute;
+	top: 20px;
+	left: 5px;
+	border: 1px solid #999;
+}
+
+
+.img span {
+	width: 30px;
+	height: 60px;
+	display: block;
+	position: absolute;
+	top: 0px;
+	left: 9px;
+	background: url(../images/paper-clip-mini.png) no-repeat;
+	z-index: 3;
+}
+
 
