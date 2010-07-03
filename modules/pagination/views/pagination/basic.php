@@ -1,13 +1,13 @@
 <p class="pagination">
 
 	<?php if ($first_page !== FALSE): ?>
-            <a id="first" href="<?php echo $page->url($first_page) ?>"><?php echo __('First') ?></a>
+		<a href="<?php echo $page->url($first_page) ?>"><?php echo __('First') ?></a>
 	<?php else: ?>
 		<?php echo __('First') ?>
 	<?php endif ?>
 
 	<?php if ($previous_page !== FALSE): ?>
-                <a id="previous" href="<?php echo $page->url($previous_page) ?>"><?php echo __('Previous') ?></a>
+		<a href="<?php echo $page->url($previous_page) ?>"><?php echo __('Previous') ?></a>
 	<?php else: ?>
 		<?php echo __('Previous') ?>
 	<?php endif ?>
@@ -23,13 +23,13 @@
 	<?php endfor ?>
 
 	<?php if ($next_page !== FALSE): ?>
-		<a id="next" href="<?php echo $page->url($next_page) ?>"><?php echo __('Next') ?></a>
+		<a href="<?php echo $page->url($next_page) ?>"><?php echo __('Next') ?></a>
 	<?php else: ?>
 		<?php echo __('Next') ?>
 	<?php endif ?>
 
 	<?php if ($last_page !== FALSE): ?>
-                <a id="last" href="<?php echo $page->url($last_page) ?>"><?php echo __('Last') ?></a>
+		<a href="<?php echo $page->url($last_page) ?>"><?php echo __('Last') ?></a>
 	<?php else: ?>
 		<?php echo __('Last') ?>
 	<?php endif ?>

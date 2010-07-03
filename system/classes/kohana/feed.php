@@ -1,8 +1,9 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct access allowed.');
 /**
  * RSS and Atom feed helper.
  *
  * @package    Kohana
+ * @category   Helpers
  * @author     Kohana Team
  * @copyright  (c) 2007-2009 Kohana Team
  * @license    http://kohanaphp.com/license
@@ -79,7 +80,7 @@ class Kohana_Feed {
 			if (($name === 'pubDate' OR $name === 'lastBuildDate') AND (is_int($value) OR ctype_digit($value)))
 			{
 				// Convert timestamps to RFC 822 formatted dates
-				$value = date(DATE_RFC822, $value);
+				$value = date('r', $value);
 			}
 			elseif (($name === 'link' OR $name === 'docs') AND strpos($value, '://') === FALSE)
 			{
@@ -101,7 +102,7 @@ class Kohana_Feed {
 				if ($name === 'pubDate' AND (is_int($value) OR ctype_digit($value)))
 				{
 					// Convert timestamps to RFC 822 formatted dates
-					$value = date(DATE_RFC822, $value);
+					$value = date('r', $value);
 				}
 				elseif (($name === 'link' OR $name === 'guid') AND strpos($value, '://') === FALSE)
 				{

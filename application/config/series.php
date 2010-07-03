@@ -78,6 +78,7 @@ return array(
                 'Erik & Mackan Guldfeber',
                 'Draknästet',
                 'Fuskbyggarna',
+                'Band of Brothers',
         )
 );
 

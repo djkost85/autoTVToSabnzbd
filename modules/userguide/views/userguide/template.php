@@ -10,7 +10,7 @@
 <?php foreach ($scripts as $script) echo HTML::script($script, NULL, TRUE), "\n" ?>
 
 </head>
-<body class="<?php echo $l ?>">
+<body>
 
 <div id="topbar" class="clear">
 	<div class="container">

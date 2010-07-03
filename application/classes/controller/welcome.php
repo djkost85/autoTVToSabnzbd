@@ -5,7 +5,13 @@ class Controller_Welcome extends Controller_Xhtml {
     public function action_index() {
 //        $series = ORM::factory('series');
 //        var_dump($series->getByFirtAired()->as_array());
-        $series = Model_SortFirstAired::getSeries();
+        $series = Cache::instance('default')->get('series');
+        
+        if (is_null($series)) {
+            $series = Model_SortFirstAired::getSeries();
+            Cache::instance('default')->set('series', $series);
+        }
+
         $seriesNum = $series->count();
         $pagination = Pagination::factory( array (
                 'base_url' => "",

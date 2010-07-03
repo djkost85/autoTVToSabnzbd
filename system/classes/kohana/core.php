@@ -8,6 +8,7 @@
  * - Variable and path debugging
  *
  * @package    Kohana
+ * @category   Base
  * @author     Kohana Team
  * @copyright  (c) 2008-2009 Kohana Team
  * @license    http://kohanaphp.com/license
@@ -15,8 +16,8 @@
 class Kohana_Core {
 
 	// Release version and codename
-	const VERSION  = '3.0.4';
-	const CODENAME = 'wyau cwningen';
+	const VERSION  = '3.0.6';
+	const CODENAME = 'sumar hiti';
 
 	// Log message types
 	const ERROR = 'ERROR';
@@ -163,6 +164,10 @@ class Kohana_Core {
 	 * @throws  Kohana_Exception
 	 * @param   array   global settings
 	 * @return  void
+	 * @uses    Kohana::globals
+	 * @uses    Kohana::sanitize
+	 * @uses    Kohana::cache
+	 * @uses    Profiler
 	 */
 	public static function init(array $settings = NULL)
 	{
@@ -216,31 +221,8 @@ class Kohana_Core {
 
 		if (ini_get('register_globals'))
 		{
-			if (isset($_REQUEST['GLOBALS']) OR isset($_FILES['GLOBALS']))
-			{
-				// Prevent malicious GLOBALS overload attack
-				echo "Global variable overload attack detected! Request aborted.\n";
-
-				// Exit with an error status
-				exit(1);
-			}
-
-			// Get the variable names of all globals
-			$global_variables = array_keys($GLOBALS);
-
-			// Remove the standard global variables from the list
-			$global_variables = array_diff($global_variables,
-				array('GLOBALS', '_REQUEST', '_GET', '_POST', '_FILES', '_COOKIE', '_SERVER', '_ENV', '_SESSION'));
-
-			foreach ($global_variables as $name)
-			{
-				// Retrieve the global variable and make it null
-				global $$name;
-				$$name = NULL;
-
-				// Unset the global variable, effectively disabling register_globals
-				unset($GLOBALS[$name], $$name);
-			}
+			// Reverse the effects of register_globals
+			Kohana::globals();
 		}
 
 		// Determine if we are running in a command line environment
@@ -282,6 +264,12 @@ class Kohana_Core {
 		{
 			// Set the system character set
 			Kohana::$charset = strtolower($settings['charset']);
+		}
+
+		if (function_exists('mb_internal_encoding'))
+		{
+			// Set the MB extension encoding to the same character set
+			mb_internal_encoding(Kohana::$charset);
 		}
 
 		if (isset($settings['base_url']))
@@ -353,6 +341,46 @@ class Kohana_Core {
 
 			// Kohana is no longer initialized
 			Kohana::$_init = FALSE;
+		}
+	}
+
+	/**
+	 * Reverts the effects of the `register_globals` PHP setting by unsetting
+	 * all global varibles except for the default super globals (GPCS, etc).
+	 *
+	 *     if (ini_get('register_globals'))
+	 *     {
+	 *         Kohana::globals();
+	 *     }
+	 *
+	 * @return  void
+	 */
+	public static function globals()
+	{
+		if (isset($_REQUEST['GLOBALS']) OR isset($_FILES['GLOBALS']))
+		{
+			// Prevent malicious GLOBALS overload attack
+			echo "Global variable overload attack detected! Request aborted.\n";
+
+			// Exit with an error status
+			exit(1);
+		}
+
+		// Get the variable names of all globals
+		$global_variables = array_keys($GLOBALS);
+
+		// Remove the standard global variables from the list
+		$global_variables = array_diff($global_variables,
+			array('GLOBALS', '_REQUEST', '_GET', '_POST', '_FILES', '_COOKIE', '_SERVER', '_ENV', '_SESSION'));
+
+		foreach ($global_variables as $name)
+		{
+			// Retrieve the global variable and make it null
+			global $$name;
+			$$name = NULL;
+
+			// Unset the global variable, effectively disabling register_globals
+			unset($GLOBALS[$name], $$name);
 		}
 	}
 
@@ -452,7 +480,7 @@ class Kohana_Core {
 			if (is_dir($path))
 			{
 				// Add the module to include paths
-				$paths[] = realpath($path).DIRECTORY_SEPARATOR;
+				$paths[] = $modules[$name] = realpath($path).DIRECTORY_SEPARATOR;
 			}
 			else
 			{
@@ -472,7 +500,7 @@ class Kohana_Core {
 
 		foreach (Kohana::$_modules as $path)
 		{
-			$init = $path.DIRECTORY_SEPARATOR.'init'.EXT;
+			$init = $path.'init'.EXT;
 
 			if (is_file($init))
 			{
@@ -811,14 +839,13 @@ class Kohana_Core {
 	 *     // Get "username" from messages/text.php
 	 *     $username = Kohana::message('text', 'username');
 	 *
-	 * @uses  Arr::merge
-	 * @uses  Arr::path
-	 *
 	 * @param   string  file name
 	 * @param   string  key path to get
 	 * @param   mixed   default value if the path does not exist
 	 * @return  string  message string for the given path
 	 * @return  array   complete message list, when no path is specified
+	 * @uses    Arr::merge
+	 * @uses    Arr::path
 	 */
 	public static function message($file, $path = NULL, $default = NULL)
 	{
@@ -1117,10 +1144,10 @@ class Kohana_Core {
 		}
 		elseif (is_string($var))
 		{
-			if (strlen($var) > $length)
+			if (UTF8::strlen($var) > $length)
 			{
 				// Encode the truncated string
-				$str = htmlspecialchars(substr($var, 0, $length), ENT_NOQUOTES, Kohana::$charset).'&nbsp;&hellip;';
+				$str = htmlspecialchars(UTF8::substr($var, 0, $length), ENT_NOQUOTES, Kohana::$charset).'&nbsp;&hellip;';
 			}
 			else
 			{

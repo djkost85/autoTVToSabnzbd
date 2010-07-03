@@ -22,6 +22,7 @@
                 }
                 element.find(settings.selectorDone).css({ width: value + "%" }).text(text);
                 element.find(settings.selectorRemain).css({ width: left + "%" });
+
             });
         }
     });

@@ -8,6 +8,5 @@ return array(
 		'zh-cn' => '简体中文',
 		'ru-ru' => 'Русский',
 		'fr-fr' => 'Français',
-		'he-il' => 'עברית',
 	),
 );
