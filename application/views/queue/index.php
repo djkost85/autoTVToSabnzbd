@@ -157,9 +157,34 @@ ul {
         } ?>
 </table>
 <hr />
+<style>
+.meter-wrap{
+    position: relative;
+}
+
+.meter-wrap, .meter-value, .meter-text {
+    /* The width and height of your image */
+    width: 270px; height: 20px;
+}
+
+.meter-wrap, .meter-value {
+    background: #eee;
+}
+
+.meter-text {
+    position: absolute;
+    top:0; left:0;
+
+    padding-top: 1px;
+
+    color: #000;
+    text-align: center;
+    width: 100%;
+}
+</style>
 <ul>
     <li>SABnzbd version: <a href="<?php echo URL::site('queue/index')?>"><?php echo $version?></a></li>
-    <li>Kvar att ladda ner:
+    <!--<li>Kvar att ladda ner:
         <a href="<?php echo URL::site('queue/index')?>" id="total-percentage">
             <dl class="progress">
                 <dt>Completed:</dt>
@@ -169,6 +194,17 @@ ul {
                 <dd class="remain"></dd>
             </dl>
             <p></p>
+        </a>
+    </li>-->
+    <li>Kvar att ladda ner:
+        <a href="<?php echo URL::site('queue/index')?>" id="total-percentage">
+            <div class="meter-wrap">
+                <div class="meter-value" style="background-color: #ead3cb;">
+                    <div class="meter-text">
+                        Text Here!
+                    </div>
+                </div>
+            </div>
         </a>
     </li>
     <li>Hastighet: <a href="<?php echo URL::site('queue/index')?>" id="speed"><?php echo $speed?></a></li>

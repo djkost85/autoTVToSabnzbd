@@ -1,10 +1,39 @@
 
+//(function($){
+//    $.fn.extend({
+//        sabProgress: function(value, options) {
+//            var defaults = {
+//                selectorDone: ".progress .done",
+//                selectorRemain: ".progress .remain",
+//                                text: false
+//            };
+//
+//            var settings = $.extend({}, defaults, options);
+//
+//            value = (value <= 100) ? value : 100;
+//
+//            var left = 100 - value;
+//
+//            return this.each(function() {
+//                var element = $(this);
+//                var text = value + "%";
+//                if (settings.text) {
+//                    text = settings.text;
+//                }
+//                element.find(settings.selectorDone).css({ width: value + "%" }).text(text);
+//                element.find(settings.selectorRemain).css({ width: left + "%" });
+//
+//            });
+//        }
+//    });
+//})(jQuery);
+
 (function($){
     $.fn.extend({
         sabProgress: function(value, options) {
             var defaults = {
-                selectorDone: ".progress .done",
-                selectorRemain: ".progress .remain",
+                selectorValue: ".meter-wrap .meter-value",
+                selectorText: ".meter-wrap .meter-text",
                                 text: false
             };
 
@@ -20,8 +49,8 @@
                 if (settings.text) {
                     text = settings.text;
                 }
-                element.find(settings.selectorDone).css({ width: value + "%" }).text(text);
-                element.find(settings.selectorRemain).css({ width: left + "%" });
+                element.find(settings.selectorValue).css({ width: value + "%" });
+                element.find(settings.selectorText).text(text);
 
             });
         }

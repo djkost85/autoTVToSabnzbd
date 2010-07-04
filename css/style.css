@@ -318,6 +318,7 @@ img.select-banner {
 
 /*** progressBar ***/
 
+/*
 dl.progress {
     padding: 1px;
     border: 1px solid #ddd;
@@ -354,7 +355,7 @@ dl.progress {
     height: 100%;
     text-indent: -9000px;
 }
-
+*/
 
 .list li { position: relative; }
 
