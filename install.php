@@ -21,7 +21,7 @@ $loadedArr['utf8Support'] = @preg_match('/^.$/u', 'ñ');
 $loadedArr['unicodeSupport'] = @preg_match('/^\pL$/u', 'ñ');
 $loadedArr['URI_Determination'] = isset($_SERVER['REQUEST_URI']) OR isset($_SERVER['PHP_SELF']) OR isset($_SERVER['PATH_INFO']);
 
-
+$errorMsg = array();
 $configSaved = false;
 if (filter_has_var(INPUT_GET, 'save')) {
 //    var_dump($_GET);
@@ -43,7 +43,17 @@ if (filter_has_var(INPUT_GET, 'save')) {
 
     $get = filter_input_array(INPUT_GET, $defs);
 
-    if (!in_array(false, $loadedArr, true) && !in_array(null, $get, true) && !in_array(false, $get, true)) {
+    $link = @mysql_connect($get['db_host'], $get['db_user'], $get['db_pass']);
+    if (!$link) {
+        $errorMsg[] = "Can not login to the database. Check the login data to the database are correct : " . mysql_error();
+    }
+
+    $db_selected = @mysql_select_db($get['db_dbname'], $link);
+    if (!$db_selected) {
+        $errorMsg[] = 'Can\'t use "'.$get['db_dbname'].'" as a database : ' . mysql_error();
+    }
+
+    if (!in_array(false, $loadedArr, true) && !in_array(null, $get, true) && !in_array(false, $get, true) && empty($errorMsg)) {
 
         $config = "<?php defined('SYSPATH') or die('No direct script access.');
 
@@ -69,7 +79,7 @@ return array(
 
 ?>";
 
-        file_put_contents('application/config/default2.php', $config);
+        file_put_contents('application/config/default.php', $config);
         $get['db_pass'] = (empty($get['db_pass'])) ? "FALSE": "'{$get['db_pass']}'";
         $config = "<?php defined('SYSPATH') or die('No direct access allowed.');
 
@@ -125,7 +135,7 @@ return array
 	),
 );";
  
-        file_put_contents('application/config/database2.php', $config);
+        file_put_contents('application/config/database.php', $config);
 
         $configSaved = true;
     }
@@ -406,6 +416,12 @@ return array
         <p id="results" class="pass">✔ Your environment passed all requirements.<br />
 			Remove or rename the <code>install<?php echo EXT ?></code> file now.</p>
         <?php } else { ?>
+
+        <?php if (!empty($errorMsg)) { ?>
+        <?php foreach ($errorMsg as $msg) { ?>
+            <p id="results" class="fail">✘ <?php echo $msg ?></p>
+            <?php }
+        } ?>
         <h2>Fields marked in red are important</h2>
         <p>Follow the instructions <a href="http://sourceforge.net/apps/trac/autotvtosab/">here</a> before continuing.</p>
         <p id="error">You have an error in the installation form</p>
@@ -417,19 +433,19 @@ return array
                 <div class="message_body">
                     <div>
                         <label for="db_host">Hostname</label>
-                        <input type="text" name="db_host" id="db_host" value="localhost" size="35" />
+                        <input type="text" name="db_host" id="db_host" value="<?php if (isset($get['db_host'])) echo $get['db_host']; else echo 'localhost'; ?>" size="35" />
                     </div>
                     <div>
                         <label for="db_user">Username</label>
-                        <input type="text" name="db_user" id="db_user" size="35" class="needsfilled" />
+                        <input type="text" name="db_user" id="db_user" size="35" class="<?php if (!isset($get['db_user'])) echo 'needsfilled'?>" value="<?php if (isset($get['db_user'])) echo $get['db_user'] ?>" />
                     </div>
                     <div>
                         <label for="db_pass">Password</label>
-                        <input type="text" name="db_pass" id="db_pass" size="35" class="needsfilled" />
+                        <input type="password" name="db_pass" id="db_pass" size="35" class="<?php if (!isset($get['db_pass'])) echo 'needsfilled'?>" />
                     </div>
                     <div>
                         <label for="db_dbname">Database name</label>
-                        <input type="text" name="db_dbname" id="db_dbname" size="35" class="needsfilled" />
+                        <input type="text" name="db_dbname" id="db_dbname" size="35" class="<?php if (!isset($get['db_dbname'])) echo 'needsfilled'?>" value="<?php if (isset($get['db_dbname'])) echo $get['db_dbname'] ?>" />
                     </div>
                 </div>
 
@@ -440,11 +456,11 @@ return array
                 <div class="message_body">
                     <div>
                         <label for="sab_url">Sabnzbd url</label>
-                        <input type="text" name="sab_url" id="sab_url" value="http://localhost:8080" size="35" />
+                        <input type="text" name="sab_url" id="sab_url" value="<?php if (isset($get['sab_url'])) echo $get['sab_url']; else echo 'http://localhost:8080'; ?>" size="35" />
                     </div>
                     <div>
                         <label for="sab_api_key">Sabnzbd api key</label>
-                        <input type="text" name="sab_api_key" id="sab_api_key" size="35" class="needsfilled" />
+                        <input type="text" name="sab_api_key" id="sab_api_key" size="35" value="<?php if (isset($get['sab_api_key'])) echo $get['sab_api_key'] ?>" class="<?php if (!isset($get['sab_api_key'])) echo 'needsfilled'?>" />
                     </div>
                 </div>
 
@@ -454,7 +470,7 @@ return array
                 <div class="message_body">
                     <div>
                         <label for="matrix_api_key">NZB Matrix api key</label>
-                        <input type="text" name="matrix_api_key" id="matrix_api_key" size="35" class="needsfilled" />
+                        <input type="text" name="matrix_api_key" id="matrix_api_key" size="35" value="<?php if (isset($get['matrix_api_key'])) echo $get['matrix_api_key'] ?>" class="<?php if (!isset($get['matrix_api_key'])) echo 'needsfilled'?>" />
                     </div>
                     <div>
                         If you dont have an VIP account on Nzbmatrix.com
@@ -469,7 +485,7 @@ return array
                 <div class="message_body">
                     <div>
                         <label for="thetvdb_api_key">Thetvdb.com api key</label>
-                        <input type="text" name="thetvdb_api_key" id="thetvdb_api_key" size="35" class="needsfilled" />
+                        <input type="text" name="thetvdb_api_key" id="thetvdb_api_key" size="35" value="<?php if (isset($get['thetvdb_api_key'])) echo $get['thetvdb_api_key'] ?>" class="<?php if (!isset($get['thetvdb_api_key'])) echo 'needsfilled'?>" />
                     </div>
                     <div>
                         If you dont have an account on Thetvdb.com
@@ -484,11 +500,11 @@ return array
                     <p>Do not touch unless you know what you are doing</p>
                     <div>
                         <label for="rss_num_results">Rss number of results</label>
-                        <input type="text" name="rss_num_results" id="rss_num_results" value="10" />
+                        <input type="text" name="rss_num_results" id="rss_num_results" value="<?php if (isset($get['rss_num_results'])) echo $get['rss_num_results']; else echo '10' ?>" />
                     </div>
                     <div>
                         <label for="rss_how_old">How old the results should be</label>
-                        <input type="text" name="rss_how_old" id="rss_how_old" value="-1 days" />
+                        <input type="text" name="rss_how_old" id="rss_how_old" value="<?php if (isset($get['rss_how_old'])) echo $get['rss_how_old']; else echo '-1 days' ?>" />
                         <em>Example: -1 week or -4 hours</em>
                     </div>
                 </div>
