@@ -127,6 +127,8 @@ class Controller_Series extends Controller_Xhtml {
 //            $this->request->redirect('series/add' . URL::query(array('msg' => 'Error: databas episodes error')));
 //        }
 
+		Cache::instance('default')->delete('series');
+
         $this->request->redirect('series/add' . URL::query(array('msg' => $_POST['name'] . ' ' . __('is saved'))));
     }
 
