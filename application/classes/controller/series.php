@@ -248,8 +248,10 @@ class Controller_Series extends Controller_Xhtml {
         }
 
         /** Only update if the reques is not internaly **/
-        if ($this->request == Request::instance())
-        $this->request->redirect('' . URL::query(array('msg' => $name . ' ' . __('is updated'))));
+        if ($this->request == Request::instance()) {
+			Cache::instance('default')->delete('series');
+			$this->request->redirect('' . URL::query(array('msg' => $name . ' ' . __('is updated'))));
+		}
 
     }
 
@@ -312,7 +314,8 @@ class Controller_Series extends Controller_Xhtml {
         if (!$series->save()) {
             $this->request->redirect(URL::query(array('msg' => 'Error: databas series error')));
         }
-
+		
+		Cache::instance('default')->delete('series');
         $this->request->redirect('' . URL::query(array('msg' => $series->series_name . ' ' . __('is updated'))));
     }
 
@@ -422,6 +425,7 @@ class Controller_Series extends Controller_Xhtml {
 
         //$series->removeAllRelationships();
         $series->delete();
+		Cache::instance('default')->delete('series');
         $this->request->redirect('' . URL::query(array('msg' => $name . ' ' . __('is deleted'))));
     }
 
