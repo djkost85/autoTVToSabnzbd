@@ -51,6 +51,7 @@ class Sabnzbd_Queue extends Sabnzbd {
             if ($value instanceof stdClass)
             {
                 $nzoId = $value->nzo_id;
+				$value->prepCategories = array();
                 foreach ($json->categories as $cat) {
                     $query = array(
                         'mode' => 'change_cat',
@@ -61,6 +62,7 @@ class Sabnzbd_Queue extends Sabnzbd {
                     $value->prepCategories[$cat] = $sabUrl . '?' . http_build_query($query);
                 }
                 
+				$value->prepScripts = array();
                 foreach ($json->scripts as $script) {
                     $query = array(
                         'mode' => 'change_script',
@@ -71,6 +73,7 @@ class Sabnzbd_Queue extends Sabnzbd {
                     $value->prepScripts[$script] = $sabUrl . '?' . http_build_query($query);
                 }
 
+				$value->prepMove = array();
                 for($i=0; $i < $json->noofslots; $i++) {
                     $query = array(
                         'mode' => 'switch',
