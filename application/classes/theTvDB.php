@@ -23,11 +23,9 @@ class TheTvDB extends Tv_Info {
         if ($lang === null) $lang = 'all';
         $url = "http://www.thetvdb.com/api/GetSeries.php?seriesname=" . urlencode($tvShow). '&language=' . $lang;
         $this->seriealInfo = $this->getXml($url);
-        //if (count($this->seriealInfo->Series) > 1) {
-            foreach ($this->seriealInfo->Series as $series) {
-                $this->xmlLanguages[] = (string)$series->language;
-            }
-        //}
+        foreach ($this->seriealInfo->Series as $series) {
+            $this->xmlLanguages[] = (string)$series->language;
+        }
 
         if (!in_array($this->language, $this->xmlLanguages)) {
             $this->language = $this->xmlLanguages[0];

@@ -46,18 +46,14 @@
             <input type="submit" value="<?php echo __('Save')?>" />
         </fieldset>
     </form>
-    <!--<div id="search-result"></div>-->
 </div>
 <script type="text/javascript">
-//$('#search-result').hide();
-
-
 $('<img src="' + baseUrl + 'images/move-spinner.gif" id="spinner" />').css('position','absolute').hide().appendTo('body');
 
 var searchData = "";
 
 $('#name').autocomplete(data, {
-    matchContains: true,
+    matchContains: false,
     minChars: 1
 }).result(function (e, result) {
     getImages(result);
@@ -79,57 +75,6 @@ function getImages(search) {
         });
     });
 }
-
-//$('#name').blur(function() {
-//    var val = $('#name').val();
-//    if (searchData != "") {
-//        val = searchData;
-//        searchData = "";
-//    }
-//    var url = baseUrl + 'series/searchNew/' + val;
-//
-//    $.ajax({
-//        type: "GET",
-//        url: url,
-//        error: function (XMLHttpRequest, textStatus, errorThrown) {
-//            $('#spinner').fadeOut();
-//            alert(XMLHttpRequest.status);
-//            alert(url);
-//        },
-//        success: function(data){
-//            $('#spinner').fadeOut();
-//            $('#search-result').html(data).fadeIn();
-//            $('#select-ep').change(function() {
-//                var selected = $(this).val();
-////                var re = new RegExp("/[(\w\s)]+\s(\w{2})/");
-////                var matchArray = $(this).val().match(re);
-////                alert(matchArray);
-////                alert($(this).val());
-//                $('#name').attr('value', selected);
-//                $('#spinner').fadeIn();
-//                $('#search-result').hide();
-//                url = baseUrl + 'series/getBanners/' + $('#name').val();
-//                $.get(url, function (data) {
-//                    $('#spinner').fadeOut();
-//                    $('#search-result').html(data).fadeIn();
-//                    $("img.select-img").click(function () {
-//                        //alert($(this).attr("title"))
-//                        $("img.select-img").removeClass('selected');
-//                        $(this).addClass('selected');
-//                        $('#poster').val($(this).attr("title"));
-//                        return false;
-//                    });
-//                });
-//            });
-//        }
-//    });
-//    $.get(basUrl + 'series/search/', function(data){
-//        $('#result').html(data);
-//        $('#result').fadeIn();
-//        //alert($('#name').val())
-//    });
-//    alert($('#name').val())
-//});
 
 
 $('input[type="submit"]').click(function () {

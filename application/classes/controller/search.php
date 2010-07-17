@@ -31,7 +31,6 @@ class Controller_Search extends Controller_Xhtml {
         $result = $series->search($_GET['q']);
 
         if ($result->count() > 1) {
-            //var_dump($result->as_array());
             Head::instance()->set_title(__('Search'));
             $menu = new View('menu');
 

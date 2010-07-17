@@ -14,7 +14,6 @@ class Posters {
 
     protected function getXml() {
         $show_xml = file_get_contents($this->showInfo . urlencode($this->showName));
-        //var_dump($show_xml);
         $xml = simplexml_load_string($show_xml);
         return $xml;
     }
@@ -110,19 +109,5 @@ class Posters {
 
 
 }
-
-/*$post = new Posters('Legend of the Seeker');
-$posters = $post->getPosters();
-$i = 0;
-foreach ($posters as $poster) {
-    if (++$i <= 2) {
-        $savePath = 'images/' . basename($poster);
-        $post->saveImage($poster, $savePath);
-    }
-    ?>
-<img alt="Glee Poster" src="<?php echo $poster?>" />
-    <?php
-}
-*/
 
 ?>

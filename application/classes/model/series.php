@@ -154,7 +154,7 @@ class Model_Series extends ORM {
                 1")->as_object()->execute($this->_db);
     }
 
-    public function getRandBanner() {
+    protected function _getRandBanner() {
         $query = "SELECT
                     banner
                 FROM
@@ -164,6 +164,11 @@ class Model_Series extends ORM {
         return DB::query(Database::SELECT, $query)
                 ->execute($this->_db)
                 ->get('banner');
+    }
+
+    public static function getRandBanner() {
+        $series = new Model_Series;
+        return $series->_getRandBanner();
     }
 
     public function search($q) {

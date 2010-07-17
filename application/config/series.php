@@ -79,6 +79,7 @@ return array(
                 'Draknästet',
                 'Fuskbyggarna',
                 'Band of Brothers',
+                'Detective Conan',
         )
 );
 

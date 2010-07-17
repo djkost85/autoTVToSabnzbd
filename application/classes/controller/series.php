@@ -49,19 +49,14 @@ class Controller_Series extends Controller_Xhtml {
 
             $series = ORM::factory('series');
             $arr = $tv->toArray();
-//            var_dump($lang->abbreviation);
-//            var_dump($tv->getLanguagesFromTvDb());
             if ($series->isAdded($arr['seriesName'])) {
                 $this->request->redirect('series/add' . URL::query(array('msg' => $_POST['name'] . ' ' . __('alredy exists'))));
             }
 
             $info = $tv->getSeriesInfo();
-//            var_dump($info);
         } catch (InvalidArgumentException $e) {
             $this->request->redirect(URL::query(array('error' => $e->getMessage())));
         }
-
-//        return;
 
         $saveAsNew = Kohana::config('default.default.saveImagesAsNew');
         $series = $this->saveInfo($series, $info, $saveAsNew);
@@ -70,9 +65,6 @@ class Controller_Series extends Controller_Xhtml {
         if (!$lastId) {
             $this->request->redirect('series/add' . URL::query(array('msg' => 'Error: databas series error')));
         }
-
-//episode (`ep_id`, `director`, `ep_img_flag`, `episode_name`, `episode`, `first_aired`, `guest_stars`, `IMDB_ID`, `language`, `overview`,
-//`rating`, `season`, `writer`, `filename`, `lastupdated`, `seasonid`, `seriesid`)
 
         $poster = new Posters();
         $i = 1;
@@ -114,20 +106,13 @@ class Controller_Series extends Controller_Xhtml {
                     'seriesid' => (int) $ep->seriesid,
             );
 
-            //var_dump($epData['first_aired']);
-
             $episodes = ORM::factory('episode');
             $episodes->values($epData);
             $episodes->series_id = $lastId;
             $episodes->save();
-            //$series->add('episodes', $episodes);
         }
 
-//        if (!$series->save()) {
-//            $this->request->redirect('series/add' . URL::query(array('msg' => 'Error: databas episodes error')));
-//        }
-
-		Cache::instance('default')->delete('series');
+	Cache::instance('default')->delete('series');
 
         $this->request->redirect('series/add' . URL::query(array('msg' => $_POST['name'] . ' ' . __('is saved'))));
     }
@@ -147,7 +132,6 @@ class Controller_Series extends Controller_Xhtml {
         $xhtml->body->set('title', __('update') . ' ' . $series->series_name)
                 ->set('series', $series)
                 ->set('url', URL::site('series/doUpdate/' . $id))
-                //->set('banners', $this->getBanners($series->series_name))
                 ->set('banners', array())
                 ->set('menu', $menu);
 
@@ -231,27 +215,26 @@ class Controller_Series extends Controller_Xhtml {
                 $epData = array_merge($epData, array('filename' => $path . basename($ep->filename)));
             }
 
-//            $series->remove('episodes', ORM::factory('episode')->where('ep_id', '=', $ep->id));
-//            $episode->delete();
-
             $episodes = ORM::factory('episode');
             $episodes->values($epData);
             $episodes->series_id = $lastId;
             $episodes->save();
-            //$series->add('episodes', $episodes);
 
-//            $episodes = ORM::factory('episode')->where('ep_id', '=', $ep->id);
-//            $episodes->values($epData);
-//            if (!$episodes->save()) {
-//                $this->request->redirect('' . URL::query(array('msg' => 'Error: databas episodes error')));
-//            }
+            Cache::instance('default')->delete("series_ep_id_$id");
+            Cache::instance('default')->delete("episodes_id_$id");
+
+            $i = 2;
+            while (Cache::instance('default')->get('episodes_id_'.$id.'_page_'.$i)) {
+                Cache::instance('default')->delete('episodes_id_'.$id.'_page_'.$i);
+                $i++;
+            }
         }
 
+        Cache::instance('default')->delete('series');
         /** Only update if the reques is not internaly **/
         if ($this->request == Request::instance()) {
-			Cache::instance('default')->delete('series');
-			$this->request->redirect('' . URL::query(array('msg' => $name . ' ' . __('is updated'))));
-		}
+            $this->request->redirect('' . URL::query(array('msg' => $name . ' ' . __('is updated'))));
+        }
 
     }
 
@@ -346,7 +329,6 @@ class Controller_Series extends Controller_Xhtml {
     }
 
     public function action_ajax_getBanners($name) {
-    //public function action_getBanners($name) {
         try {
             $tv = new TheTvDB($this->TheTvDB_api_key, $name);
 
@@ -369,9 +351,7 @@ class Controller_Series extends Controller_Xhtml {
         $i = 1;
         $poster = new Posters();
         foreach ($banners as $banner) {
-            //var_dump($banner);
             if ($banner->BannerType == 'poster' && $i <= 5) {
-                //$i++;
                 $savePath = 'images/__cache/' . basename($banner->BannerPath);
                 if (!file_exists($savePath)) {
                     $poster->saveImage('http://thetvdb.com/banners/' . $banner->BannerPath, $savePath);
@@ -385,15 +365,12 @@ class Controller_Series extends Controller_Xhtml {
                         )) . "\n");
             }
         }
-        //var_dump($banners);
         $response .= "<br />";
         if (isset($tvArray['imdb']))
         $response .= HTML::anchor($tvArray['imdb'], $tvArray['seriesName'] . ' ' . __('on Imdb'));
         $response .= " | ";
         $response .= HTML::anchor('http://www.thetvdb.com/?tab=series&id=' . $tvArray['id'], $tvArray['seriesName'] . ' ' . __('on The Tv DB'));
 
-        //$this->request->headers['Content-Type'] = 'text/json';
-        //$this->request->response = json_encode($arr);
         $this->request->response = $response;
     }
 
@@ -409,7 +386,7 @@ class Controller_Series extends Controller_Xhtml {
                 unlink($ep->filename);
             }
             $episode = ORM::factory('episode', $ep);
-            //$series->remove('episodes', $ep);
+
             $episode->delete();
         }
 
@@ -423,7 +400,7 @@ class Controller_Series extends Controller_Xhtml {
             unlink($series->banner);
         }
 
-        //$series->removeAllRelationships();
+
         $series->delete();
 		Cache::instance('default')->delete('series');
         $this->request->redirect('' . URL::query(array('msg' => $name . ' ' . __('is deleted'))));
@@ -458,8 +435,7 @@ class Controller_Series extends Controller_Xhtml {
         if (!empty($info->Series->poster)) {
             $path = "images/poster/";
             $image = 'http://thetvdb.com/banners/' . (string) $info->Series->poster;
-            //var_dump(is_readable(URL::base() . $path . basename($image)));
-            //var_dump(URL::base() . $path . basename($image));
+
             if (empty($_POST['poster'])) {
                 if (isset($series->poster) && file_exists($series->poster)) {
                     $posterFile = $series->poster;
@@ -509,10 +485,6 @@ class Controller_Series extends Controller_Xhtml {
             $poster->saveImage($image, $fanartFile);
         }
 
-//series(`tvdb_id`, `actors`, `airs_day`, `airs_time`, `content_rating`, `first_aired`, `genre`, `IMDB_ID`, `language`, `network`,
-//`network_id`, `overview`, `rating`, `runtime`, `series_id`, `series_name`, `status`, `added`, `added_by`, `banner`,
-//`fanart`, `lastupdated`, `poster`, `zap2it_id`;
-
         $data = array(
                 'tvdb_id'        => (int) $info->Series->id,
                 'actors'         => (string) $info->Series->Actors,
@@ -555,7 +527,7 @@ class Controller_Series extends Controller_Xhtml {
         } catch (InvalidArgumentException $e) {
             $this->request->redirect(URL::query(array('error' => $e->getMessage())));
         }
-        //var_dump($banners);
+
 
         $bannerArray = array();
         foreach($banners as $banner) {

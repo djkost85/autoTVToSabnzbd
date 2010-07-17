@@ -33,8 +33,6 @@ class Sabnzbd {
             'priority' => 0,
         );
 
-//        http://localhost:8080/sabnzbd/api?mode=addurl&name=http://www.example.com/example.nzb&pp=3&script=customscript.cmd&cat=Example&priority=-1&nzbname=NiceName
-
         $sendTo = $this->_sabUrl . '?' . http_build_query($query);
         return $this->send($sendTo);
     }
@@ -70,7 +68,6 @@ class Sabnzbd {
                 'apikey' => $this->_apiKey
             );
             $json = json_decode($this->send($this->_sabUrl . '?' . http_build_query($query)));
-//            if (isset($json->$item)) return $json->$item;
             return $json->$item;
         }
         return null;

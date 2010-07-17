@@ -24,13 +24,8 @@ class NzbMatrix extends Tv_Info {
         );
 
         $url = $this->searchUrl . '?' . http_build_query($query);
-        //var_dump($url);
-//        $url = 'result.cache';
-//        $result = file_get_contents($url);
 
         $result = $this->send($url);
-        
-        //file_put_contents('result.cache', $result);
         $this->searchResult = $this->parseResult($result);
         return $this->searchResult;
     }

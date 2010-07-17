@@ -25,10 +25,8 @@ class Controller_Rss extends Controller {
 
             $items[] = $item;
         }
-//        var_dump($items);
 
         $this->request->headers['Content-Type'] = 'application/xml; charset=UTF-8';
-        //var_dump(Rss::create($info, $items)->__toString());
         $this->request->response = Rss::create($info, $items)->__toString();
     }
 
@@ -39,19 +37,13 @@ class Controller_Rss extends Controller {
 
         $series = Model_SortFirstAired::getSeries();
         $rss = ORM::factory('rss');
-//        $expr = 'DATE_SUB(CURDATE(),INTERVAL ' . Inflector::singular(ltrim($config->rss['howOld'], '-')) . ')';
-//        $expr = 'DATE_SUB(CURDATE(),INTERVAL ' . Inflector::singular($config->rss['howOld']) . ')';
-//        $result = $rss->where(DB::expr($expr), '<=', DB::expr('updated'));
-//        var_dump($result->count_all());
-//        var_dump($result->last_query());
-//        var_dump($rss->count_all());
+
 
         $expr = 'DATE_SUB(NOW(),INTERVAL ' . Inflector::singular(ltrim($config->rss['howOld'], '-')) . ')';
-//        $expr = 'DATE_SUB(CURDATE(),INTERVAL ' . Inflector::singular($config->rss['howOld']) . ')';
+
         $result = $rss->where(DB::expr($expr), '>=', DB::expr('updated'));
 
         if ($result->count_all() <= 0) {
-//            var_dump($result->last_query());;
             if ($rss->count_all() == $config->rss['numberOfResults']) {
                 $this->request->response = __('Already updated');
                 return;
@@ -78,8 +70,6 @@ class Controller_Rss extends Controller {
                             strtolower($parsed['name']) == strtolower($ep->series_name) &&
                             $ep->matrix_cat == $res->categoryid) {
 
-//                        var_dump($search);
-//                        var_dump($res);
                             if (!$rss->alreadySaved($search)) {
                                 $rss->title = (string) $res->title;
                                 $rss->guid = (string) $res->guid;
@@ -106,6 +96,8 @@ class Controller_Rss extends Controller {
                 }
             }
         }
+
+        Cache::instance('default')->delete('series');
 
         $this->request->response = __('Updated');
     }
