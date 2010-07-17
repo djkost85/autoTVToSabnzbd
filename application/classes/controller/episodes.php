@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/* 
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
 */
@@ -13,7 +13,6 @@ class Controller_Episodes extends Controller_Xhtml {
 
     public function before() {
         parent::before();
-
     }
     public function after() {
         parent::after();
@@ -23,16 +22,88 @@ class Controller_Episodes extends Controller_Xhtml {
         if (!is_numeric($id)) {
             $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
         }
-        $series = ORM::factory('series', $id);
 
-        $total = $series->episodes->where('season', '>', 0)->count_all(); // Pagination
+        $cacheName = "series_ep_id_$id";
 
-        $pagination = Pagination::factory( array (
-                'base_url' => 'episodes/listAll/'.$id,
-                'total_items' => $total,
-                'items_per_page' => 15 // default 10
-        ));
+        $series = Cache::instance('default')->get($cacheName);
 
+        if (is_null($series)) {
+            $series = ORM::factory('series', $id);
+            Cache::instance('default')->set($cacheName, $series);
+        }
+
+        $cacheName = "episodes_id_$id";
+
+        if (isset($_GET['page'])) {
+            $cacheName .= '_page_'.$_GET['page'];
+        }
+
+        $epRes = Cache::instance('default')->get($cacheName);
+
+        if (is_null($epRes)) {
+
+            $total = $series->episodes->where('season', '>', 0)->count_all(); // Pagination
+
+            $pagination = Pagination::factory( array (
+                    'base_url' => 'episodes/listAll/'.$id,
+                    'total_items' => $total,
+                    'items_per_page' => 15 // default 10
+            ));
+
+            $episodes = $series->episodes
+                        ->where('season', '>', 0)
+                        ->order_by('first_aired', 'desc')
+                        ->limit($pagination->items_per_page)
+                        ->offset($pagination->offset)
+                        ->find_all();
+
+            $epRes = array();
+            foreach ($episodes as $ep) {
+                $poster = new Posters();
+
+                $posterMsg = "";
+                if (preg_match('#^http:\/\/#', $ep->filename)) {
+                    $path = "images/episode/";
+                    $image = $posterFile = $ep->filename;
+                    $newPosterName = $poster->ifFileExist(basename($image), $path);
+                    if ($newPosterName) {
+                        $posterFile = $path . $newPosterName;
+                        $poster->saveImage($image, $posterFile);
+
+                        $epORM = ORM::factory('episode', array('id' => $ep->id));
+                        $epORM->filename = $posterFile;
+
+                        if (!$epORM->save()) {
+                            $posterMsg = '<p class="msg error">Ett fel med uppdaterningen av filnamnet har inträffat</p>';
+                        } else {
+                            $posterMsg = '<p class="msg">Bilden är uppdaerad</p>';
+                        }
+                    }
+                } else if(is_readable($ep->filename)) {
+                    $posterFile = $ep->filename;
+                } else {
+                    $posterFile = "images/poster.png";
+                }
+
+                $res = new stdClass;
+                $res->id = $ep->id;
+                $res->ep_id = $ep->ep_id;
+                $res->filename = $ep->filename;
+                $res->season = $ep->season;
+                $res->episode = $ep->episode;
+                $res->episode_name = $ep->episode_name;
+                $res->first_aired = (is_null($ep->first_aired)) ? 'N/A' : $ep->first_aired;
+                $res->overview = Text::limit_chars(HTML::entities($ep->overview), 280);
+                $res->isDownloaded = ($ep->isDownloaded($ep->id)) ? ' <em>' . __('is downloaded') . '</em>' : '';
+                $res->posterFile = $posterFile;
+                $res->posterMsg = $posterMsg;
+                $epRes[] = $res;
+            }
+
+            Cache::instance('default')->set($cacheName, $epRes);
+            Cache::instance('default')->set($cacheName.'_pagination', $pagination->render());
+
+        }
 
         $name = $series->series_name;
         Head::instance()->set_title('Visa alla avsnitt från ' . $name);
@@ -42,9 +113,9 @@ class Controller_Episodes extends Controller_Xhtml {
         ->set('menu', new View('menu'))
         ->set('seriesName', $name)
         ->set('id', $series->id)
-        ->set('pagination', $pagination->render())
+        ->set('pagination', Cache::instance('default')->get($cacheName.'_pagination'))
         ->set('banner', $series->banner)
-        ->set('episodes', $series->episodes->where('season', '>', 0)->order_by('first_aired', 'desc')->limit($pagination->items_per_page)->offset($pagination->offset)->find_all())
+        ->set('episodes', $epRes)
         ->set('matrix_cat', NzbMatrix::cat2string($series->matrix_cat));
 
         $this->request->response = $xhtml;
@@ -55,15 +126,87 @@ class Controller_Episodes extends Controller_Xhtml {
         if (!is_numeric($id)) {
             $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
         }
-        $series = ORM::factory('series', $id);
+        $cacheName = "series_specials_ep_id_$id";
 
-        $total = $series->episodes->where('season', '=', 0)->count_all(); 
+        $series = Cache::instance('default')->get($cacheName);
 
-        $pagination = Pagination::factory( array (
-                'base_url' => 'episodes/listAll/'.$id,
-                'total_items' => $total,
-                'items_per_page' => 15
-        ));
+        if (is_null($series)) {
+            $series = ORM::factory('series', $id);
+            Cache::instance('default')->set($cacheName, $series);
+        }
+
+        $cacheName = "episodes_specials_id_$id";
+
+        if (isset($_GET['page'])) {
+            $cacheName .= '_page_'.$_GET['page'];
+        }
+
+        $epRes = Cache::instance('default')->get($cacheName);
+
+        if (is_null($epRes)) {
+
+            $total = $series->episodes->where('season', '=', 0)->count_all(); // Pagination
+
+            $pagination = Pagination::factory( array (
+                    'base_url' => 'episodes/listAll/'.$id,
+                    'total_items' => $total,
+                    'items_per_page' => 15 // default 10
+            ));
+
+            $episodes = $series->episodes
+                        ->where('season', '=', 0)
+                        ->order_by('first_aired', 'desc')
+                        ->limit($pagination->items_per_page)
+                        ->offset($pagination->offset)
+                        ->find_all();
+
+            $epRes = array();
+            foreach ($episodes as $ep) {
+                $poster = new Posters();
+
+                $posterMsg = "";
+                if (preg_match('#^http:\/\/#', $ep->filename)) {
+                    $path = "images/episode/";
+                    $image = $posterFile = $ep->filename;
+                    $newPosterName = $poster->ifFileExist(basename($image), $path);
+                    if ($newPosterName) {
+                        $posterFile = $path . $newPosterName;
+                        $poster->saveImage($image, $posterFile);
+
+                        $epORM = ORM::factory('episode', array('id' => $ep->id));
+                        $epORM->filename = $posterFile;
+
+                        if (!$epORM->save()) {
+                            $posterMsg = '<p class="msg error">Ett fel med uppdaterningen av filnamnet har inträffat</p>';
+                        } else {
+                            $posterMsg = '<p class="msg">Bilden är uppdaerad</p>';
+                        }
+                    }
+                } else if(is_readable($ep->filename)) {
+                    $posterFile = $ep->filename;
+                } else {
+                    $posterFile = "images/poster.png";
+                }
+
+                $res = new stdClass;
+                $res->id = $ep->id;
+                $res->ep_id = $ep->ep_id;
+                $res->filename = $ep->filename;
+                $res->season = $ep->season;
+                $res->episode = $ep->episode;
+                $res->episode_name = $ep->episode_name;
+                $res->first_aired = (is_null($ep->first_aired)) ? 'N/A' : $ep->first_aired;
+                $res->overview = Text::limit_chars(HTML::entities($ep->overview), 280);
+                $res->isDownloaded = ($ep->isDownloaded($ep->id)) ? ' <em>' . __('is downloaded') . '</em>' : '';
+                $res->posterFile = $posterFile;
+                $res->posterMsg = $posterMsg;
+                $epRes[] = $res;
+            }
+
+            Cache::instance('default')->set($cacheName, $epRes);
+            Cache::instance('default')->set($cacheName.'_pagination', $pagination->render());
+
+        }
 
         $name = $series->series_name;
         Head::instance()->set_title('Visa alla avsnitt från ' . $name);
@@ -73,9 +216,9 @@ class Controller_Episodes extends Controller_Xhtml {
         ->set('menu', new View('menu'))
         ->set('seriesName', $name)
         ->set('id', $series->id)
-        ->set('pagination', $pagination->render())
+        ->set('pagination', Cache::instance('default')->get($cacheName.'_pagination'))
         ->set('banner', $series->banner)
-        ->set('episodes', $series->episodes->where('season', '=', 0)->order_by('first_aired', 'desc')->limit($pagination->items_per_page)->offset($pagination->offset)->find_all())
+        ->set('episodes', $epRes)
         ->set('matrix_cat', NzbMatrix::cat2string($series->matrix_cat));
 
         $this->request->response = $xhtml;
@@ -176,6 +319,7 @@ class Controller_Episodes extends Controller_Xhtml {
         ->set('banner', $series->banner)
         ->set('epId', $epId)
         ->set('ep', ORM::factory('episode')->where('id', '=', $epId)->find())
+
         ->set('matrix_cat', NzbMatrix::cat2string($series->matrix_cat));
 
         $this->request->response = $xhtml;
@@ -185,7 +329,7 @@ class Controller_Episodes extends Controller_Xhtml {
         if (!Request::$is_ajax) {
             return;
         }
-        
+
         $sorted = Model_SortFirstAired::getSeries();
 
         $modelEp = ORM::factory('episode');
@@ -224,13 +368,12 @@ class Controller_Episodes extends Controller_Xhtml {
         $result = $matrix->search($search);
 
         foreach ($result->item as $res) {
-            //var_dump($res->title);
             $parse = new NameParser($res->title);
             $parsed = $parse->parse();
             if ($series->series_name == $parsed['name']) {
                 $this->request->headers['Content-Type'] = 'text/json';
                 $this->request->response = json_encode(
-                    array( 
+                    array(
                         'text' => __('ready to download'),
                         'id' => $id
                         )
@@ -241,7 +384,7 @@ class Controller_Episodes extends Controller_Xhtml {
 
         $this->request->headers['Status'] = '404 Not Found';
     }
-    
+
     protected function delete($id, $epId) {
         if (!is_numeric($id) || !is_numeric($epId)) {
             $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));

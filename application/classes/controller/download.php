@@ -1,8 +1,10 @@
-<?php defined('SYSPATH') or die('No direct script access.');
-/* 
+<?php
+
+defined('SYSPATH') or die('No direct script access.');
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
-*/
+ */
 
 /**
  * Description of download
@@ -20,24 +22,22 @@ class Controller_Download extends Controller_Xhtml {
 
         $results = $matrix->search($search, $series->matrix_cat);
 
-
         if (isset($results[0]['error'])) {
             if (preg_match('#^(.*)_(?P<num>\d{1,2})$#', $results[0]['error'], $matches)) {
                 $msg = sprintf(__('please_wait_x'), $matches['num']);
             } else {
                 $msg = __($results[0]['error']);
             }
-            
+
             $this->request->redirect("episodes/$series->id/" . URL::query(array('msg' => "Mzb Matrix error: $msg")));
         }
-        
+
         $sab = new Sabnzbd(Kohana::config('default.Sabnzbd'));
         $searchResult = array();
         foreach ($results as $result) {
             $parse = new NameParser($result['nzbname']);
             $parsed = $parse->parse();
             $isDownload = $sab->isDownloaded($result['nzbname']);
-
 
             if ($isDownload) {
                 $result = array_merge($result, array('episode_id' => $ep->id, 'downloaded' => true));
@@ -46,10 +46,10 @@ class Controller_Download extends Controller_Xhtml {
             }
 
             if (
-                sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
-                sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
-                strtolower($parsed['name']) == strtolower($series->series_name)
-                ) {
+                    sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
+                    sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
+                    strtolower($parsed['name']) == strtolower($series->series_name)
+            ) {
 
                 if (NzbMatrix::catStr2num($result['category']) != $series->matrix_cat) {
                     $result = array_merge($result, array('episode_id' => $ep->id, 'noCatMatch' => true));
@@ -60,7 +60,6 @@ class Controller_Download extends Controller_Xhtml {
                 $result = array_merge($result, array('episode_id' => $ep->id, 'good' => true));
                 $searchResult[$result['nzbid']] = $result;
                 continue;
-
             }
             $result = array_merge($result, array('episode_id' => $ep->id, 'noMatch' => true));
             $searchResult[$result['nzbid']] = $result;
@@ -80,7 +79,7 @@ class Controller_Download extends Controller_Xhtml {
 
                 $this->request->redirect(URL::query(array('msg' => "Download: " . $search)));
             }
-            
+
             $session = Session::instance();
             $session->set('seachResults', $searchResult);
             $this->request->redirect("download/no_match/$ep->id");
@@ -151,16 +150,17 @@ class Controller_Download extends Controller_Xhtml {
         }
 
         $history = $sab->getHistory();
-        
+
         Head::instance()->set_title('Visa alla nerladdningar');
         $menu = new View('menu');
         $xhtml = Xhtml::instance('download/listAll');
 
         $xhtml->body->set('menu', $menu)
-            ->set('history', $history);
+                ->set('history', $history);
 
         $this->request->response = $xhtml;
     }
+
 }
 ?>
          
