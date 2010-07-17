@@ -18,15 +18,8 @@ class Controller_Download extends Controller_Xhtml {
 
         $matrix = new NzbMatrix(Kohana::config('default.default.NzbMatrix_api_key'));
 
-        //$series = $ep->getSeriesInfo();
         $results = $matrix->search($search, $series->matrix_cat);
 
-//        var_dump($search);
-//        var_dump($results);
-//        var_dump($ep->downloads->find_all());
-//        var_dump(NzbMatrix::catStr2num($results[0]['category']));
-//        var_dump($series->series_name);
-//        return;
 
         if (isset($results[0]['error'])) {
             if (preg_match('#^(.*)_(?P<num>\d{1,2})$#', $results[0]['error'], $matches)) {
@@ -44,11 +37,6 @@ class Controller_Download extends Controller_Xhtml {
             $parse = new NameParser($result['nzbname']);
             $parsed = $parse->parse();
             $isDownload = $sab->isDownloaded($result['nzbname']);
-
-//            var_dump($isDownload);
-//            var_dump($parsed);
-//            var_dump(strtolower(NzbMatrix::cat2string($series->matrix_cat)));
-//            var_dump(strtolower($result['category']));
 
 
             if ($isDownload) {
@@ -90,7 +78,6 @@ class Controller_Download extends Controller_Xhtml {
                 $d->found = $result['nzbname'];
                 $d->save();
 
-                //$this->request->redirect("episodes/$series->id/" . URL::query(array('msg' => "Download: " . $search)));
                 $this->request->redirect(URL::query(array('msg' => "Download: " . $search)));
             }
             
@@ -108,7 +95,6 @@ class Controller_Download extends Controller_Xhtml {
 
         $session = Session::instance();
         $results = $session->get('seachResults');
-//        $session->delete('seachResults');
 
         if (!$results) {
             $this->request->redirect(URL::query(array('msg' => "nothing found")));
@@ -130,10 +116,6 @@ class Controller_Download extends Controller_Xhtml {
     public function action_doDownload($id) {
         $session = Session::instance();
         $results = $session->get('seachResults');
-
-//        var_dump($results);
-//        var_dump(isset($results[$id]));
-//        return;
 
         if (!isset($results[$id])) {
             $this->request->redirect(URL::query(array('msg' => "nothing found")));

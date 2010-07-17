@@ -13,12 +13,7 @@ class Controller_Episodes extends Controller_Xhtml {
 
     public function before() {
         parent::before();
-//        $film = "avatar";
-//        $thumnet = new Thumnet();
-//        var_dump($thumnet->search($film));
-//        $title = 'tt0499549';
-//        var_dump($thumnet->getByTitle($title));
-        //I18n::lang('se-se');
+
     }
     public function after() {
         parent::after();
@@ -38,7 +33,6 @@ class Controller_Episodes extends Controller_Xhtml {
                 'items_per_page' => 15 // default 10
         ));
 
-        //var_dump(Request::$is_ajax);
 
         $name = $series->series_name;
         Head::instance()->set_title('Visa alla avsnitt från ' . $name);
@@ -51,10 +45,8 @@ class Controller_Episodes extends Controller_Xhtml {
         ->set('pagination', $pagination->render())
         ->set('banner', $series->banner)
         ->set('episodes', $series->episodes->where('season', '>', 0)->order_by('first_aired', 'desc')->limit($pagination->items_per_page)->offset($pagination->offset)->find_all())
-        //->set('episodes', $series->episodes->find_all())
         ->set('matrix_cat', NzbMatrix::cat2string($series->matrix_cat));
 
-        //var_dump($series->last_query());
         $this->request->response = $xhtml;
 
     }
@@ -184,11 +176,8 @@ class Controller_Episodes extends Controller_Xhtml {
         ->set('banner', $series->banner)
         ->set('epId', $epId)
         ->set('ep', ORM::factory('episode')->where('id', '=', $epId)->find())
-        //->set('ep', $series->episodes->where('id', '=', $epId)->find())
-        //->set('episodes', $series->episodes->find_all())
         ->set('matrix_cat', NzbMatrix::cat2string($series->matrix_cat));
 
-        //var_dump($series->last_query());
         $this->request->response = $xhtml;
     }
 
