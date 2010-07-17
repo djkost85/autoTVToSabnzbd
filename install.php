@@ -1,5 +1,35 @@
 <?php defined('SYSPATH') or exit('Install tests must be loaded from within index.php!');
 
+function getSabStatus($response) {
+    if (preg_match('@^HTTP/[0-9]\.[0-9] ([0-9]{3})@', $response, $matches)) {
+        return $matches[1];
+    }
+    return null;
+}
+
+function testSab($server) {
+    $server = preg_replace('#^http://#i', '', $server);
+    $fp = @fsockopen($server, 8080, $errno, $errstr, 30);
+
+    $page = "/sabnzbd";
+    $out = "GET /$page HTTP/1.1\r\n";
+    $out .= "Host: $server\r\n";
+    $out .= "Connection: Close\r\n\r\n";
+    @fwrite($fp,$out);
+
+    return (getSabStatus(@fgets($fp)) == 200);
+}
+
+function getWarnings($server, $apiKey) {
+    $query = "/sabnzbd/api?mode=warnings&output=json&apikey=$apiKey";
+    $filename = $server.$query;
+    $json = json_decode(file_get_contents($filename));
+    if (isset($json->status))
+        return $json->error;
+    else
+        return $json->warnings;
+}
+
 $loadedArr['isPHP_5_2_3'] = version_compare(PHP_VERSION, '5.2.3', '>=');
 $loadedArr['curlLoaded'] = extension_loaded('curl');
 $loadedArr['mcryptLoaded'] = extension_loaded('mcrypt');
@@ -51,6 +81,15 @@ if (filter_has_var(INPUT_GET, 'save')) {
     $db_selected = @mysql_select_db($get['db_dbname'], $link);
     if (!$db_selected) {
         $errorMsg[] = 'Can\'t use "'.$get['db_dbname'].'" as a database : ' . mysql_error();
+    }
+
+    if (!testSab($get['sab_url'])) {
+        $errorMsg[] = "Incorrect URL: {$get['sab_url']}";
+    }
+
+    $SabWarnings = getWarnings($get['sab_url'], $get['sab_api_key']);
+    if (is_string($SabWarnings)) {
+        $errorMsg[] = "SABnzbd error: $SabWarnings";
     }
 
     if (!in_array(false, $loadedArr, true) && !in_array(null, $get, true) && !in_array(false, $get, true) && empty($errorMsg)) {
@@ -134,7 +173,7 @@ return array
 		'profiling'    => TRUE,
 	),
 );";
- 
+
         file_put_contents('application/config/database.php', $config);
 
         $configSaved = true;
@@ -184,7 +223,7 @@ return array
                 var collapsNum = 5;
                 //hide message li after the 5th
                 $(".message_list li:gt("+collapsNum+")").hide();
-                
+
                 //toggle message_body
                 $(".message_head").click(function(){
 
@@ -233,7 +272,7 @@ return array
 
 
 
-                var required = ["sab_api_key", "matrix_api_key", "thetvdb_api_key", "rss_num_results", 
+                var required = ["sab_api_key", "matrix_api_key", "thetvdb_api_key", "rss_num_results",
                     "rss_how_old", "db_host", "db_user", /*"db_pass", */"db_dbname"];
                 // If using an ID other than #email or #error then replace it here
                 var url = $("#sab_url");
@@ -361,7 +400,7 @@ return array
                 margin-left: 15px;
                 float: right;
             }
-     
+
             .show_all_message {
                 background: url(images/tall-down-arrow.gif) no-repeat right center;
                 padding-right: 12px;
@@ -408,6 +447,13 @@ return array
                 background: url(images/arrow-square.gif) no-repeat 0 -54px;
             }
 
+            div.fail {
+                background: orange;
+                padding: 0.8em;
+                color: #fff;
+                font-size: 1.5em;
+            }
+
         </style>
 
     </head>
@@ -415,6 +461,12 @@ return array
         <?php if ($configSaved) { ?>
         <p id="results" class="pass">✔ Your environment passed all requirements.<br />
 			Remove or rename the <code>install<?php echo EXT ?></code> file now.</p>
+        <?php if (isset($SabWarnings) && is_array($SabWarnings) && !empty($SabWarnings)) { ?>
+        <p class="fail">SABnzbd errors:</p>
+        <ul class="fail">
+            <li><?php echo implode('</li><li>', $SabWarnings)?></li>
+        </ul>
+       <?php } ?>
         <?php } else { ?>
 
         <?php if (!empty($errorMsg)) { ?>

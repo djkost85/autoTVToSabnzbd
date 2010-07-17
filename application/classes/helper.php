@@ -1,14 +1,15 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 class Helper {
+
     /**
-    * Returns TRUE if the $filename is readable, or FALSE otherwise.
-    * This function uses the PHP include_path, where PHP's is_readable()
-    * does not.
-    *
-    * @param string   $filename
-    * @return boolean
-    */
+     * Returns TRUE if the $filename is readable, or FALSE otherwise.
+     * This function uses the PHP include_path, where PHP's is_readable()
+     * does not.
+     *
+     * @param string   $filename
+     * @return boolean
+     */
     public static function isReadable($filename) {
         if (!$fh = @fopen($filename, 'r', true)) {
             return false;
@@ -30,5 +31,4 @@ class Helper {
         return $return;
     }
 }
-
 ?>

@@ -1,12 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-function getStatusCode($response){
-    if (preg_match('@^HTTP/[0-9]\.[0-9] ([0-9]{3})@', $response, $matches)) {
-        return $matches[1];
-    }
-    return null;
-} 
-
 class Sabnzbd {
 
     protected $_apiKey = "";
@@ -17,9 +10,6 @@ class Sabnzbd {
     public function  __construct(array $options) {
         $this->_sabUrl = $options['url'] . '/sabnzbd/api';
         $this->_apiKey = $options['api_key'];
-        if (getStatusCode($this->send($this->_sabUrl . "?apikey=$this->_apiKey", array(CURLOPT_HEADER => true))) != 200) {
-            throw new RuntimeException('Url to SABNzbd is not ok. Returns header code ' . getStatusCode($this->send($this->_sabUrl, array(CURLOPT_HEADER => true))));
-        }
     }
 
     function sendNzb($url, $name) {
@@ -49,7 +39,7 @@ class Sabnzbd {
         if (isset($json->status) && !$json->status) {
             throw new RuntimeException($json->error);
         }
-        
+
         return $json->history;
     }
 
@@ -61,7 +51,7 @@ class Sabnzbd {
                 $mode = 'get_' . $mode;
                 $item = ($item == 'cats') ? 'categories' : $item;
             }
-            
+
             $query = array(
                 'mode' => $mode,
                 'output' => 'json',
