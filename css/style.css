@@ -177,6 +177,11 @@ a:active{
     float: none;
 }
 
+.list .title li em {
+    color:  steelblue;
+    font-size: small;
+}
+
 .list .text {
     padding-top: 10px;
     width: 360px;

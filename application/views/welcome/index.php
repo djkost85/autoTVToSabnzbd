@@ -45,6 +45,9 @@ foreach ($series as $ser) {
                             'class' => 'downloadable'
                             ));
                         ?>
+                    <?php if (strtotime(date('Y-m-d')) == strtotime($ser->first_aired)) { ?>
+                        <em><?php echo __('today') ?></em>
+                    <?php } ?>
                 </li>
                 <li>
                     <?php echo __('Next') . ': ' . $ser->next_episode?>

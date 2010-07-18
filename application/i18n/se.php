@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 return array(
-    /*Series Controller*/
+
     'Update' => 'Uppdatera',
     'Update all' => 'Uppdatera alla',
     'Edit' => 'Ändra',
@@ -63,6 +63,7 @@ return array(
     /*Welcome Controller*/
     'show all series' => 'Visa alla tv serier',
     'Add new series' => 'Lägg till en ny serie',
+    'today' => 'idag',
 
     /*Menu*/
     'Home' => 'Hem',
