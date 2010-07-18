@@ -318,50 +318,6 @@ img.select-banner {
 
 
 
-
-
-
-/*** progressBar ***/
-
-/*
-dl.progress {
-    padding: 1px;
-    border: 1px solid #ddd;
-    height: 20px;
-    width: 270px;
-}
-
-.progress dt {
-    width: 0;
-    height: 0;
-    overflow: hidden;
-}
-
-.progress .done,
-.progress .remain {
-    height: 100%;
-    float: left;
-}
-
-.progress .done {
-    background-color: #9DB029;
-}
-
-.progress .done {
-    width: 0%;
-}
-.progress .remain {
-    width: 0%;
-}
-
-.progress a {
-    display: block;
-    width: 100%;
-    height: 100%;
-    text-indent: -9000px;
-}
-*/
-
 .list li { position: relative; }
 
 .img em {

@@ -181,7 +181,7 @@ class Sabnzbd_Queue extends Sabnzbd {
         $sendTo = $this->_sabUrl . '?' . http_build_query($query);
         $json = json_decode($this->send($sendTo));
     }
-
+    
 }
 
 
