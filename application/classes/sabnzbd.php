@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php defined('SYSPATH') or die('No direct script access.'); 
 
 class Sabnzbd {
 
@@ -39,7 +39,7 @@ class Sabnzbd {
         if (isset($json->status) && !$json->status) {
             throw new RuntimeException($json->error);
         }
-
+        
         return $json->history;
     }
 
@@ -51,7 +51,7 @@ class Sabnzbd {
                 $mode = 'get_' . $mode;
                 $item = ($item == 'cats') ? 'categories' : $item;
             }
-
+            
             $query = array(
                 'mode' => $mode,
                 'output' => 'json',

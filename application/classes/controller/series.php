@@ -298,7 +298,7 @@ class Controller_Series extends Controller_Xhtml {
             $this->request->redirect(URL::query(array('msg' => 'Error: databas series error')));
         }
 		
-		Cache::instance('default')->delete('series');
+	Cache::instance('default')->delete('series');
         $this->request->redirect('' . URL::query(array('msg' => $series->series_name . ' ' . __('is updated'))));
     }
 

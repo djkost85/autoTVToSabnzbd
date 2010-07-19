@@ -2,22 +2,53 @@
 echo $menu;
 ?>
 
-<style>
-div {
+<style type="text/css">
+div.update-wrapper {
     width: 748px;
     padding-top: 20px;
     margin-right: auto;
-    margin-left: auto;     
+    margin-left: auto;
+}
+div.update-wrapper p {
+    margin-top: 10px;
+}
+div.update-wrapper ul {
+    margin-top: 5px;
+    margin-left: 35px;
 }
 </style>
-<div>
+<div class="update-wrapper">
     <p>Alla avsnitt som blir uppdaterade och är markerade som nerladdade, kommer inte längre vara markerade som nedladdade.</p>
     <p>Klicka <a href="<?php echo URL::site('update/doAll')?>" id="update">här</a> om du vill updatera alla serier.</p>
+    <p>Klicka <a href="<?php echo URL::site('rss/update')?>" id="update">här</a> om du vill updatera rss flödet.</p>
     <p>Denna åtgärd kan ta flera minuter.</p>
+    <p>Om du vill använda dig av crontab (<a href="http://en.wikipedia.org/wiki/Cron">för linux</a>) eller schemalagda aktiviteter (för windows). 
+        Kan du använda dessa länkar:</p>
+    <ul>
+        <li>Serier: "<?php echo URL::site('update/doAll', true)?>" (uppdatera en gång per vecka)</li>
+        <li>RSS: "<?php echo URL::site('rss/update', true)?>" (uppdatera varannan timme)</li>
+    </ul>
+    <p><a href="#">Klicka här</a> om du vill generera filerna som behövs.</p>
+    <div style="display: none">
+        <form method="get" action="#">
+            <p>
+                <label class="noFloting" for="uri_to_php">The path to php.exe (usually: "C:\wamp\bin\php\php5.3.0\php.exe")</label>
+                <input type="text" name="path_to_php" value="<?php echo $phpPath?>" size="45" />
+            </p>
+            <p>
+                <input type="submit" name="rss" value="Generate RSS file" />
+                <input type="submit" name="series" value="Generate Series file" />
+            </p>
+        </form>
+        <p>Vissa webläsare sätter .htm eller liknande som filändelse. Du måste ta bort det för att det ska fungera</p>
+    </div>
 </div>
 
 
 <script type="text/javascript">
+$('a[href="#"]').click(function () {
+    $('div[style]').toggle();
+})
 //$('<img src="' + baseUrl + '/images/move-spinner.gif" id="spinner" />').css('position','absolute').hide().appendTo('body');
 //$('#update').click(function () {
 //    var position = $(this).offset();

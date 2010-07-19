@@ -45,9 +45,35 @@ class Controller_Update extends Controller_Xhtml {
         Head::instance()->set_title(__('Update all series'));
         $menu = new View('menu');
 
+        $phpPath = (isset($_GET['path_to_php'])) ? $_GET['path_to_php'] : 'C:\wamp\bin\php\php5.3.0\php.exe';
+
+        $urlRss = "http://dev/autoTvToSab/rss/update";
+        $urlSeries = "http://dev/autoTvToSab/update/doAll";
+        $data = "<?php
+set_time_limit(0);
+
+\$filename = \"%s\";
+
+file_get_contents(\$filename);
+?>";
+        $cmdData = "%s -f %s";
+        $urlPhpRss = DOCROOT.'updateRss.php';
+        $urlPhpSeries = DOCROOT.'updateSeries.php';
+        if (isset($_GET['rss'])) {
+            file_put_contents(DOCROOT.'updateRss.php', sprintf($data, $urlRss));
+            file_put_contents(DOCROOT.'cmd/rssUpdate.cmd', sprintf($cmdData, $_GET['path_to_php'], $urlPhpRss));
+            forceDownload(DOCROOT.'cmd/rssUpdate.cmd');
+        }
+        if (isset($_GET['series'])) {
+            file_put_contents(DOCROOT.'updateSeries.php', sprintf($data, $urlSeries));
+            file_put_contents(DOCROOT.'cmd/seriesUpdate.cmd', sprintf($cmdData, $_GET['path_to_php'], $urlPhpSeries));
+            forceDownload(DOCROOT.'cmd/seriesUpdate.cmd');
+        }
+
         $xhtml = Xhtml::instance('update/i18n/' . I18n::lang());
         $xhtml->body->set('title', __('Update all series'))
-                ->set('menu', $menu);
+                ->set('menu', $menu)
+                ->set('phpPath', $phpPath);
 
         $this->request->response = $xhtml;
     }
@@ -63,9 +89,24 @@ class Controller_Update extends Controller_Xhtml {
         $this->request->response = __('Finished');
     }
 
-    public function action_ajax_doAll() {
-        $this->action_doAll();
+    public function action_prepareFile() {
+        
     }
 
+}
+
+function forceDownload($file) {
+    $file = realpath($file);
+    if (file_exists($file)) {
+        header("Content-type: application/force-download");
+        header('Content-Disposition: inline; filename="' . basename($file) . '"');
+        header("Content-length: " . filesize($file));
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+        header("Content-Transfer-Encoding: Binary");
+        readfile($file);
+    } else {
+        echo "No file selected";
+    }
 }
 ?>

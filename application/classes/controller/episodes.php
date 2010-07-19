@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-/*
+/* 
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
 */
@@ -22,7 +22,7 @@ class Controller_Episodes extends Controller_Xhtml {
         if (!is_numeric($id)) {
             $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
         }
-
+        
         $cacheName = "series_ep_id_$id";
 
         $series = Cache::instance('default')->get($cacheName);
@@ -84,7 +84,7 @@ class Controller_Episodes extends Controller_Xhtml {
                 } else {
                     $posterFile = "images/poster.png";
                 }
-
+                
                 $res = new stdClass;
                 $res->id = $ep->id;
                 $res->ep_id = $ep->ep_id;
@@ -99,14 +99,14 @@ class Controller_Episodes extends Controller_Xhtml {
                 $res->posterMsg = $posterMsg;
                 $epRes[] = $res;
             }
-
+            
             Cache::instance('default')->set($cacheName, $epRes);
             Cache::instance('default')->set($cacheName.'_pagination', $pagination->render());
 
         }
 
         $name = $series->series_name;
-        Head::instance()->set_title('Visa alla avsnitt från ' . $name);
+        Head::instance()->set_title($name);
 
         $xhtml = Xhtml::instance('episode/listAll');
         $xhtml->body->set('title', 'Home Page')
@@ -329,7 +329,7 @@ class Controller_Episodes extends Controller_Xhtml {
         if (!Request::$is_ajax) {
             return;
         }
-
+        
         $sorted = Model_SortFirstAired::getSeries();
 
         $modelEp = ORM::factory('episode');
@@ -373,7 +373,7 @@ class Controller_Episodes extends Controller_Xhtml {
             if ($series->series_name == $parsed['name']) {
                 $this->request->headers['Content-Type'] = 'text/json';
                 $this->request->response = json_encode(
-                    array(
+                    array( 
                         'text' => __('ready to download'),
                         'id' => $id
                         )
@@ -385,6 +385,25 @@ class Controller_Episodes extends Controller_Xhtml {
         $this->request->headers['Status'] = '404 Not Found';
     }
 
+    public function action_ajax_setMatrix($id) {
+        $ep = ORM::factory('episode', array('id' => $id));
+        $series = $ep->getSeriesInfo();
+        $series = ORM::factory('series', $series->id);
+        $series->matrix_cat = $_GET['cat'];
+        $series->save();
+
+        $this->request->response = NzbMatrix::cat2string($series->matrix_cat);
+    }
+    public function action_setMatrix($id) {
+        $ep = ORM::factory('episode', array('id' => $id));
+        $series = $ep->getSeriesInfo();
+        $series = ORM::factory('series', $series->id);
+        $series->matrix_cat = $_GET['cat'];
+        $series->save();
+
+        $this->request->response = NzbMatrix::cat2string($series->matrix_cat);
+    }
+    
     protected function delete($id, $epId) {
         if (!is_numeric($id) || !is_numeric($epId)) {
             $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
