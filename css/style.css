@@ -260,6 +260,13 @@ label {
     width: 175px;
 }
 
+label.noFloting {
+    float: none;
+    width: auto;
+    margin-right: 0;
+    display: block;
+}
+
 
 img.select-img, img.select-poster, img.select-fanart, img.select-banner {
     border: 1px solid #000;
