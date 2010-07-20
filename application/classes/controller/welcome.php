@@ -17,6 +17,11 @@ class Controller_Welcome extends Controller_Xhtml {
                 'items_per_page' => 15 // default 10
         ));
 
+//
+//
+//        $matrix = new NzbMatrix(Kohana::config('default.default.NzbMatrix_api_key'));
+//        var_dump($matrix->search('Top Gear 15x04', 41));
+
 
         Head::instance()->set_title('Visa alla serier');
         $menu = new View('menu');

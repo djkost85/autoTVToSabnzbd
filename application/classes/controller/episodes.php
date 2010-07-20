@@ -384,25 +384,6 @@ class Controller_Episodes extends Controller_Xhtml {
 
         $this->request->headers['Status'] = '404 Not Found';
     }
-
-    public function action_ajax_setMatrix($id) {
-        $ep = ORM::factory('episode', array('id' => $id));
-        $series = $ep->getSeriesInfo();
-        $series = ORM::factory('series', $series->id);
-        $series->matrix_cat = $_GET['cat'];
-        $series->save();
-
-        $this->request->response = NzbMatrix::cat2string($series->matrix_cat);
-    }
-    public function action_setMatrix($id) {
-        $ep = ORM::factory('episode', array('id' => $id));
-        $series = $ep->getSeriesInfo();
-        $series = ORM::factory('series', $series->id);
-        $series->matrix_cat = $_GET['cat'];
-        $series->save();
-
-        $this->request->response = NzbMatrix::cat2string($series->matrix_cat);
-    }
     
     protected function delete($id, $epId) {
         if (!is_numeric($id) || !is_numeric($epId)) {

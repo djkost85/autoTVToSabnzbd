@@ -57,7 +57,7 @@ class Controller_Rss extends Controller {
         $matrix = new NzbMatrix_Rss($config->default['NzbMatrix_api_key']);
         $series = Model_SortFirstAired::getSeries();
 
-        echo '<pre>';
+//        echo '<pre>';
         
         $i = 0;
         $secToSleep = 10;
@@ -88,15 +88,24 @@ class Controller_Rss extends Controller {
                             $search = sprintf('%s %02dx%02d', $ep->series_name, $ep->season, $ep->episode);
                         }
 
-                        sleep($secToSleep);
+                        sleep($secToSleep + 3);
                         $result = $matrix->search($search, $ep->matrix_cat);
                         $time = time();
+
+//                        echo("/******** New Search *********/ \n");
+//                        var_dump($search);
+
                         if (isset($result[0]['error'])) {
+
+//                            echo("/******** ERROR *********/ \n");
+//                            var_dump($result[0]['error']);
+//                            echo("/******** END ERROR Continue!!!! *********/ \n");
+                            
                             continue;
                         }
                     }
                     
-                    $this->handleResult($search, $result, $ep->matrix_cat, $i);
+                    $this->handleResult($search, $result, $ep, $i);
                     if ($i >= $config->rss['numberOfResults']) {
                         break;
                     }
@@ -105,7 +114,7 @@ class Controller_Rss extends Controller {
                     $seconds = $secToSleep;
                     sleep($seconds);
 
-//                    echo("/******** Search END *********/ \n");
+                    echo("/******** Search END *********/ \n");
                 }
             }
         }
@@ -115,7 +124,7 @@ class Controller_Rss extends Controller {
         $this->request->response = __('Updated');
     }
     
-    protected function handleResult($search, $result, $matrixCat, &$i) {
+    protected function handleResult($search, $result, $ep, &$i) {
         foreach ($result as $res) {
             $rss = ORM::factory('rss');
 
@@ -124,13 +133,20 @@ class Controller_Rss extends Controller {
 
 //            echo("/******** In Result Loop *********/ \n");
 //            var_dump($res);
-//            var_dump(strtolower(sprintf('%s S%02dE%02d', $parsed['name'], $parsed['season'], $parsed['episode'])) == strtolower($search));
-//            var_dump(strtolower(sprintf('%s S%02dE%02d', $parsed['name'], $parsed['season'], $parsed['episode'])));
+////            var_dump(strtolower(sprintf('%s S%02dE%02d', $parsed['name'], $parsed['season'], $parsed['episode'])) == strtolower($search));
+////            var_dump(strtolower(sprintf('%s S%02dE%02d', $parsed['name'], $parsed['season'], $parsed['episode'])));
+//            var_dump(sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
+//                    sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode));
+//            var_dump(strtolower($parsed['name']) == strtolower($ep->series_name));
+//
 //            var_dump(strtolower($search));
 //            echo("/******** Loop END *********/ \n");
 
-            if (strtolower(sprintf('%s S%02dE%02d', $parsed['name'], $parsed['season'], $parsed['episode'])) == strtolower($search) &&
-                $matrixCat == NzbMatrix::catStr2num($res['category'])) {
+//            if (strtolower(sprintf('%s S%02dE%02d', $parsed['name'], $parsed['season'], $parsed['episode'])) == strtolower($search) &&
+            if (sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
+                sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
+                strtolower($parsed['name']) == strtolower($ep->series_name) &&
+                $ep->matrix_cat == NzbMatrix::catStr2num($res['category'])) {
                 if (!$rss->alreadySaved($search)) {
                     $rss->title = $res['nzbname'];
                     $rss->guid = 'http://nzbmatrix.com/' . $res['link'];

@@ -30,11 +30,10 @@
 
 (function($){
     $.fn.extend({
-        sabProgress: function(value, options) {
+        progress: function(value, options) {
             var defaults = {
-                selectorValue: ".meter-wrap .meter-value",
-                selectorText: ".meter-wrap .meter-text",
-                                text: false
+                selectorValue: "div",
+                text: false
             };
 
             var settings = $.extend({}, defaults, options);
@@ -49,8 +48,7 @@
                 if (settings.text) {
                     text = settings.text;
                 }
-                element.find(settings.selectorValue).css({ width: value + "%" });
-                element.find(settings.selectorText).text(text);
+                element.find(settings.selectorValue).css({ width: value + "%" }).text(text);
 
             });
         }
@@ -90,7 +88,8 @@ jQuery(document).ready(function($) {
 
     var refreshBar = setInterval(function() {
         $.getJSON(baseUrl + 'queue/getProcent', function (data) {
-            $("#total-percentage").sabProgress(data.total_percent, { text: data.total_text });
+            $("#total-percentage").text(data.total_text);
+            $("div.progress-container.total").progress(data.total_percent);
             $('#speed').text(data.speed);
             $('#temp_disk').text(data.temp_disk);
             $('#comp_disk').text(data.comp_disk);

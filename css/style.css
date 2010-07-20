@@ -182,6 +182,10 @@ a:active{
     font-size: small;
 }
 
+.list .matrix-cat {
+    cursor: pointer;
+}
+
 .list .text {
     padding-top: 10px;
     width: 360px;

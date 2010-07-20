@@ -16,8 +16,8 @@
                 <select id="cat" name="cat">
                     <option value="tv-all" style="font-weight: bold;">TV: ALL</option>
                     <option value="5">TV: DVD</option>
-                    <option value="6" selected>TV: Divx/Xvid</option>
-                    <option value="41">TV: HD</option>
+                    <option value="6">TV: Divx/Xvid</option>
+                    <option value="41" selected>TV: HD</option>
                     <option value="7">TV: Sport/Event</option>
                     <option value="8">TV: Other</option>
                     <option value="movies-all" style="font-weight: bold;">Movies: ALL</option>

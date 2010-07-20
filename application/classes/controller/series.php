@@ -402,7 +402,7 @@ class Controller_Series extends Controller_Xhtml {
 
 
         $series->delete();
-		Cache::instance('default')->delete('series');
+	Cache::instance('default')->delete('series');
         $this->request->redirect('' . URL::query(array('msg' => $name . ' ' . __('is deleted'))));
     }
 
@@ -567,6 +567,15 @@ class Controller_Series extends Controller_Xhtml {
             if (filemtime($filename) < (time() - Kohana::config('default.default.cacheTimeImages')))
                 unlink($filename);
         }
+    }
+
+    public function action_ajax_setMatrix($id) {
+        $series = ORM::factory('series', $id);
+        $series->matrix_cat = $_GET['cat'];
+        $series->save();
+
+        Cache::instance('default')->delete('series');
+        $this->request->response = NzbMatrix::cat2string($series->matrix_cat);
     }
 }
 ?>

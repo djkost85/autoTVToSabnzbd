@@ -52,6 +52,9 @@ foreach ($series as $ser) {
                 <li>
                     <?php echo __('Next') . ': ' . $ser->next_episode?>
                 </li>
+                <li class="matrix-cat" id="<?php echo $ser->id;?>">
+                    <?php echo NzbMatrix::cat2string($ser->matrix_cat)?>
+                </li>
                 <li>
                     <?php echo HTML::anchor("series/update/$ser->id", $update)?>
                 </li>
@@ -77,6 +80,50 @@ foreach ($series as $ser) {
 <script type="text/javascript">
 $('.ajaxTooltip').tooltip({rounded: true});
 
+
+$('<img src="' + baseUrl + '/images/move-spinner.gif" id="spinner" />').css('position','absolute').hide().appendTo('body');
+$('.matrix-cat').click(function () {
+    var element = $(this);
+    if (element.hasClass('doNoEdit')) return this;
+    var oldText = jQuery.trim(element.text());
+    element.text('');
+    element.addClass('doNoEdit');
+    
+    var select = $('<select name="edit" id="edit"></select>');
+    select.append((oldText != 'TV > All') ? $('<option value="tv-all">TV: ALL</option>') : $('<option value="tv-all" selected>TV: ALL</option>'));
+    select.append((oldText != 'TV > DVD') ? $('<option value="5">TV: DVD</option>') : $('<option value="5" selected>TV: DVD</option>'));
+    select.append((oldText != 'TV > Divx/Xvid') ? $('<option value="6">TV: Divx/Xvid</option>') : $('<option value="6" selected>TV: Divx/Xvid</option>'));
+    select.append((oldText != 'TV > HD') ? $('<option value="41">TV: HD</option>') : $('<option value="41" selected>TV: HD</option>'));
+    select.append((oldText != 'TV > Sport/Event') ? $('<option value="7">TV: Sport/Event</option>') : $('<option value="7" selected>TV: Sport/Event</option>'));
+    select.append((oldText != 'TV > Other') ? $('<option value="8">TV: Other</option>') : $('<option value="8" selected>TV: Other</option>'));
+
+    var form = $('<form action="#" method="get"></form>')
+    form.append(select);
+
+    var button = $('<input type="button" value="Ok" />').click(function () {
+        var position = $(this).offset();
+        $('#spinner').css({ top: position.top , left: position.left + $(this).width() + 30 }).fadeIn();
+        var value = select.val();
+        if (value == "select") return false;
+        $.get(baseUrl + 'series/setMatrix/' + element.attr('id'), { cat: value }, function(data) {
+            $('#spinner').fadeOut();
+            form.remove();
+            element.removeClass('doNoEdit');
+            element.text(data);
+        });
+    });
+    form.append(button);
+
+    var cancel = $('<input type="button" value="Cancel" />').click(function () {
+        form.remove();
+//        element.removeClass('doNoEdit');
+        element.text(oldText);
+    });
+    form.append(cancel);
+    element.html(form);
+
+    return this;
+});
 </script>
 
 <?php echo $pagination; ?>
