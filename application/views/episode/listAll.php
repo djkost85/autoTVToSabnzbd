@@ -49,3 +49,15 @@ foreach ($episodes as $ep) {
 
 echo $pagination;
 ?>
+
+<script type="text/javascript">
+$('<div id="slow-page-sign" />').css('position', 'absolute').hide().appendTo('body');
+$('.pagination').click(function () {
+    var position = $(this).offset();
+    setTimeout(function() {
+        $('#slow-page-sign').css({ top: position.top - $(this).height() - $('#slow-page-sign').height() , left: position.left, background: '#fff' }).
+            fadeIn().html('<?php echo __('slow-page')?>');
+    }, 2000);
+});
+</script>
+
