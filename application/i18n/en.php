@@ -15,5 +15,5 @@ return array(
     'nothing_found' => 'No Results Found.',
 
     'slow-page' => 'I know the page is slow. But it is only slow the first time',
-    'add-slow-page' => 'I`m downloading pictures right now. That is why I bit dull',
+    'add-slow-page' => 'I´m downloading pictures right now. That is why I´m slow',
 );
