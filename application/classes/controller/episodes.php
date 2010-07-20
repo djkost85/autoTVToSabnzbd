@@ -107,7 +107,6 @@ class Controller_Episodes extends Controller_Xhtml {
 
         $name = $series->series_name;
         Head::instance()->set_title($name);
-
         $xhtml = Xhtml::instance('episode/listAll');
         $xhtml->body->set('title', 'Home Page')
         ->set('menu', new View('menu'))

@@ -77,9 +77,13 @@ function getImages(search) {
 }
 
 
+$('<div id="slow-page-sign" />').css('position', 'absolute').hide().appendTo('body');
 $('input[type="submit"]').click(function () {
     $(this).attr("disabled", true);
     $(this).val('<?php echo __('Wait')?>...');
+    var position = $(this).offset();
+    $('#slow-page-sign').css({ top: position.top - $(this).height() - $('#slow-page-sign').height() , left: position.left, background: '#fff' }).
+        fadeIn().html('<?php echo __('add-slow-page')?>');
 });
 </script>
 

@@ -67,21 +67,22 @@ class Controller_Series extends Controller_Xhtml {
         }
 
         $poster = new Posters();
-        $i = 1;
+//        $i = 1;
         foreach ($info->Episode as $ep) {
-            if (!empty($ep->filename) && $i <= 5) {
-                $i++;
-                $path = "images/episode/";
-                $image = $posterFile = 'http://thetvdb.com/banners/' . (string) $ep->filename;
-                $newPosterName = $poster->ifFileExist(basename($image), $path);
-                if ($newPosterName) {
-                    $posterFile = $path . $newPosterName;
-                    if (!file_exists($posterFile))
-                    $poster->saveImage($image, $posterFile);
-                }
-            } else {
+//            if (!empty($ep->filename) && $i <= 1) {
+//                $i++;
+//                $path = "images/episode/";
+//                $image = $posterFile = 'http://thetvdb.com/banners/' . (string) $ep->filename;
+//                $newPosterName = $poster->ifFileExist(basename($image), $path);
+//                if ($newPosterName) {
+//                    $posterFile = $path . $newPosterName;
+//                    if (!file_exists($posterFile))
+//                    $poster->saveImage($image, $posterFile);
+//                }
+//            } else {
                 $posterFile = 'http://thetvdb.com/banners/' . (string) $ep->filename;
-            }
+//            }
+
 
             $first_aired = (string) $ep->FirstAired;
 

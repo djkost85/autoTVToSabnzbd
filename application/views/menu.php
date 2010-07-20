@@ -8,8 +8,8 @@
     <li><?php echo HTML::anchor('update/all', __('Update all'))?></li>
     <li><?php echo HTML::image('images/flags/'.I18n::lang().'.png', array('alt' => 'Current language icon'))?>
         <ul>
-            <li><?php echo HTML::anchor(URL::query(array('lang' => 'se-sv')), HTML::image('images/flags/se-sv.png', array('alt' => 'Language icon')))?></li>
-            <li><?php echo HTML::anchor(URL::query(array('lang' => 'en-us')), HTML::image('images/flags/en-us.png', array('alt' => 'Language icon')))?></li>
+            <li><?php echo HTML::anchor(URL::query(array('lang' => 'se')), HTML::image('images/flags/se-sv.png', array('alt' => 'Language icon')))?></li>
+            <li><?php echo HTML::anchor(URL::query(array('lang' => 'en')), HTML::image('images/flags/en-us.png', array('alt' => 'Language icon')))?></li>
         </ul>
     </li>
 </ul>

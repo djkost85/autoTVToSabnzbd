@@ -60,6 +60,9 @@ return array(
     'Left' => 'Kvar',
     'Age' => 'Ålder',
 
+    'slow-page' => 'Ja ja sida <b>är</b> slö jag vet!!! Men lungn bara, den är bara det när den laddar ner bilder. <br />Vilket den bara gör första gången du besöker just den här sidan',
+    'add-slow-page' => 'Jag laddar ner bilder just nu, därför är jag lite seg',
+
     /*Welcome Controller*/
     'show all series' => 'Visa alla tv serier',
     'Add new series' => 'Lägg till en ny serie',
