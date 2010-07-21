@@ -32,7 +32,7 @@ class Queue_Downloads {
 
     public function execute() {
         $sab = new Sabnzbd(Kohana::config('default.Sabnzbd'));
-        $matrix = new NzbMatrix(Kohana::config('default.default.NzbMatrix_api_key'));
+        $matrix = new NzbMatrix(Kohana::config('default.default'));
         foreach ($this->_items as $nzbid => $name) {
             $sab->sendNzb($matrix->buildDownloadUrl($nzbid), $name);
         }

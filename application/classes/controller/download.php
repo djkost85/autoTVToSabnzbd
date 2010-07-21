@@ -18,7 +18,7 @@ class Controller_Download extends Controller_Xhtml {
         $series = $ep->getSeriesInfo();
         $search = sprintf('%s S%02dE%02d', $series->series_name, $ep->season, $ep->episode);
 
-        $matrix = new NzbMatrix(Kohana::config('default.default.NzbMatrix_api_key'));
+        $matrix = new NzbMatrix(Kohana::config('default.default'));
 
         $results = $matrix->search($search, $series->matrix_cat);
 
@@ -129,7 +129,7 @@ class Controller_Download extends Controller_Xhtml {
 
         $config = Kohana::config('default.default');
         $sab = new Sabnzbd(Kohana::config('default.Sabnzbd'));
-        $matrix = new NzbMatrix($config['NzbMatrix_api_key']);
+        $matrix = new NzbMatrix($config);
         $sab->sendNzb($matrix->buildDownloadUrl($id), $name);
 
         $d = ORM::factory('download');

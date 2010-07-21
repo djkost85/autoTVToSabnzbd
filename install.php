@@ -59,6 +59,7 @@ if (filter_has_var(INPUT_GET, 'save')) {
     $defs = array(
         'series_autocomplete'  => FILTER_SANITIZE_STRING,
         'matrix_api_key'    => FILTER_SANITIZE_STRING,
+        'matrix_api_user'    => FILTER_SANITIZE_STRING,
         'thetvdb_api_key'   => FILTER_SANITIZE_STRING,
         'sab_api_key'       => FILTER_SANITIZE_STRING,
         'rss_how_old'       => array('filter'=>FILTER_SANITIZE_STRING,
@@ -103,6 +104,7 @@ return array(
         'cacheTimeImages' => (3600 * 3),
         'TheTvDB_api_key' => '{$get['thetvdb_api_key']}',
         'NzbMatrix_api_key' => '{$get['matrix_api_key']}',
+        'NzbMatrix_api_user' => '{$get['matrix_api_user']}',
     ),
 
     'Sabnzbd' => array(
@@ -523,6 +525,10 @@ return array
                     <div>
                         <label for="matrix_api_key">NZB Matrix api key</label>
                         <input type="text" name="matrix_api_key" id="matrix_api_key" size="35" value="<?php if (isset($get['matrix_api_key'])) echo $get['matrix_api_key'] ?>" class="<?php if (!isset($get['matrix_api_key'])) echo 'needsfilled'?>" />
+                    </div>
+                    <div>
+                        <label for="matrix_api_user">NZB Matrix username</label>
+                        <input type="text" name="matrix_api_user" id="matrix_api_user" size="35" value="<?php if (isset($get['matrix_api_user'])) echo $get['matrix_api_user'] ?>" class="<?php if (!isset($get['matrix_api_user'])) echo 'needsfilled'?>" />
                     </div>
                     <div>
                         If you dont have an VIP account on Nzbmatrix.com

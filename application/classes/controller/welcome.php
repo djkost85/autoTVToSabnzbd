@@ -19,10 +19,10 @@ class Controller_Welcome extends Controller_Xhtml {
 
 //
 //
-//        $matrix = new NzbMatrix(Kohana::config('default.default.NzbMatrix_api_key'));
+//        $matrix = new NzbMatrix(Kohana::config('default.default'));
 //        var_dump($matrix->search('Top Gear 15x04', 41));
 
-
+        
         Head::instance()->set_title('Visa alla serier');
         $menu = new View('menu');
 

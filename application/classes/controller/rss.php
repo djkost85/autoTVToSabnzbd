@@ -52,9 +52,9 @@ class Controller_Rss extends Controller {
         }
         set_time_limit(0);
 
-        $rss->truncate();
+//        $rss->truncate();
 
-        $matrix = new NzbMatrix_Rss($config->default['NzbMatrix_api_key']);
+        $matrix = new NzbMatrix_Rss($config->default);
         $series = Model_SortFirstAired::getSeries();
 
 //        echo '<pre>';
@@ -114,12 +114,17 @@ class Controller_Rss extends Controller {
                     $seconds = $secToSleep;
                     sleep($seconds);
 
-                    echo("/******** Search END *********/ \n");
+//                    echo("/******** Search END *********/ \n");
                 }
             }
         }
-
+        
         Cache::instance('default')->delete('series');
+
+        if ($rss->count_all() <= $config->rss['numberOfResults']) {
+            $this->request->redirect('nzbindex/fillRss');
+            exit;
+        }
 
         $this->request->response = __('Updated');
     }
@@ -204,7 +209,7 @@ class Controller_Rss extends Controller {
      public function action_update() {
         $config = Kohana::config('default');
 
-        $matrix = new NzbMatrix_Rss($config->default['NzbMatrix_api_key']);
+        $matrix = new NzbMatrix_Rss($config->default);
 
         $series = Model_SortFirstAired::getSeries();
         $rss = ORM::factory('rss');

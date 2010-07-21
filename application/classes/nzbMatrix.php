@@ -6,9 +6,11 @@ class NzbMatrix extends Tv_Info {
     protected $downloadUrl = "http://nzbmatrix.com/api-nzb-download.php";
     protected $detailsUrl = "http://nzbmatrix.com/api-nzb-details.php";
     private $_apiKey = '';
+    private $_apiUser = '';
 
-    public function  __construct($apiKey) {
-        $this->_apiKey = $apiKey;
+    public function  __construct($options) {
+        $this->_apiKey = $options['NzbMatrix_api_key'];
+        $this->_aapiUser = $options['NzbMatrix_api_user'];
     }
 
     public function search($search, $catId = "6") {
@@ -19,7 +21,7 @@ class NzbMatrix extends Tv_Info {
                 'age' => '',
                 'region' => '',
                 'group' => '',
-                'username' => 'morre95',
+                'username' => $this->_apiUser,
                 'apikey' => $this->_apiKey,
         );
 
@@ -102,6 +104,35 @@ class NzbMatrix extends Tv_Info {
                 return $key;
             }
         }
+    }
+
+    public static function determinCat($title) {
+        $hdArr = array(
+            '720p',
+            '1080p',
+            '1080i',
+            'x264',
+            'mkv',
+        );
+
+        foreach ($hdArr as $hd) {
+            if (strpos($title, $hd)) {
+                return 41;
+            }
+        }
+
+        $divxArr = array(
+            'divx',
+            'xvid',
+        );
+
+        foreach ($divxArr as $divx) {
+            if (strpos($title, $divx)) {
+                return 6;
+            }
+        }
+
+        return null;
     }
     
 }
