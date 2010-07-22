@@ -199,6 +199,12 @@ $(document).ready(function() {
 (function ($) {
     $(document).ready(function() {
         $(document).keypress(function (e) {
+            $(".pagination a").filter(function() {
+                if ($(this).text() == "Next") {
+//                    alert($(this).attr("href"));
+                }
+            });
+
             if (37 == e.keyCode && $("#previous").attr("href")) {
                 window.location = $("#previous").attr("href");
             }

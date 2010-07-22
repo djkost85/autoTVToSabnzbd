@@ -50,7 +50,7 @@ a:active{
 
 #nav {
     list-style-type: none;
-    width: 756px ;
+    width: 758px ;
     margin-right: auto;
     margin-left: auto;
     padding-top: 20px;
@@ -63,6 +63,7 @@ a:active{
 }
 
 
+/*
 #nav li ul { display: none; }
 
 #nav li ul a { padding-left: 4px; }
@@ -82,6 +83,8 @@ a:active{
     top: -5px;
     left: 20px;
 }
+*/
+
 
 .page-title {
     /*width: 700px ;*/
@@ -352,6 +355,25 @@ img.select-banner {
 	left: 9px;
 	background: url(../images/paper-clip-mini.png) no-repeat;
 	z-index: 3;
+}
+
+#footer {
+    width: 758px;
+    margin-right: auto;
+    margin-left: auto;
+    height: 70px;
+}
+
+#footer ul {
+    list-style-type: none;
+}
+
+#footer ul li {
+    display: inline;
+}
+
+#footer ul li img {
+    border: none;
 }
 
 
