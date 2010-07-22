@@ -5,7 +5,6 @@
  */
 //var_dump($results);
 ?>
-<?php echo $menu?>
 <h1 class="page-title episodes-title">
     <?php echo HTML::anchor("", HTML::image('index.php/' . $series->banner, array('alt' => "Banner for $series->series_name")))?>
 </h1>

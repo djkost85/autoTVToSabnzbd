@@ -73,14 +73,14 @@ Kohana::$config->attach(new Kohana_Config_File);
 
 //I18n::lang('se-se');
 // Define the approved languages
-$languages = array('en', 'se');
+$languages = array('en', 'se', 'no', 'da', 'fi', 'fr', 'ge');
 $session = Session::instance();
 
 // Look for a requested change in language
 if(isset($_GET['lang']) && in_array($_GET['lang'], $languages)) {
     $session->set('lang', $_GET['lang']);
 }
-$session->set('lang', 'en');
+
 I18n::lang($session->get('lang', 'en'));
 
 

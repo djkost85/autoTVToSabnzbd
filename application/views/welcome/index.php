@@ -1,5 +1,4 @@
 <?php defined('SYSPATH') or die('No direct script access.'); ?>
-<?php echo $menu?>
 <!--<h1 class="page-title"><?php echo HTML::anchor("", $title); ?></h1>-->
 <?php if (empty($series)) { ?>
     <h1 class="page-title"><?php echo $noSeries?></h1>
@@ -23,7 +22,7 @@ foreach ($series as $ser) {
     $paperClip = "";
     if ($i <= 10 && $rss->inFeed(sprintf("%s S%02dE%02d", $ser->series_name, $ser->season, $ser->episode))) {
         $i++;
-        $paperClip = "<span></span><em>In RSS</em>";
+        $paperClip = "<span></span><em>".__('In RSS')."</em>";
     }
     ?>
     <ul class="list">

@@ -100,11 +100,9 @@ class Controller_Download extends Controller_Xhtml {
         }
 
         Head::instance()->set_title(__('Click to download') . '?');
-        $menu = new View('menu');
 
         $xhtml = Xhtml::instance('download/no_match');
         $xhtml->body->set('title', __('Click to download'))
-                ->set('menu', $menu)
                 ->set('results', $results)
                 ->set('series', $series)
                 ->set('ep', $ep);
@@ -152,11 +150,9 @@ class Controller_Download extends Controller_Xhtml {
         $history = $sab->getHistory();
 
         Head::instance()->set_title('Visa alla nerladdningar');
-        $menu = new View('menu');
         $xhtml = Xhtml::instance('download/listAll');
 
-        $xhtml->body->set('menu', $menu)
-                ->set('history', $history);
+        $xhtml->body->set('history', $history);
 
         $this->request->response = $xhtml;
     }

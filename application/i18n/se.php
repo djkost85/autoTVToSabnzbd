@@ -67,6 +67,7 @@ return array(
     'show all series' => 'Visa alla tv serier',
     'Add new series' => 'Lägg till en ny serie',
     'today' => 'idag',
+    'In RSS' => 'I RSS',
 
     /*Menu*/
     'Home' => 'Hem',

@@ -1,5 +1,4 @@
 <?php defined('SYSPATH') or die('No direct script access.'); ?>
-<?php echo $menu?>
 
 <div id="add-contents">
     <form action="<?php echo $url?>" method="post">

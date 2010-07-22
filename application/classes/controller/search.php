@@ -13,11 +13,9 @@ class Controller_Search extends Controller_Xhtml {
 
     public function action_index() {
         Head::instance()->set_title(__('Search'));
-        $menu = new View('menu');
 
         $xhtml = Xhtml::instance('search/index');
-        $xhtml->body->set('title', __('Search'))
-                ->set('menu', $menu);
+        $xhtml->body->set('title', __('Search'));
 
         $this->request->response = $xhtml;
     }
@@ -32,11 +30,9 @@ class Controller_Search extends Controller_Xhtml {
 
         if ($result->count() > 1) {
             Head::instance()->set_title(__('Search'));
-            $menu = new View('menu');
 
             $xhtml = Xhtml::instance('search/index');
             $xhtml->body->set('title', __('Search'))
-                        ->set('menu', $menu)
                         ->set('results', $result->as_array());
 
             $this->request->response = $xhtml;

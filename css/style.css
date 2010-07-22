@@ -83,14 +83,13 @@ a:active{
     left: 20px;
 }
 
-
-
 .page-title {
     /*width: 700px ;*/
-    width: 748px;
+    width: 758px;
     padding: 20px;
     margin-right: auto;
     margin-left: auto;
+    position: relative;
 }
 
 .episodes-title {

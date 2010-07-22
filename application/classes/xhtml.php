@@ -219,15 +219,17 @@ class Xhtml {
 		Request::instance()->headers['Content-Type'] = $this->contenttype.'; charset='.$this->charset;
 		$html = $this->xhtml_doctype;
 		$html .= '<html'.Html::attributes($this->htmlatts_all).'>';
-		$html .= Head::instance();
+		$html .= Head::instance()->__toString();
+                $html .= '<body>'.View::factory('menu')->__toString();
 
                 if (Kohana_Core::$environment == Kohana_Core::DEVELOPMENT || Kohana_Core::$environment == Kohana_Core::TESTING) {
-                    $html .= "<body>$this->body<div id=\"kohana-profiler\">".View::factory('profiler/stats')."</div></body>";
+                    $html .= $this->body.'<div id="kohana-profiler">'.View::factory('profiler/stats')->__toString().'</div></body>';
                 } else {
-                    $html .= '<body>'.$this->body.'</body>';
+                    $html .= $this->body.'</body>';
                 }
 
 
+		$html .= View::factory('footer')->__toString();
 		$html .= '</html>';
 		
 		// Tidy

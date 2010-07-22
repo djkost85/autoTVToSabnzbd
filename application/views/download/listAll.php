@@ -1,5 +1,4 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-echo $menu;
 //var_dump($history);
 ?>
 

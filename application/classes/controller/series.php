@@ -20,7 +20,6 @@ class Controller_Series extends Controller_Xhtml {
 
     public function action_add() {
         Head::instance()->set_title(__('Add new series'));
-        $menu = new View('menu');
 
         Head::$scripts['jquery autocomplete js'] = 'js/jquery.autocomplete.pack.js';
         Head::$styles['jquery autocomplete css'] = 'css/jquery.autocomplete.css';
@@ -31,7 +30,6 @@ class Controller_Series extends Controller_Xhtml {
 
         $xhtml = Xhtml::instance('series/add');
         $xhtml->body->set('title', __('Add new series'))
-                ->set('menu', $menu)
                 ->set('languages', ORM::factory('language')->find_all());
 
         $this->request->response = $xhtml;
@@ -123,8 +121,6 @@ class Controller_Series extends Controller_Xhtml {
             $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
         }
 
-        $menu = new View('menu');
-
         $series = ORM::factory('series', $id);
 
         Head::instance()->set_title(__('update') . ' ' . $series->series_name);
@@ -133,8 +129,7 @@ class Controller_Series extends Controller_Xhtml {
         $xhtml->body->set('title', __('update') . ' ' . $series->series_name)
                 ->set('series', $series)
                 ->set('url', URL::site('series/doUpdate/' . $id))
-                ->set('banners', array())
-                ->set('menu', $menu);
+                ->set('banners', array());
 
         $this->request->response = $xhtml;
     }
@@ -244,8 +239,6 @@ class Controller_Series extends Controller_Xhtml {
             $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
         }
 
-        $menu = new View('menu');
-
         $series = ORM::factory('series', $id);
 
         $bannerArray = $this->getBanners($series->series_name);
@@ -256,8 +249,7 @@ class Controller_Series extends Controller_Xhtml {
         $xhtml->body->set('title', __('edit') . ' ' . $series->series_name)
                 ->set('series', $series)
                 ->set('url', URL::site('series/doEdit/' . $id))
-                ->set('banners', $bannerArray)
-                ->set('menu', $menu);
+                ->set('banners', $bannerArray);
 
         $this->request->response = $xhtml;
     }

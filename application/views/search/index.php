@@ -1,5 +1,4 @@
 <?php defined('SYSPATH') or die('No direct script access.'); ?>
-<?php echo $menu?>
 
 <div id="add-contents" class="search">
     <p class="msg"><?php if (isset($_GET['msg'])) echo HTML::entities($_GET['msg'])?></p>

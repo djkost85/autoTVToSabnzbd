@@ -24,12 +24,10 @@ class Controller_Welcome extends Controller_Xhtml {
 
         
         Head::instance()->set_title('Visa alla serier');
-        $menu = new View('menu');
 
         $xhtml = Xhtml::instance('welcome/index');
         $xhtml->body->set('title', 'Visa alla tv serier')
                 ->set('noSeries', __('No series'))
-                ->set('menu', $menu)
                 ->set('imdb', Kohana::config('default.imdb'))
                 ->set('pagination', $pagination->render())
                 ->set('update', __('Update all'))

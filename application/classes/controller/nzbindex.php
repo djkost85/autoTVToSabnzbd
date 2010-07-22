@@ -52,8 +52,8 @@ class Controller_Nzbindex extends Controller {
                 if (!$rss->alreadySaved($search)) {
                     $xml = $nzb->search($search);
 
-                    echo "******* Search Name ******** <br />";
-                    var_dump($search);
+//                    echo "******* Search Name ******** <br />";
+//                    var_dump($search);
 
                     $this->handleResults($search, $xml, $ep);
                     sleep(10);
@@ -65,28 +65,53 @@ class Controller_Nzbindex extends Controller {
     }
 
     protected function handleResults($search, $xml, $ep) {
+        foreach($xml->channel->item as $item) {
+            $rss = ORM::factory('rss');
+            $parse = new NameParser_Nzbindex((string) $item->title);
+            $parsed = $parse->parse();
+
+            if (sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
+                sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
+                strtolower($parsed['name']) == strtolower($ep->series_name) &&
+                $ep->matrix_cat == NzbMatrix::determinCat((string) $item->title) &&
+                !$rss->alreadySaved($search)) {
+
+                $category = NzbMatrix::cat2string(NzbMatrix::determinCat((string) $item->title));
+                $rss->title = $search;
+                $rss->guid = (string) $item->link;
+                $rss->link = (string) $item->link;
+                $rss->description = (string) $item->description;
+                $rss->category = $category;
+                $rss->pubDate = (string) $item->pubDate;
+                $rss->enclosure = serialize(array(
+                            'url' => (string) $item->enclosure['url'],
+                            'length' => round((int) $item->enclosure['length']),
+                            'type' => (string) $item->enclosure['type'])
+                        );
+
+                $rss->save();
+                return;
+            }
+        }
+
         foreach ($xml->channel->item as $item) {
             $rss = ORM::factory('rss');
             $parse = new NameParser_Nzbindex((string) $item->title);
             $parsed = $parse->parse();
 
-            echo "******* Parsd name ******** <br />";
-            var_dump($parsed);
-            echo "******* Title ********* <br />";
-            var_dump((string) $item->title);
+//            echo "******* Parsd name ******** <br />";
+//            var_dump($parsed);
+//            echo "******* Title ********* <br />";
+//            var_dump((string) $item->title);
 
             if (sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
                 sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
                 strtolower($parsed['name']) == strtolower($ep->series_name)) {
                 if (!$rss->alreadySaved($search)) {
-                    if ($ep->matrix_cat == NzbMatrix::catStr2num(NzbMatrix::determinCat((string) $item->title))) {
-                        $category = NzbMatrix::catStr2num(NzbMatrix::determinCat((string) $item->title));
-                    } else {
-                        $category = (string) $item->category;
-                    }
+                    $category = (string) $item->category;
 
-                    echo "******* Saving Result ******** <br />";
-                    var_dump($item);
+//                    echo "******* Saving Result ******** <br />";
+//                    var_dump($item);
 
                     $rss->title = $search;
                     $rss->guid = (string) $item->link;

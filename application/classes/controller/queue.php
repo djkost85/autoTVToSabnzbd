@@ -22,13 +22,11 @@ class Controller_Queue extends Controller_Xhtml {
         $queue = $sab->getQueue();
 
         Head::instance()->set_title('Visa alla serier');
-        $menu = new View('menu');
         $xhtml = Xhtml::instance('queue/index');
 
         Head::$scripts['sabQueueScript'] = 'js/sabQueue.js';
 
-        $xhtml->body->set('menu', $menu)
-                ->set('queue', $queue->slots)
+        $xhtml->body->set('queue', $queue->slots)
                 ->set('pause', $sab->getUrl('pause'))
                 ->set('resume', $sab->getUrl('resume'))
                 ->set('restart', ($queue->restart_req) ? $sab->getUrl('restart') : false)
