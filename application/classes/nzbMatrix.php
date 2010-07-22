@@ -66,7 +66,7 @@ class NzbMatrix extends Tv_Info {
     public function buildDownloadUrl($id) {
         $query = array(
                 'id' => $id,
-                'username' => 'morre95',
+                'username' => $this->_apiUser,
                 'apikey' => $this->_apiKey,
         );
 
