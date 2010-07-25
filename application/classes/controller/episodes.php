@@ -76,7 +76,7 @@ class Controller_Episodes extends Controller_Page {
                         if (!$epORM->save()) {
                             $posterMsg = '<div class="errorMsg">Ett fel med uppdaterningen av filnamnet har inträffat</div>';
                         } else {
-                            $posterMsg = '<div class="successMsg">Bilden är uppdaerad</div>';
+                            $posterMsg = '<div class="successMsg">'.__('The image is downloaded').'</div>';
                         }
                     }
                 } else if(is_readable($ep->filename)) {

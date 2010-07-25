@@ -59,6 +59,7 @@ return array(
     'Remain/Total' => 'Återstår/Totalt',
     'Left' => 'Kvar',
     'Age' => 'Ålder',
+    'The image is downloaded' => 'Bilden är nedladdad',
 
     'slow-page' => 'Ja ja sida <b>är</b> slö jag vet!!! Men lungn bara, den är bara det när den laddar ner bilder. <br />Vilket den bara gör första gången du besöker just den här sidan',
     'add-slow-page' => 'Jag laddar ner bilder just nu, därför är jag lite seg',
