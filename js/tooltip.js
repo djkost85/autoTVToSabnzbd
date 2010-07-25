@@ -35,7 +35,7 @@
                     $(settings.selector)
                     .css({
                         top: top,
-                        left: offset.left + 120
+                        left: offset.left + 205
                     })
                     .fadeIn(350);
 

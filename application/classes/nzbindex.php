@@ -21,6 +21,7 @@ class Nzbindex extends Tv_Info {
                 'max' => '25',
                 'more' => '1',
                 'minsize' => '50',
+                'nzblink' => '1',
         );
 
         $url = $this->searchUrl . '?' . http_build_query($query);

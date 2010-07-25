@@ -5,11 +5,29 @@
  */
 //var_dump($results);
 ?>
-<h1 class="page-title episodes-title">
-    <?php echo HTML::anchor("", HTML::image('index.php/' . $series->banner, array('alt' => "Banner for $series->series_name")))?>
-</h1>
-<h2 class="page-title"><?php echo $title?>?</h2>
-<ul id="wrong_category">
+
+<!-- wrap starts here -->
+<div id="wrap">
+<!-- content-wrap starts -->
+<div id="content-wrap">
+    <div id="googleHeader">
+        Downloads from <a href="http://nzbmatrix.com/" title="NZBMatrix.com">NZBMatrix.com</a>
+    </div>
+
+
+
+    <form id="form-search" action="<?php echo URL::site('search/result')?>" method="get">
+        <input class="input-text" name="q" type="text" />
+        <input name="where" value="site" type="hidden" />
+        <input class="input-button" name="search" value="" type="submit" />
+    </form>
+
+    <div id="main">
+        <div class="inner">
+            <?php echo HTML::anchor('', HTML::image('index.php/' . $series->banner, array('alt' => 'Top Banner', 'class' => 'banner')), array('title' => 'Top Banner'));?>
+
+            <h1><?php echo $title?>?</h1>
+<ul class="thumbnail">
 <?php foreach($results as $id => $result) {
 $filesize = $result['size']; // displays in bytes
 $file_kb = round(($filesize / 1024), 1); // bytes to KB

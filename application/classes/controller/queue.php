@@ -9,7 +9,7 @@
  *
  * @author morre95
  */
-class Controller_Queue extends Controller_Xhtml {
+class Controller_Queue extends Controller_Page {
 
     public function action_index() {
         try {
@@ -21,12 +21,12 @@ class Controller_Queue extends Controller_Xhtml {
 
         $queue = $sab->getQueue();
 
-        Head::instance()->set_title('Visa alla serier');
-        $xhtml = Xhtml::instance('queue/index');
+        $this->template->title = 'SABnzbd Queue';
+        $xhtml = View::factory('queue/index');
 
-        Head::$scripts['sabQueueScript'] = 'js/sabQueue.js';
+        $this->template->scripts['sabQueueScript'] = 'js/sabQueue.js';
 
-        $xhtml->body->set('queue', $queue->slots)
+        $xhtml->set('queue', $queue->slots)
                 ->set('pause', $sab->getUrl('pause'))
                 ->set('resume', $sab->getUrl('resume'))
                 ->set('restart', ($queue->restart_req) ? $sab->getUrl('restart') : false)
@@ -42,22 +42,25 @@ class Controller_Queue extends Controller_Xhtml {
                 ->set('sizeleft', $queue->sizeleft . '/' . $queue->size)
                 ->set('eta', $queue->eta);
 
-        $xhtml->body->set('totalPercent', 0);
+        $xhtml->set('totalPercent', 0);
 
         if ((int)$queue->mb > 0)
-           $xhtml->body->set('totalPercent', round(((int)$queue->mbleft / (int)$queue->mb) * 100));
+           $xhtml->set('totalPercent', round(((int)$queue->mbleft / (int)$queue->mb) * 100));
 
         if (isset($queue->have_warnings)) {
-            $xhtml->body->set('warnings', $queue->have_warnings)
+            $xhtml->set('warnings', $queue->have_warnings)
                     ->set('lastWarning', $queue->last_warning);
         }
 
-        $this->request->response = $xhtml;
+        $this->template->content = $xhtml;
     }
     
     public function action_ajax_getProcent() {
         $sab = new Sabnzbd_Queue(Kohana::config('default.Sabnzbd'));
         $queue = $sab->getQueue();
+
+        $this->auto_render = false;
+
         $this->request->headers['Content-Type'] = 'text/json';
         $this->request->response = json_encode(
                 array(

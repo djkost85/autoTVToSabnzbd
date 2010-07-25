@@ -34,7 +34,6 @@ class Controller_Images extends Controller {
         $file = $_GET['image'];
 
         $this->showImage($file);
-
     }
 
     public function action_ordImage() {

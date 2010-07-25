@@ -11,7 +11,7 @@ defined('SYSPATH') or die('No direct script access.');
  *
  * @author Morre95
  */
-class Controller_Download extends Controller_Xhtml {
+class Controller_Download extends Controller_Page {
 
     public function action_episode($id) {
         $ep = ORM::factory('episode', array('id' => $id));
@@ -99,15 +99,15 @@ class Controller_Download extends Controller_Xhtml {
             $this->request->redirect(URL::query(array('msg' => "nothing found")));
         }
 
-        Head::instance()->set_title(__('Click to download') . '?');
+        $this->template->title = __('Click to download') . '?';
 
-        $xhtml = Xhtml::instance('download/no_match');
-        $xhtml->body->set('title', __('Click to download'))
+        $xhtml = View::factory('download/no_match');
+        $xhtml->set('title', __('Click to download'))
                 ->set('results', $results)
                 ->set('series', $series)
                 ->set('ep', $ep);
 
-        $this->request->response = $xhtml;
+        $this->template->content = $xhtml;
     }
 
     public function action_doDownload($id) {
@@ -149,12 +149,12 @@ class Controller_Download extends Controller_Xhtml {
 
         $history = $sab->getHistory();
 
-        Head::instance()->set_title('Visa alla nerladdningar');
-        $xhtml = Xhtml::instance('download/listAll');
+        $this->template->title = 'Visa alla nerladdningar';
+        $xhtml = View::factory('download/listAll');
 
-        $xhtml->body->set('history', $history);
+        $xhtml->set('history', $history);
 
-        $this->request->response = $xhtml;
+        $this->template->content = $xhtml;
     }
 
 }

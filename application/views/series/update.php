@@ -1,23 +1,40 @@
 <?php defined('SYSPATH') or die('No direct script access.'); ?>
 
-<div id="add-contents">
-    <form action="<?php echo $url?>" method="post">
-        <fieldset>
-        <legend><?php echo $title; ?></legend>
-        <ol>
-            <li>
+<div id="wrap">
+<!-- content-wrap starts -->
+<div id="content-wrap">
+    <div id="googleHeader">
+        Downloads from <a href="http://nzbmatrix.com/" title="NZBMatrix.com">NZBMatrix.com</a>
+    </div>
+
+
+
+    <form id="form-search" action="<?php echo URL::site('search/result')?>" method="get">
+        <input class="input-text" name="q" type="text" />
+        <input name="where" value="site" type="hidden" />
+        <input class="input-button" name="search" value="" type="submit" />
+    </form>
+
+    <div id="main">
+        <div class="inner">
+                    <div class="top-banner">
+                        <?php echo HTML::anchor('#', HTML::image("images/black/banner/fringe.jpg", array('alt' => 'Top Banner')), array('title' => 'Top Banner', 'class' => 'adhere'));?>
+                    </div>
+            <h1><?php echo $title; ?></h1>
+    <form id="submitform" action="<?php echo $url?>" method="post">
+            <p>
                 <label for="series_name"><?php echo __('serie name')?>:</label>
                 <input type="text" name="series_name" id="series_name" value="<?php echo $series->series_name?>" readonly />
-            </li>
-            <li id="search-result" style="display: none">
+            </p>
+            <p id="search-result" style="display: none">
                 <?php foreach($banners as $type => $banner) {
                     echo '<h3>'.$type.'</h3>';
                     foreach ($banner as $img) {
                         echo $img;
                     }
                 } ?>
-            </li>
-            <li>
+            </p>
+            <p>
                 <label for="matrix_cat"><?php echo __('download catagory')?>:</label>
                 <select id="matrix_cat" name="matrix_cat">
                 <option value="tv-all" <?php if ($series->matrix_cat == 'tv-all') echo 'selected'?> >TV: ALL</option>
@@ -28,17 +45,18 @@
                 <option value="8" <?php if ($series->matrix_cat == '8') echo 'selected'?> >TV: Other</option>
                 </select>
 
-            </li>
-        </ol>
+            </p>
         <input type="hidden" name="poster" id="poster" />
         <input type="hidden" name="fanart" id="fanart" />
         <input type="hidden" name="banner" id="banner" />
-        </fieldset>
-        <fieldset class="submit">
-            <input type="submit" value="<?php echo __('update')?>" />
-        </fieldset>
+        <p>
+            <input class="button" type="submit" value="<?php echo __('update')?>" />
+        </p>
     </form>
-</div>
+        <div class="clearer"></div>
+                    </div>
+                    <!-- main ends -->
+                </div>
 
 <script type="text/javascript">
 $('input[type="submit"]').click(function () {

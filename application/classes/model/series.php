@@ -178,6 +178,14 @@ class Model_Series extends ORM {
                 ->as_object()
                 ->execute($this->_db);
     }
+    
+    public function searchEnded($limit) {
+        $query = "SELECT * FROM series WHERE status LIKE '%Ended%' LIMIT :limit";
+        return DB::query(Database::SELECT, $query)
+                ->param(':limit', $limit)
+                ->as_object()
+                ->execute($this->_db);
+    }
 }
 
 ?>

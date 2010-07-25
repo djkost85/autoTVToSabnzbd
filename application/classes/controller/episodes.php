@@ -9,7 +9,7 @@
  *
  * @author Morre95
  */
-class Controller_Episodes extends Controller_Xhtml {
+class Controller_Episodes extends Controller_Page {
 
     public function before() {
         parent::before();
@@ -74,9 +74,9 @@ class Controller_Episodes extends Controller_Xhtml {
                         $epORM->filename = $posterFile;
 
                         if (!$epORM->save()) {
-                            $posterMsg = '<p class="msg error">Ett fel med uppdaterningen av filnamnet har inträffat</p>';
+                            $posterMsg = '<div class="errorMsg">Ett fel med uppdaterningen av filnamnet har inträffat</div>';
                         } else {
-                            $posterMsg = '<p class="msg">Bilden är uppdaerad</p>';
+                            $posterMsg = '<div class="successMsg">Bilden är uppdaerad</div>';
                         }
                     }
                 } else if(is_readable($ep->filename)) {
@@ -99,16 +99,17 @@ class Controller_Episodes extends Controller_Xhtml {
                 $res->posterMsg = $posterMsg;
                 $epRes[] = $res;
             }
-            
-            Cache::instance('default')->set($cacheName, $epRes);
+            if ($posterMsg == "") {
+                Cache::instance('default')->set($cacheName, $epRes);
+            }
             Cache::instance('default')->set($cacheName.'_pagination', $pagination->render());
 
         }
 
         $name = $series->series_name;
-        Head::instance()->set_title($name);
-        $xhtml = Xhtml::instance('episode/listAll');
-        $xhtml->body->set('title', 'Home Page')
+        $this->template->title = $name;
+        $xhtml = View::factory('episode/listAll');
+        $xhtml->set('title', $name)
         ->set('seriesName', $name)
         ->set('id', $series->id)
         ->set('pagination', Cache::instance('default')->get($cacheName.'_pagination'))
@@ -116,7 +117,7 @@ class Controller_Episodes extends Controller_Xhtml {
         ->set('episodes', $epRes)
         ->set('matrix_cat', NzbMatrix::cat2string($series->matrix_cat));
 
-        $this->request->response = $xhtml;
+        $this->template->content = $xhtml;
 
     }
 
@@ -207,10 +208,10 @@ class Controller_Episodes extends Controller_Xhtml {
         }
 
         $name = $series->series_name;
-        Head::instance()->set_title('Visa alla avsnitt från ' . $name);
+        $this->template->title = 'Visa alla avsnitt från ' . $name;
 
-        $xhtml = Xhtml::instance('episode/listAll');
-        $xhtml->body->set('title', 'Home Page')
+        $xhtml = View::factory('episode/listAll');
+        $xhtml->set('title', 'Home Page')
         ->set('seriesName', $name)
         ->set('id', $series->id)
         ->set('pagination', Cache::instance('default')->get($cacheName.'_pagination'))
@@ -218,7 +219,7 @@ class Controller_Episodes extends Controller_Xhtml {
         ->set('episodes', $epRes)
         ->set('matrix_cat', NzbMatrix::cat2string($series->matrix_cat));
 
-        $this->request->response = $xhtml;
+        $this->template->content = $xhtml;
     }
 
     public function action_update($id) {
@@ -306,10 +307,10 @@ class Controller_Episodes extends Controller_Xhtml {
             $this->request->redirect('' . URL::query(array('msg' => $name . ' ' . __('is deleted'))));
         }
 
-        Head::instance()->set_title('Visa alla avsnitt från ' . $name);
+        $this->template->title = __('Delete') . ' ' . $name;
 
-        $xhtml = Xhtml::instance('episode/delete');
-        $xhtml->body->set('title', 'Home Page')
+        $xhtml = View::factory('episode/delete');
+        $xhtml->set('title', 'Home Page')
         ->set('seriesName', $name)
         ->set('id', $series->id)
         ->set('banner', $series->banner)
@@ -318,7 +319,7 @@ class Controller_Episodes extends Controller_Xhtml {
 
         ->set('matrix_cat', NzbMatrix::cat2string($series->matrix_cat));
 
-        $this->request->response = $xhtml;
+        $this->template->content = $xhtml;
     }
 
     public function action_ajax_getLasAired() {

@@ -9,7 +9,7 @@
  *
  * @author Morre95
  */
-class Controller_Series extends Controller_Xhtml {
+class Controller_Series extends Controller_Page {
     
     private $TheTvDB_api_key;
 
@@ -19,20 +19,20 @@ class Controller_Series extends Controller_Xhtml {
     }
 
     public function action_add() {
-        Head::instance()->set_title(__('Add new series'));
+        $this->template->title = __('Add new series');
 
-        Head::$scripts['jquery autocomplete js'] = 'js/jquery.autocomplete.pack.js';
-        Head::$styles['jquery autocomplete css'] = 'css/jquery.autocomplete.css';
+        $this->template->scripts['jquery autocomplete js'] = 'js/jquery.autocomplete.pack.js';
+        $this->template->styles['css/jquery.autocomplete.css'] = 'screen';
 
         $autocomplete = Kohana::config('series.autocomplete');
 
-        Head::$codes['jquery autocomplete code'] = "var data = ".json_encode($autocomplete).";";
+        $this->template->codes['jquery autocomplete code'] = "var data = ".json_encode($autocomplete).";";
 
-        $xhtml = Xhtml::instance('series/add');
-        $xhtml->body->set('title', __('Add new series'))
+        $xhtml = View::factory('series/add');
+        $xhtml->set('title', __('Add new series'))
                 ->set('languages', ORM::factory('language')->find_all());
 
-        $this->request->response = $xhtml;
+        $this->template->content = $xhtml;
     }
 
     public function action_doAdd() {
@@ -123,15 +123,15 @@ class Controller_Series extends Controller_Xhtml {
 
         $series = ORM::factory('series', $id);
 
-        Head::instance()->set_title(__('update') . ' ' . $series->series_name);
+        $this->template->title = __('update') . ' ' . $series->series_name;
 
-        $xhtml = Xhtml::instance('series/update');
-        $xhtml->body->set('title', __('update') . ' ' . $series->series_name)
+        $xhtml = View::factory('series/update');
+        $xhtml->set('title', __('update') . ' ' . $series->series_name)
                 ->set('series', $series)
                 ->set('url', URL::site('series/doUpdate/' . $id))
                 ->set('banners', array());
 
-        $this->request->response = $xhtml;
+        $this->template->content = $xhtml;
     }
 
     public function action_doUpdate($id) {
@@ -171,6 +171,7 @@ class Controller_Series extends Controller_Xhtml {
             //$series->remove('episodes', $ep);
             $episode->delete();
         }
+        ORM::factory('episode')->deleteAllNoRel();
 
         $poster = new Posters();
         $i = 0;
@@ -243,15 +244,15 @@ class Controller_Series extends Controller_Xhtml {
 
         $bannerArray = $this->getBanners($series->series_name);
         
-        Head::instance()->set_title(__('edit') . ' ' . $series->series_name);
+        $this->template->title = __('edit') . ' ' . $series->series_name;
 
-        $xhtml = Xhtml::instance('series/update');
-        $xhtml->body->set('title', __('edit') . ' ' . $series->series_name)
+        $xhtml = View::factory('series/update');
+        $xhtml->set('title', __('edit') . ' ' . $series->series_name)
                 ->set('series', $series)
                 ->set('url', URL::site('series/doEdit/' . $id))
                 ->set('banners', $bannerArray);
 
-        $this->request->response = $xhtml;
+        $this->template->content = $xhtml;
     }
 
     public function action_doEdit($id) {
@@ -295,79 +296,19 @@ class Controller_Series extends Controller_Xhtml {
         $this->request->redirect('' . URL::query(array('msg' => $series->series_name . ' ' . __('is updated'))));
     }
 
-    public function action_ajax_searchNew($name) {
-//    public function action_search($name) {
-        try {
-            $series = ORM::factory('series');
-            if ($series->isAdded($name)) {
-                $this->request->response = $name . ' ' . __('alredy exists');
-                return;
-            }
-            $tv = new TheTvDB($this->TheTvDB_api_key, $name);
-
-            $seriesXml = $tv->getSeries();
-        } catch (InvalidArgumentException $e) {
-            $this->request->response = $e->getMessage() . '. Serach string: ' . $name;
-            return;
-        }
-
-        $html = '<label for="select-ep">'.__("Select").':</label>
-                <select id="select-ep" name="select-ep">
-                <option>'.__("Select").'</option>';
-        foreach ($seriesXml->Series as $xml) {
-            $html .= "<option value='$xml->SeriesName'>$xml->SeriesName</option>";
-        }
-        $html .= "</select>";
-        $this->request->response = $html;
-    }
-
-    public function action_ajax_getBanners($name) {
-        try {
-            $tv = new TheTvDB($this->TheTvDB_api_key, $name);
-
-            $series = ORM::factory('series');
-            $tvArray = $tv->toArray();
-            if ($series->isAdded($tvArray['seriesName'])) {
-                $this->request->response = $name . ' ' . __('alredy exists');
-                return;
-            }
-            $banners = $tv->getBanners();
-        } catch (InvalidArgumentException $e) {
-            $this->request->response = $e->getMessage();
-            return;
-        }
-
-        $this->clearCache();
-
-        $response = "";
-
-        $i = 1;
-        $poster = new Posters();
-        foreach ($banners as $banner) {
-            if ($banner->BannerType == 'poster' && $i <= 5) {
-                $savePath = 'images/__cache/' . basename($banner->BannerPath);
-                if (!file_exists($savePath)) {
-                    $poster->saveImage('http://thetvdb.com/banners/' . $banner->BannerPath, $savePath);
-                    $i++;
-                }
-                $response .= HTML::anchor('#' ,HTML::image('index.php/' . $savePath . '/125',
-                        array(
-                        'alt' => 'Series banner for ' . $tvArray['seriesName'],
-                        'title' => $savePath,
-                        'class' => 'select-img'
-                        )) . "\n");
-            }
-        }
-        $response .= "<br />";
-        if (isset($tvArray['imdb']))
-        $response .= HTML::anchor($tvArray['imdb'], $tvArray['seriesName'] . ' ' . __('on Imdb'));
-        $response .= " | ";
-        $response .= HTML::anchor('http://www.thetvdb.com/?tab=series&id=' . $tvArray['id'], $tvArray['seriesName'] . ' ' . __('on The Tv DB'));
-
-        $this->request->response = $response;
-    }
-
     public function action_delete($id) {
+        $series = ORM::factory('series', $id);
+        $this->template->title = __('Delete') . ' ' . $series->series_name;
+
+        $view = View::factory('series/delete');
+        $view->set('series', $series)
+                ->set('title', __('Delete') . ' ' . $series->series_name)
+                ->set('noSeries', __('No series'));
+
+        $this->template->content = $view;
+    }
+
+    public function action_doDelete($id) {
         if (!is_numeric($id)) {
             $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
         }
@@ -375,22 +316,22 @@ class Controller_Series extends Controller_Xhtml {
 
         $name = $series->series_name;
         foreach ($series->episodes->find_all() as $ep) {
-            if (file_exists($ep->filename) && !preg_match('/^http:\/\//', $ep->filename)) {
-                unlink($ep->filename);
+            if (is_file($ep->filename) && !preg_match('/^http:\/\//', $ep->filename)) {
+                @unlink($ep->filename);
             }
             $episode = ORM::factory('episode', $ep);
 
             $episode->delete();
         }
 
-        if (file_exists($series->poster) && !preg_match('/^http:\/\//', $series->poster)) {
-            unlink($series->poster);
+        if (is_file($series->poster) && !preg_match('/^http:\/\//', $series->poster)) {
+            @unlink($series->poster);
         }
-        if (file_exists($series->fanart) && !preg_match('/^http:\/\//', $series->fanart)) {
-            unlink($series->fanart);
+        if (is_file($series->fanart) && !preg_match('/^http:\/\//', $series->fanart)) {
+            @unlink($series->fanart);
         }
-        if (file_exists($series->banner) && !preg_match('/^http:\/\//', $series->banner)) {
-            unlink($series->banner);
+        if (is_file($series->banner) && !preg_match('/^http:\/\//', $series->banner)) {
+            @unlink($series->banner);
         }
 
 
@@ -399,32 +340,12 @@ class Controller_Series extends Controller_Xhtml {
         $this->request->redirect('' . URL::query(array('msg' => $name . ' ' . __('is deleted'))));
     }
 
-    public function action_ajax_getInfo($id) {
-        if (!is_numeric($id)) {
-            return;
-        }
-
-        $series = ORM::factory('series', $id);
-        $seriesName = $series->series_name;
-        $html = "";
-        $html .= "<h2>" . $series->series_name . "</h2>";
-        $html .= "<em>" . __('Airs') . ': ' . __($series->airs_day) . ' ' . __('at') . ' ' . date('H:i', strtotime($series->airs_time)) . "</em>";
-        $html .= "<br /><em>" . __('Status') . ': ' . __($series->status) . "</em>";
-        $html .= "<br /><em>" . __('Network') . ': ' . $series->network . "</em>";
-        $html .= "<br /><em>" . __('Runtime') . ': ' . $series->runtime . ' ' . __('minutes') . "</em>";
-        $html .= "<br /><em>" . __('Rating') . ': ' . $series->rating . "</em>";
-        $html .= "<br /><em>" . __('Genre') . ': ' . $series->genre . "</em>";
-        $html .= "<br /><em>" . __('Actors') . ': ' . $series->actors . "</em>";
-
-        $this->request->response = $html;
-    }
-
     protected function saveInfo(ORM $series, SimpleXMLElement $info, $saveAsNew = false) {
         $poster = new Posters();
 
         $fanartFile = "";
         $bannerFile = "";
-        $posterFile = "images/poster.png";
+        $posterFile = "";
         if (!empty($info->Series->poster)) {
             $path = "images/poster/";
             $image = 'http://thetvdb.com/banners/' . (string) $info->Series->poster;
@@ -526,7 +447,7 @@ class Controller_Series extends Controller_Xhtml {
         foreach($banners as $banner) {
             if ($banner->BannerType == 'poster') {
                 $savePath = 'http://thetvdb.com/banners/' . $banner->BannerPath;
-                $bannerArray['Poster'][] = HTML::anchor(URL::base() . 'images/thetvdb/125?image=' . $savePath ,HTML::image(URL::base() . 'index.php/images/thetvdb/125?image=' . $savePath, array(
+                $bannerArray['Poster'][] = HTML::anchor('#' ,HTML::image(URL::base() . 'images/thetvdb/125?image=' . $savePath, array(
                     'alt' => 'Series banner for ' . $series_name,
                     'title' => $savePath,
                     'class' => 'select-poster'
@@ -562,7 +483,106 @@ class Controller_Series extends Controller_Xhtml {
         }
     }
 
+    public function action_ajax_searchNew($name) {
+//    public function action_search($name) {
+
+        $this->auto_render = false;
+        try {
+            $series = ORM::factory('series');
+            if ($series->isAdded($name)) {
+                $this->request->response = $name . ' ' . __('alredy exists');
+                return;
+            }
+            $tv = new TheTvDB($this->TheTvDB_api_key, $name);
+
+            $seriesXml = $tv->getSeries();
+        } catch (InvalidArgumentException $e) {
+            $this->request->response = $e->getMessage() . '. Serach string: ' . $name;
+            return;
+        }
+
+        $html = '<label for="select-ep">'.__("Select").':</label>
+                <select id="select-ep" name="select-ep">
+                <option>'.__("Select").'</option>';
+        foreach ($seriesXml->Series as $xml) {
+            $html .= "<option value='$xml->SeriesName'>$xml->SeriesName</option>";
+        }
+        $html .= "</select>";
+        $this->request->response = $html;
+    }
+
+    public function action_ajax_getBanners($name) {
+
+        $this->auto_render = false;
+        try {
+            $tv = new TheTvDB($this->TheTvDB_api_key, $name);
+
+            $series = ORM::factory('series');
+            $tvArray = $tv->toArray();
+            if ($series->isAdded($tvArray['seriesName'])) {
+                $this->request->response = $name . ' ' . __('alredy exists');
+                return;
+            }
+            $banners = $tv->getBanners();
+        } catch (InvalidArgumentException $e) {
+            $this->request->response = $e->getMessage();
+            return;
+        }
+
+        $this->clearCache();
+
+        $response = "";
+
+        $i = 1;
+        $poster = new Posters();
+        foreach ($banners as $banner) {
+            if ($banner->BannerType == 'poster' && $i <= 5) {
+                $savePath = 'images/__cache/' . basename($banner->BannerPath);
+                if (!file_exists($savePath)) {
+                    $poster->saveImage('http://thetvdb.com/banners/' . $banner->BannerPath, $savePath);
+                    $i++;
+                }
+                $response .= HTML::anchor('#' ,HTML::image('index.php/' . $savePath . '/125',
+                        array(
+                        'alt' => 'Series banner for ' . $tvArray['seriesName'],
+                        'title' => $savePath,
+                        'class' => 'select-img'
+                        )) . "\n");
+            }
+        }
+        $response .= "<br />";
+        if (isset($tvArray['imdb']))
+        $response .= HTML::anchor($tvArray['imdb'], $tvArray['seriesName'] . ' ' . __('on Imdb'));
+        $response .= " | ";
+        $response .= HTML::anchor('http://www.thetvdb.com/?tab=series&id=' . $tvArray['id'], $tvArray['seriesName'] . ' ' . __('on The Tv DB'));
+
+        $this->request->response = $response;
+    }
+
+    public function action_ajax_getInfo($id) {
+        $this->auto_render = false;
+        if (!is_numeric($id)) {
+            return;
+        }
+
+        $series = ORM::factory('series', $id);
+        $seriesName = $series->series_name;
+        $html = "<div>";
+        $html .= "<h2>" . $series->series_name . "</h2>";
+        $html .= "<span>" . __('Airs') . ': ' . __($series->airs_day) . ' ' . __('at') . ' ' . date('H:i', strtotime($series->airs_time)) . "</span>";
+        $html .= "<br /><span>" . __('Status') . ': ' . __($series->status) . "</span>";
+        $html .= "<br /><span>" . __('Network') . ': ' . $series->network . "</span>";
+        $html .= "<br /><span>" . __('Runtime') . ': ' . $series->runtime . ' ' . __('minutes') . "</span>";
+        $html .= "<br /><span>" . __('Rating') . ': ' . $series->rating . "</span>";
+        $html .= "<br /><span>" . __('Genre') . ': ' . $series->genre . "</span>";
+        $html .= "<br /><span>" . __('Actors') . ': ' . $series->actors . "</span>";
+        $html .= "</div>";
+
+        $this->request->response = $html;
+    }
+
     public function action_ajax_setMatrix($id) {
+        $this->auto_render = false;
         $series = ORM::factory('series', $id);
         $series->matrix_cat = $_GET['cat'];
         $series->save();

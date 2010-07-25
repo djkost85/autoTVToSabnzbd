@@ -16,6 +16,7 @@ table th {
 }
 table tr:nth-child(odd) {
     background: #eee;
+    color: #000;
 }
 table tr:hover {
     background-color:lightgrey
@@ -27,16 +28,13 @@ ul {
 }
 
 #sub-nav {
-    width: 750px ;
-    margin-right: auto;
-    margin-left: auto;
+    width: 350px;
     padding-top: 8px;
 }
 
 #sub-nav li {
     display: inline;
     margin: 0 10px 0 2px;
-    font-size: 70%;
     text-decoration: underline;
 }
 
@@ -48,7 +46,6 @@ div.progress-container {
     float: left;
     background: white;
 }
-
 div.progress-container > div {
     background-color: #ACE97C;
     height: 12px;

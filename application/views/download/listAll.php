@@ -16,8 +16,10 @@ table td {
 table th {
     font-weight: normal;
 }
+
 table tr:nth-child(odd) {
     background: #eee;
+    color: #000;
 }
 table tr:hover {
     background-color:lightgrey

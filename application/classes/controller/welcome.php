@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Controller_Welcome extends Controller_Xhtml {
+class Controller_Welcome extends Controller_Page {
 
     public function action_index() {
         $series = Cache::instance('default')->get('series');
@@ -14,7 +14,7 @@ class Controller_Welcome extends Controller_Xhtml {
         $pagination = Pagination::factory( array (
                 'base_url' => "",
                 'total_items' => $seriesNum,
-                'items_per_page' => 15 // default 10
+                'items_per_page' => 12 // default 10
         ));
 
 //
@@ -23,10 +23,10 @@ class Controller_Welcome extends Controller_Xhtml {
 //        var_dump($matrix->search('Top Gear 15x04', 41));
 
         
-        Head::instance()->set_title('Visa alla serier');
+        $this->template->title = 'Visa alla serier';
 
-        $xhtml = Xhtml::instance('welcome/index');
-        $xhtml->body->set('title', 'Visa alla tv serier')
+        $xhtml = View::factory('welcome/index');
+        $xhtml->set('title', 'Visa alla tv serier')
                 ->set('noSeries', __('No series'))
                 ->set('imdb', Kohana::config('default.imdb'))
                 ->set('pagination', $pagination->render())
@@ -38,7 +38,7 @@ class Controller_Welcome extends Controller_Xhtml {
                 ->set('rss', ORM::factory('rss'))
                 ->set('series', ($seriesNum > 0) ? new LimitIterator($series, $pagination->offset, $pagination->items_per_page) : array());
 
-        $this->request->response = $xhtml;
+        $this->template->content = $xhtml;
 
     }
 

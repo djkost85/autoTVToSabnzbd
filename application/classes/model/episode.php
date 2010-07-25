@@ -39,7 +39,7 @@ class Model_Episode extends ORM {
                 ->execute($this->_db)
                 ->as_array();
 
-        return $result[0];
+        return (empty($result)) ? array() : $result[0];
     }
 
     public function isDownloaded($id = null) {
@@ -97,6 +97,10 @@ class Model_Episode extends ORM {
                 ->as_object()
                 ->execute($this->_db)
                 ->get('first_aired');
+    }
+
+    public function deleteAllNoRel() {
+        return DB::query(Database::DELETE, 'DELETE FROM episodes WHERE series_id = 0')->execute($this->_db);
     }
 
 }

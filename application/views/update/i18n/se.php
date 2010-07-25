@@ -16,7 +16,28 @@ div.update-wrapper ul {
     margin-left: 35px;
 }
 </style>
-<div class="update-wrapper">
+<div id="wrap">
+<!-- content-wrap starts -->
+<div id="content-wrap">
+    <div id="googleHeader">
+        Downloads from <a href="http://nzbmatrix.com/" title="NZBMatrix.com">NZBMatrix.com</a>
+    </div>
+
+
+
+    <form id="form-search" action="<?php echo URL::site('search/result')?>" method="get">
+        <input class="input-text" name="q" type="text" />
+        <input name="where" value="site" type="hidden" />
+        <input class="input-button" name="search" value="" type="submit" />
+    </form>
+
+    <div id="main">
+        <div class="inner">
+            <!-- BuySellAds.com Zone Code -->
+                    <div class="top-banner">
+                        <?php echo HTML::anchor('#', HTML::image("images/black/banner/fringe.jpg", array('alt' => 'Top Banner')), array('title' => 'Top Banner', 'class' => 'adhere'));?>
+                    </div>
+                    <!-- END BuySellAds.com Zone Code -->
     <p>Alla avsnitt som blir uppdaterade och är markerade som nerladdade, kommer inte längre vara markerade som nedladdade.</p>
     <p>Klicka <a href="<?php echo URL::site('update/doAll')?>" id="update">här</a> om du vill updatera alla serier.</p>
     <p>Klicka <a href="<?php echo URL::site('rss/update')?>" id="update">här</a> om du vill updatera rss flödet.</p>
@@ -41,7 +62,10 @@ div.update-wrapper ul {
         </form>
         <p>Vissa webläsare sätter .htm eller liknande som filändelse. Du måste ta bort det för att det ska fungera</p>
     </div>
-</div>
+<div class="clearer"></div>
+                    </div>
+                    <!-- main ends -->
+                </div>
 
 
 <script type="text/javascript">

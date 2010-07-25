@@ -10,7 +10,7 @@
  *
  * @author morre95
  */
-class Controller_Update extends Controller_Xhtml {
+class Controller_Update extends Controller_Page {
 
     public function action_downloadable() {
         $ep = ORM::factory('episode')->where('downloadable', 'is', DB::expr('NULL'))->and_where('season', '>', 0)->find();
@@ -42,8 +42,7 @@ class Controller_Update extends Controller_Xhtml {
     
 
     public function action_all() {
-        Head::instance()->set_title(__('Update all series'));
-        $menu = new View('menu');
+        $this->template->title = __('Update all series');
 
         $phpPath = (isset($_GET['path_to_php'])) ? $_GET['path_to_php'] : 'C:\wamp\bin\php\php5.3.0\php.exe';
 
@@ -70,15 +69,15 @@ file_get_contents(\$filename);
             forceDownload(DOCROOT.'cmd/seriesUpdate.cmd');
         }
 
-        $xhtml = Xhtml::instance('update/i18n/' . I18n::lang());
-        $xhtml->body->set('title', __('Update all series'))
-                ->set('menu', $menu)
+        $xhtml = View::factory('update/i18n/' . I18n::lang());
+        $xhtml->set('title', __('Update all series'))
                 ->set('phpPath', $phpPath);
 
-        $this->request->response = $xhtml;
+        $this->template->content = $xhtml;
     }
 
     public function action_doAll() {
+        $this->auto_render = false;
         //ini_set('max_execution_time', 1000);
         set_time_limit(0);
         $series = ORM::factory('series');

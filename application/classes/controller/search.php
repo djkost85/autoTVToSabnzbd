@@ -9,15 +9,15 @@
  *
  * @author morre95
  */
-class Controller_Search extends Controller_Xhtml {
+class Controller_Search extends Controller_Page {
 
     public function action_index() {
-        Head::instance()->set_title(__('Search'));
+        $this->template->title = __('Search');
 
-        $xhtml = Xhtml::instance('search/index');
-        $xhtml->body->set('title', __('Search'));
+        $xhtml = View::factory('search/index');
+        $xhtml->set('title', __('Search'));
 
-        $this->request->response = $xhtml;
+        $this->template->content = $xhtml;
     }
 
     public function action_result() {
@@ -29,13 +29,13 @@ class Controller_Search extends Controller_Xhtml {
         $result = $series->search($_GET['q']);
 
         if ($result->count() > 1) {
-            Head::instance()->set_title(__('Search'));
+            $this->template->title = __('Search');
 
-            $xhtml = Xhtml::instance('search/index');
-            $xhtml->body->set('title', __('Search'))
+            $xhtml = View::factory('search/index');
+            $xhtml->set('title', __('Search'))
                         ->set('results', $result->as_array());
 
-            $this->request->response = $xhtml;
+            $this->template->content = $xhtml;
         } else if ($result->count() == 1) {
             $this->request->redirect("episodes/" . $result->get('id'));
         } else {
