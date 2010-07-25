@@ -899,12 +899,12 @@ div.top-banner img.s{height:0;width:0;}
 
 
 img.select-img, img.select-poster, img.select-fanart, img.select-banner {
-    border: 1px solid #000;
+    border: 1px solid #fff;
     margin: 2px;
 }
 
 img.select-img:hover, img.select-poster:hover, img.select-fanart:hover, img.select-banner:hover, img.selected {
-    border: 3px solid #000;
+    border: 3px solid #fff;
     margin: 0;
 }
 
