@@ -69,7 +69,7 @@ foreach ($series as $ser) {
     <?php } ?>
 </ul>
 <?php echo $pagination; ?>
-<?php echo HTML::anchor('#', HTML::image("images/black/banner/star-wars.jpg", array('alt' => 'Bottom Banner', 'class' => 'banner')));?>
+<?php echo HTML::anchor('#', HTML::image((isset($banner)) ? $banner : "images/black/banner/star-wars.jpg", array('alt' => 'Bottom Banner', 'class' => 'banner')));?>
 
 
                     <div class="clearer"></div>
