@@ -28,6 +28,11 @@ class NzbMatrix extends Tv_Info {
         $url = $this->searchUrl . '?' . http_build_query($query);
 
         $result = $this->send($url);
+
+        if (is_numeric($result)) {
+            return $result;
+        }
+
         $this->searchResult = $this->parseResult($result);
         return $this->searchResult;
     }

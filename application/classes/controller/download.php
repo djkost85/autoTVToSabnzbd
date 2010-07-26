@@ -22,8 +22,10 @@ class Controller_Download extends Controller_Page {
 
         $results = $matrix->search($search, $series->matrix_cat);
 
-        if (isset($results[0]['error'])) {
-            if (preg_match('#^(.*)_(?P<num>\d{1,2})$#', $results[0]['error'], $matches)) {
+        if (isset($results[0]['error']) or is_numeric($results)) {
+            if (is_numeric($results)) {
+                $msg = Helper::getHttpCodeMessage($results);
+            } else if (preg_match('#^(.*)_(?P<num>\d{1,2})$#', $results[0]['error'], $matches)) {
                 $msg = sprintf(__('please_wait_x'), $matches['num']);
             } else {
                 $msg = __($results[0]['error']);

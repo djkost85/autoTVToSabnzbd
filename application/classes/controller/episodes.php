@@ -364,6 +364,10 @@ class Controller_Episodes extends Controller_Page {
 
         $result = $matrix->search($search);
 
+        if (is_numeric($result)) {
+            $this->request->headers['Status'] = $result . ' ' . Helper::getHttpCodeMessage($result);
+        }
+
         foreach ($result->item as $res) {
             $parse = new NameParser($res->title);
             $parsed = $parse->parse();

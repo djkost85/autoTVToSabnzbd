@@ -67,6 +67,13 @@ class Controller_Rss extends Controller {
 
                 if (!$rss->alreadySaved($search)) {
                     $result = $matrix->search($search, $ep->matrix_cat);
+
+                    # If NzbMatrix is not alive use NzbIndex instead
+                    if (is_numeric($result)) {
+                        $this->request->redirect('nzbindex/fillRss');
+                        exit;
+                    }
+
                     $time = time();
                     
 //                    echo("/******** New Search *********/ \n");
@@ -121,10 +128,10 @@ class Controller_Rss extends Controller {
         
         Cache::instance('default')->delete('series');
 
-        if ($rss->count_all() <= $config->rss['numberOfResults']) {
-            $this->request->redirect('nzbindex/fillRss');
-            exit;
-        }
+//        if ($rss->count_all() <= $config->rss['numberOfResults']) {
+//            $this->request->redirect('nzbindex/fillRss');
+//            exit;
+//        }
 
         $this->request->response = __('Updated');
     }

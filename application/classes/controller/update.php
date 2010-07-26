@@ -13,6 +13,8 @@
 class Controller_Update extends Controller_Page {
 
     public function action_downloadable() {
+        $this->auto_render = false;
+        
         $ep = ORM::factory('episode')->where('downloadable', 'is', DB::expr('NULL'))->and_where('season', '>', 0)->find();
         $series = $ep->getSeriesInfo();
 
@@ -20,6 +22,11 @@ class Controller_Update extends Controller_Page {
         
         $search = sprintf('%s S%02dE%02d', $series->series_name, $ep->season, $ep->episode);
         $result = $matrix->search($search, $series->matrix_cat);
+
+        if (is_numeric($result)) {
+            $this->template->content = Helper::getHttpCodeMessage($result);
+            return;
+        }
 
         foreach ($result->item as $res) {
             $parse = new NameParser((string)$res->title);
