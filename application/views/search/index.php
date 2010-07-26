@@ -23,7 +23,7 @@
 
                     <h1><?php echo $title?></h1>
     <p class="msg"><?php if (isset($_GET['msg'])) echo HTML::entities($_GET['msg'])?></p>
-    <form action="<?php echo URL::site('search/result')?>" method="get">
+    <form id="submitform" action="<?php echo URL::site('search/result')?>" method="get">
         <p>
             <label for="q"><?php echo __('Search')?>:</label>
             <input type="text" name="q" id="q" size="30" />
@@ -54,7 +54,7 @@
             </select>
         </p>
         <p>
-            <input type="submit" value="<?php echo __('Search')?>" />
+            <input class="button"  type="submit" value="<?php echo __('Search')?>" />
         </p>
     </form>
 <?php if (isset($results)) { ?>

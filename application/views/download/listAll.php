@@ -7,6 +7,7 @@ table {
     border-collapse: collapse;
     width: 100%;
 }
+
 table th,
 table td {
     padding: 4px;
@@ -15,33 +16,12 @@ table td {
 }
 table th {
     font-weight: normal;
-}
-
-table tr:nth-child(odd) {
     background: #eee;
     color: #000;
 }
+
 table tr:hover {
-    background-color:lightgrey
-}
-
-ul {
-    list-style-type: none;
-    margin: 5px;
-}
-
-#sub-nav {
-    width: 750px ;
-    margin-right: auto;
-    margin-left: auto;
-    padding-top: 8px;
-}
-
-#sub-nav li {
-    display: inline;
-    margin: 0 10px 0 2px;
-    font-size: 70%;
-    text-decoration: underline;
+    background-color: #171C1D;
 }
 
 </style>

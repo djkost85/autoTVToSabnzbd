@@ -283,55 +283,6 @@ blockquote {
 	float: left;
 }
 
-#header p#intro {
-	position: absolute;
-	margin: 0; padding: 0;
-	font-family: 'Trebuchet MS', Tahoma, Helvetica, Arial, Sans-serif;
-	font-weight: bold;
-	font-size: 16px;
-	line-height: 1.5em;
-	font-style: normal;
-	text-transform: none;
-	color: #6D7D2D;
-	width: 400px;
-	
-	/* change the values of top and left to adjust the position */
-	top: 205px; left: 30px;		
-}
-
-/* header quick search */
-#header form#quick-search {
-	padding: 0;
-	border: none;
-	width: 234px;
-	height: 39px;
-	float: right;
-	margin-top: 5px;
-	margin-right: 0;
-	margin-bottom: 10px;
-	margin-left: 0;
-	background-image: url(../images/black/search_bg.gif);
-	background-repeat: no-repeat;
-	background-color: #799340;
-}
-#header form#quick-search .tbox {
-	width: 175px;
-	background-color: #170E00;
-	color: #B0CA75;
-	border: 1px solid #B0CA75;
-	margin-top: 3px;
-	margin-right: 0;
-	margin-bottom: 0;
-	margin-left: 10px;
-	float: left;
-	padding: 5px;
-}
-
-#header form#quick-search label {
-	display: none;
-	border: none;
-}
-
 /*  Gallery  */
 .thumbnail {
     list-style: none;
@@ -759,13 +710,13 @@ body#Controller_Update a#update_link {
 	height:18px;
 }
 
-.special {
+.icon.special {
 	padding-right: 10px;
 	padding-top: 3px;
-	background-image: url(../images/black/comment.gif);
+	background-image: url(../images/black/flag.gif);
 	background-position: left center;
 	background-repeat: no-repeat;
-	padding-left: 18px;
+	padding-left: 24px;
 }
 
 .icon.del {
@@ -774,7 +725,7 @@ body#Controller_Update a#update_link {
 	background-image: url(../images/black/delete.gif);
 	background-position: left center;
 	background-repeat: no-repeat;
-	padding-left: 18px;
+	padding-left: 24px;
 }
 
 .icon.edit {
@@ -783,7 +734,7 @@ body#Controller_Update a#update_link {
 	background-image: url(../images/black/edit.gif);
 	background-position: left center;
 	background-repeat: no-repeat;
-	padding-left: 18px;
+	padding-left: 24px;
 }
 
 .icon.type {
@@ -801,7 +752,7 @@ body#Controller_Update a#update_link {
 	background-image: url(../images/black/update.gif);
 	background-position: left center;
 	background-repeat: no-repeat;
-	padding-left: 18px;
+	padding-left: 24px;
 }
 
 .icon.series-date{

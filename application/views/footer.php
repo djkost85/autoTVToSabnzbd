@@ -14,7 +14,7 @@
                                     if (empty($series)) continue;
                                     ?>
                                     <li>
-                                        <a href="#"><?php echo $series->series_name?></a>
+                                        <?php echo HTML::anchor('episodes/'.$series->id, $series->series_name)?>
                                         <div><?php echo sprintf("S%02dE%02d", $ep->season, $ep->episode)?> 
                                             <?php echo __('Airs') ?>
                                             <?php echo $ep->first_aired?>

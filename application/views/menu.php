@@ -2,6 +2,7 @@
  <!--header -->
 <div id="header">
     <div id="logo"><a href="#"><?php echo HTML::image('images/black/logo.gif', array('alt' => 'logo'))?></a></div>
+
     <div id="nav">
         <ul>
             <li id="welcome_li"><?php echo HTML::anchor('', __('Home'), array('id' => 'welcome_link'))?></li>

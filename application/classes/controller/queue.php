@@ -25,6 +25,7 @@ class Controller_Queue extends Controller_Page {
         $xhtml = View::factory('queue/index');
 
         $this->template->scripts['sabQueueScript'] = 'js/sabQueue.js';
+        $this->template->styles['css/sabQueue.css'] = 'screen';
 
         $xhtml->set('queue', $queue->slots)
                 ->set('pause', $sab->getUrl('pause'))
@@ -57,7 +58,7 @@ class Controller_Queue extends Controller_Page {
     
     public function action_ajax_getProcent() {
         $sab = new Sabnzbd_Queue(Kohana::config('default.Sabnzbd'));
-        $queue = $sab->getQueue();
+        $queue = $sab->getQueue(false);
 
         $this->auto_render = false;
 
@@ -74,6 +75,21 @@ class Controller_Queue extends Controller_Page {
                     ));
         
     }
+
+    /*public function action_ajax_getSpeed() {
+        $sab = new Sabnzbd_Queue(Kohana::config('default.Sabnzbd'));
+        $queue = $sab->getQueue(false);
+        $this->auto_render = false;
+
+        $this->request->headers['Content-Type'] = 'text/json';
+        $this->request->response = json_encode(
+                array(
+                    'label' => 'Speed',
+                    'data' => array(
+                        array($queue->speed, $queue->kbpersec)
+                    )
+                ));
+    }*/
 
 }
 

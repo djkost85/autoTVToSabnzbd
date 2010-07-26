@@ -12,7 +12,7 @@
 class Sabnzbd_Queue extends Sabnzbd {
     private $_slotsArray = array();
 
-    public function getQueue() {
+    public function getQueue($prepare = true) {
         $query = array(
                 'mode' => 'queue',
                 'output' => 'json',
@@ -24,9 +24,13 @@ class Sabnzbd_Queue extends Sabnzbd {
             throw new RuntimeException($json->error);
         }
 
-        $this->prepareSlots($json->queue, $this->_apiKey);
-        $slots = $this->getSlots();
-        if ($slots !== null) $json->queue->slots = $slots;
+        if ($prepare) {
+            $this->prepareSlots($json->queue, $this->_apiKey);
+            $slots = $this->getSlots();
+            if ($slots !== null) {
+                $json->queue->slots = $slots;
+            }
+        }
         $json->queue->paused = $this->isPaused($json->queue);
         return $json->queue;
     }

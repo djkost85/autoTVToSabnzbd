@@ -1,60 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.'); ?>
 
-<style>
-table {
-    border-collapse: collapse;
-    width: 100%;
-}
-table th,
-table td {
-    padding: 4px;
-    text-align: left;
-    vertical-align: top;
-}
-table th {
-    font-weight: normal;
-}
-table tr:nth-child(odd) {
-    background: #eee;
-    color: #000;
-}
-table tr:hover {
-    background-color:lightgrey
-}
-
-ul {
-    list-style-type: none;
-    margin: 5px;
-}
-
-#sub-nav {
-    width: 350px;
-    padding-top: 8px;
-}
-
-#sub-nav li {
-    display: inline;
-    margin: 0 10px 0 2px;
-    text-decoration: underline;
-}
-
-div.progress-container {
-    border: 1px solid #ccc;
-    width: 100px;
-    margin: 2px 5px 2px 0;
-    padding: 1px;
-    float: left;
-    background: white;
-}
-div.progress-container > div {
-    background-color: #ACE97C;
-    height: 12px;
-    text-align: center;
-    font-size: 10px;
-}
-
-</style>
-
 <ul id="sub-nav">
     <li><a class="sab" href="<?php echo $deleteAll?>"><?php echo __('Delete')?></a></li>
     <?php if (!$pauseNum) { ?>
@@ -170,6 +115,7 @@ div.progress-container > div {
         } ?>
 </table>
 <hr />
+<div id="placeholder" style="width:600px;height:100px;"></div>
 <ul>
     <li>SABnzbd version: <a href="<?php echo URL::site('queue/index')?>"><?php echo $version?></a></li>
     <li>Kvar att ladda ner: <a href="<?php echo URL::site('queue/index')?>"><?php echo $sizeleft?></a></li>
@@ -186,6 +132,32 @@ div.progress-container > div {
 
 
 <script type="text/javascript">
-$("div.progress-container.total").progress(<?php echo $totalPercent?>);
+$(function () {
+    $("div.progress-container.total").progress(<?php echo $totalPercent?>);
+    /*var options = {
+        lines: { show: true },
+        points: { show: true },
+        xaxis: { tickDecimals: 0, tickSize: 1 }
+    };
+
+    var data = [];
+    var placeholder = $("#placeholder");
+
+    $.plot(placeholder, data, options);
+
+    setTimeout(function () {
+        var url = baseUrl + 'queue/getSpeed';
+        $.ajax({
+            url: url,
+            method: 'GET',
+            dataType: 'json',
+            success: function (series) {
+                data = [ series ];
+                $.plot(placeholder, data, options);
+            }
+        });
+    }, 2000);
+*/
+});
 </script>
 

@@ -37,7 +37,7 @@ foreach ($episodes as $ep) {
                     $ep->posterFile,
                     HTML::image('index.php/' . $ep->posterFile . '/142', array('alt' => 'Episode poster for ' . $seriesName . ' ' . sprintf('S%02dE%02d', $ep->season, $ep->episode)))
                 );?>
-                <span class="icon series-date"><?php echo $ep->first_aired?></span>
+                <span class="icon series-date"><?php echo __('Airs') . ' ' . $ep->first_aired?></span>
                 <span class="icon update" title="<?php echo __('Update')?>"><?php echo HTML::anchor("episodes/update/$ep->ep_id" . URL::query(array('series_id' => $id)), __('Update'))?></span>
                 <span class="icon del" title="<?php echo __('Delete') ?>"><?php echo HTML::anchor("episodes/delete/$id/$ep->id", __('Delete'))?></span>
                 <span class="icon special"><?php echo HTML::anchor("download/episode/$ep->id", sprintf('S%02dE%02d', $ep->season, $ep->episode)); echo $ep->isDownloaded;?></span>
