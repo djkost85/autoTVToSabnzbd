@@ -292,6 +292,10 @@ class Controller_Episodes extends Controller_Page {
                 (string) $info->Episode->EpisodeName
                 );
 
+
+        $cacheName = "episodes_id_$series->id";
+
+        Cache::instance('default')->delete($cacheName);
         $this->request->redirect('episodes/' . $_GET['series_id'] . URL::query(array('msg' => $msg)));
     }
 

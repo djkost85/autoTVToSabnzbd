@@ -24,20 +24,21 @@
                     var top = offset.top - 136;
                     $.get(url, function (data) {
                         $(settings.selector).addClass('ready').html(data);
-                        var windowTop = $(window).scrollTop();
+                        /*var windowTop = $(window).scrollTop();
                         var windowHeight = $(window).height();
                         if (windowHeight <= ($(settings.selector).height() + top) - windowTop) {
                             top = top - ($(settings.selector).height() / 2);
                             $(settings.selector).css({ top: top });
-                        }
+                        }*/
                     });
 
                     $(settings.selector)
-                    .css({
+                    /*.css({
                         top: top,
                         left: offset.left + 205
                     })
-                    .fadeIn(350);
+                    .fadeIn(300)*/
+                    .show();
 
                     if(settings.rounded) {
                         $(settings.selector).addClass('rounded');
@@ -45,7 +46,9 @@
                 }, function() {
                     // mouse out
                     $(settings.selector).removeClass('ready').html('').hide();
-                });
+                }).mousemove(function(event){
+                    $(settings.selector).css({left: event.pageX+15, top: event.pageY+15});
+		});
             }
         });
         // returns the jQuery object to allow for chainability.

@@ -24,6 +24,9 @@ class Controller_Download extends Controller_Page {
 
         if (isset($results[0]['error']) or is_numeric($results)) {
             if (is_numeric($results)) {
+                if ($results == 404) {
+                    
+                }
                 $msg = Helper::getHttpCodeMessage($results);
             } else if (preg_match('#^(.*)_(?P<num>\d{1,2})$#', $results[0]['error'], $matches)) {
                 $msg = sprintf(__('please_wait_x'), $matches['num']);
@@ -143,7 +146,7 @@ class Controller_Download extends Controller_Page {
 
     public function action_listAll() {
         try {
-            $sab = new Sabnzbd_Queue(Kohana::config('default.Sabnzbd'));
+            $sab = new Sabnzbd_History(Kohana::config('default.Sabnzbd'));
         } catch (RuntimeException $e) {
             Kohana::exception_handler($e);
             return;

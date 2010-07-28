@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.'); ?>
  <!--header -->
 <div id="header">
-    <div id="logo"><a href="#"><?php echo HTML::image('images/black/logo.gif', array('alt' => 'logo'))?></a></div>
+    <div id="logo"><?php echo HTML::anchor('',HTML::image('images/black/logo.gif', array('alt' => 'logo')))?></div>
 
     <div id="nav">
         <ul>

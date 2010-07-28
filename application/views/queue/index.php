@@ -14,7 +14,7 @@
     <li><a class="sab" href="<?php echo $shutdown?>"><?php echo __('Shutdown')?></a></li>
     <li>
         <div class="progress-container total">
-            <div></div>
+            <div><span></span></div>
         </div>
     </li>
 </ul>
@@ -115,18 +115,17 @@
         } ?>
 </table>
 <hr />
-<div id="placeholder" style="width:600px;height:100px;"></div>
 <ul>
-    <li>SABnzbd version: <a href="<?php echo URL::site('queue/index')?>"><?php echo $version?></a></li>
-    <li>Kvar att ladda ner: <a href="<?php echo URL::site('queue/index')?>"><?php echo $sizeleft?></a></li>
-    <li>Hastighet: <a href="<?php echo URL::site('queue/index')?>" id="speed"><?php echo $speed?></a></li>
-    <li>Tämporär disk: <a href="<?php echo URL::site('queue/index')?>" id="temp_disk"><?php echo $tempDisk?></a></li>
-    <li>Färdig disk: <a href="<?php echo URL::site('queue/index')?>" id="comp_disk"><?php echo $compDisk?></a></li>
-    <li>Tid kvar: <a href="<?php echo URL::site('queue/index')?>" id="time-left"><?php echo $timeleft?></a></li>
-    <li>Beräknad till: <a href="<?php echo URL::site('queue/index')?>" id="eta"><?php echo $eta?></a></li>
+    <li><?php echo __('SABnzbd version')?>: <a href="<?php echo URL::site('queue/index')?>"><?php echo $version?></a></li>
+    <li><?php echo __('Left to download')?>: <a href="<?php echo URL::site('queue/index')?>"><?php echo $sizeleft?></a></li>
+    <li><?php echo __('Speed')?>: <a href="<?php echo URL::site('queue/index')?>" id="speed"><?php echo $speed?></a></li>
+    <li><?php echo __('Temporary hard drive')?>: <a href="<?php echo URL::site('queue/index')?>" id="temp_disk"><?php echo $tempDisk?></a></li>
+    <li><?php echo __('Estimated hard drive')?>: <a href="<?php echo URL::site('queue/index')?>" id="comp_disk"><?php echo $compDisk?></a></li>
+    <li><?php echo __('Time left')?>: <a href="<?php echo URL::site('queue/index')?>" id="time-left"><?php echo $timeleft?></a></li>
+    <li><?php echo __('ETA')?>: <a href="<?php echo URL::site('queue/index')?>" id="eta"><?php echo $eta?></a></li>
     <?php if ($warnings) { ?>
-        <li>Antal varningar: <strong><?php echo $warnings?></strong></li>
-        <li>Senaste varningen: <strong><?php echo $lastWarning?></strong></li>
+        <li><?php echo __('Number of warnings')?>: <strong><?php echo $warnings?></strong></li>
+        <li><?php echo __('Last warning')?>: <strong><?php echo $lastWarning?></strong></li>
     <?php } ?>
 </ul>
 
@@ -134,30 +133,6 @@
 <script type="text/javascript">
 $(function () {
     $("div.progress-container.total").progress(<?php echo $totalPercent?>);
-    /*var options = {
-        lines: { show: true },
-        points: { show: true },
-        xaxis: { tickDecimals: 0, tickSize: 1 }
-    };
-
-    var data = [];
-    var placeholder = $("#placeholder");
-
-    $.plot(placeholder, data, options);
-
-    setTimeout(function () {
-        var url = baseUrl + 'queue/getSpeed';
-        $.ajax({
-            url: url,
-            method: 'GET',
-            dataType: 'json',
-            success: function (series) {
-                data = [ series ];
-                $.plot(placeholder, data, options);
-            }
-        });
-    }, 2000);
-*/
 });
 </script>
 

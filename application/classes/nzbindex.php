@@ -15,20 +15,21 @@ class Nzbindex extends Tv_Info {
 
     public function search($q) {
         $query = array(
-                'q' => $q,
-                'sort' => 'agedesc',
-                'complete' => '1',
-                'max' => '25',
-                'more' => '1',
-                'minsize' => '50',
-                'nzblink' => '1',
+            'q' => $q,
+            'sort' => 'agedesc',
+            'complete' => '1',
+            'max' => '25',
+            'more' => '1',
+            'minsize' => '50',
+            'nzblink' => '1',
         );
 
         $url = $this->searchUrl . '?' . http_build_query($query);
         try {
             $xml = $this->getXml($url);
         } catch (InvalidArgumentException $e) {
-            echo $e->getMessage();
+            Kohana::exception_handler($e);
+            return;
         }
 
         return $xml;

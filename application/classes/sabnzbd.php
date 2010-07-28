@@ -27,22 +27,6 @@ class Sabnzbd {
         return $this->send($sendTo);
     }
 
-    function getHistory() {
-
-        $query = array(
-                'mode' => 'history',
-                'output' => 'json',
-                'apikey' => $this->_apiKey
-        );
-        $sendTo = $this->_sabUrl . '?' . http_build_query($query);
-        $json = json_decode($this->send($sendTo));
-        if (isset($json->status) && !$json->status) {
-            throw new RuntimeException($json->error);
-        }
-        
-        return $json->history;
-    }
-
     public function get($item) {
         $allowed = array('version', 'warnings', 'cats', 'scripts', 'queue', 'history');
         if (in_array($item, $allowed)) {

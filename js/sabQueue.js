@@ -48,7 +48,7 @@
                 if (settings.text) {
                     text = settings.text;
                 }
-                element.find(settings.selectorValue).css({ width: value + "%" }).text(text);
+                element.find(settings.selectorValue).css({ width: value + "%" }).find('span').text(text);
 
             });
         }

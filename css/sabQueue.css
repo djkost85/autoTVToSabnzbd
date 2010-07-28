@@ -44,12 +44,19 @@ div.progress-container {
     padding: 1px;
     float: left;
     background: white;
-    color: #000;
-    text-align: center;
+    position: relative;
 }
 div.progress-container > div {
-    background-color: #ACE97C;
+    background-color: #B1D918;
     height: 12px;
     font-size: 10px;
+}
+div.progress-container span {
+    position: absolute;
+    top: 0; 
+    left: 0;
+    color: #000;
+    text-align: center;
+    width: 100%;
 }
 

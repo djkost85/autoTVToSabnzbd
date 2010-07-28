@@ -10,7 +10,7 @@
  * @author morre95
  */
 class Sabnzbd_Queue extends Sabnzbd {
-    private $_slotsArray = array();
+    protected $_slotsArray = array();
 
     public function getQueue($prepare = true) {
         $query = array(
@@ -141,8 +141,7 @@ class Sabnzbd_Queue extends Sabnzbd {
         }
     }
 
-    function getSlots()
-    {
+    protected  function getSlots() {
         return $this->_slotsArray;
     }
 

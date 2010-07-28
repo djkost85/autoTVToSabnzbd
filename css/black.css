@@ -275,12 +275,15 @@ blockquote {
 	margin-left: auto;
 }
 #header #logo{
-	height: 59px;
-	width: 253px;
-	margin-top: 15px;
-	margin-right: 0;
-	margin-bottom: 0;
-	float: left;
+    margin-top: 15px;
+    margin-right: 0;
+    margin-bottom: 0;
+    float: left;
+}
+
+#header #logo img {
+    height: 59px;
+    width: 253px;
 }
 
 /*  Gallery  */
@@ -288,6 +291,11 @@ blockquote {
     list-style: none;
     margin: 0;
     padding: 0;
+}
+
+.thumbnail img {
+    width: 190px;
+    height: 279px;
 }
 
 .thumbnail li {
@@ -384,7 +392,7 @@ body#Controller_Update a#update_link {
 	text-transform:uppercase;
 }
         
-#nav   ul   li#last a  {
+#nav li#last a  {
 	display:inline;
 	text-decoration:none;
 	color:#BBBBBB;
@@ -400,7 +408,7 @@ body#Controller_Update a#update_link {
 	margin-left: 15px;
 	margin-bottom: 5px;
 }
-#nav ul li#last a:hover {
+#nav li#last a:hover {
 	color:#ec842b;
 	background-image: url(../images/black/rss_on.gif);
 	background-repeat: no-repeat;
@@ -645,6 +653,11 @@ body#Controller_Update a#update_link {
 }
 #footer-columns .col3-center { 
 	margin: 0 15px; 
+}
+
+#footer-columns .col3 img {
+    width: 16px;
+    height: 16px;
 }
 
 /* bottom */

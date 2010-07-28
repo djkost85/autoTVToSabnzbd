@@ -86,7 +86,7 @@ class Posters {
             unlink($savePath);
         }
 
-        $fp = fopen($savePath,'x');
+        $fp = fopen($savePath, 'x');
         fwrite($fp, $rawdata);
         fclose($fp);
     }

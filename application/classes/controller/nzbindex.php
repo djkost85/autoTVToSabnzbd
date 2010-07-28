@@ -4,6 +4,7 @@ defined('SYSPATH') or die('No direct script access.');
 class Controller_Nzbindex extends Controller {
 
     public function action_index() {
+        var_dump(is_dir('G:\usenet\test'));
         $nzb = new Nzbindex();
 //        $xml = $nzb->search('Top Gear S15E04');
 //        $xml = $nzb->search('Top Gear 15x04');
@@ -16,17 +17,22 @@ class Controller_Nzbindex extends Controller {
 //        $xml = $nzb->search('The Ultimate Fighter S11E13');
 //        $xml = $nzb->search('Arga snickaren S03E11');
 //        $xml = $nzb->search('Breaking Bad S03E13');
-//        $xml = $nzb->search('Stargate Universe S01E20');
-        $xml = $nzb->search('Glee S01E22');
+        $xml = $nzb->search('Stargate Universe S01E20');
+//        $xml = $nzb->search('Glee S01E22');
 //        var_dump($xml);
         foreach ($xml->channel->item as $item) {
             $parse = new NameParser_Nzbindex((string) $item->title);
             $parsed = $parse->parse();
 
-            var_dump($item);
+            $filename = (string)$item->enclosure['url'];
+
+//            var_dump($item);
+            var_dump(basename($filename));
             var_dump($parsed);
-//            if (is_null($parsed)) var_dump($item);
-//            else var_dump($parsed);
+
+            $name = sprintf('%s S%02dE%02d.nzb', $parsed['name'], $parsed['season'], $parsed['episode']);
+
+            NzbFile::saveNzb($filename, 'G:\usenet\test');
 
             var_dump(NzbMatrix::determinCat((string) $item->title));
         }
