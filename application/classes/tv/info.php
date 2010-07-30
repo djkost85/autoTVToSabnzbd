@@ -32,8 +32,17 @@ abstract class Tv_Info {
         return ($this->_httpCode == 200) ? $content : $this->_httpCode;
     }
 
-    protected function getXml($url) {
+    protected function getXml($url, array $options = array()) {
+//        $str = $this->send($url, $options);
+//
+//        if (is_numeric($str)) {
+//            $this->_httpCode = $str;
+//            throw new RuntimeException('Error HTTP code: ' . $str);
+//        }
+//
+//        $data = simplexml_load_string($str);
         $data = @simplexml_load_file($url);
+
         if (!$data or count($data) <= 0) {
             $this->_httpCode = 500;
             throw new InvalidArgumentException('No data');

@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 class NzbFile {
 
     public static function saveNzb($url, $saveDir, $saveName = null) {

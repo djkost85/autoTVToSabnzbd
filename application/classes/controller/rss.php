@@ -37,6 +37,7 @@ class Controller_Rss extends Controller {
 
     public function action_update() {
         $config = Kohana::config('default');
+
         $rss = ORM::factory('rss');
         if ($this->request != Request::instance()) {
             $expr = 'DATE_SUB(NOW(),INTERVAL ' . Inflector::singular(ltrim($config->rss['howOld'], '-')) . ')';
@@ -70,7 +71,13 @@ class Controller_Rss extends Controller {
 
                     # If NzbMatrix is not alive use NzbIndex instead
                     if (is_numeric($result)) {
-                        $this->request->redirect('nzbindex/fillRss');
+                        if ($config->default['useNzbSite'] == 'nzbMatrix') {
+                            $this->request->redirect('nzbindex/fillRss');
+                        } else if ($config->default['useNzbSite'] == 'nzbs' || $config->default['useNzbSite'] == 'both' && !empty($config->nzbs['queryString'])) {
+                            $this->request->redirect('nzbs/fillRss');
+                        } else {
+                            $this->request->redirect('nzbindex/fillRss');
+                        }
                         exit;
                     }
 

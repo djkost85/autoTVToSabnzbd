@@ -32,6 +32,7 @@
 <ul class="thumbnail">
 <?php
 $i = (isset($_GET['page']) && $_GET['page'] > 1) ? 100: 1;
+$useNzbSite = Kohana::config('default.default.useNzbSite');
 foreach ($series as $ser) {
     if ($ser->poster == "") {
         $poster = "images/black/noPoster.gif";
@@ -40,7 +41,9 @@ foreach ($series as $ser) {
     }
 
     $paperClip = "";
-    if ($i <= 10 && $rss->inFeed(sprintf("%s S%02dE%02d", $ser->series_name, $ser->season, $ser->episode))) {
+    $searchName = sprintf("%s S%02dE%02d", $ser->series_name, $ser->season, $ser->episode);
+    if ($useNzbSite == 'nzbs') $searchName = str_replace (' ', '.', $searchName);
+    if ($i <= 10 && $rss->inFeed($searchName)) {
         $i++;
         $paperClip = "<p></p><em>".__('In RSS')."</em>";
     }
@@ -69,7 +72,7 @@ foreach ($series as $ser) {
     <?php } ?>
 </ul>
 <?php echo $pagination; ?>
-<?php echo HTML::anchor('#', HTML::image((isset($banner)) ? $banner : "images/black/banner/star-wars.jpg", array('alt' => 'Bottom Banner', 'class' => 'banner')));?>
+<?php echo HTML::anchor('', HTML::image((isset($banner)) ? $banner : "images/black/banner/star-wars.jpg", array('alt' => 'Bottom Banner', 'class' => 'banner')));?>
 
 
                     <div class="clearer"></div>

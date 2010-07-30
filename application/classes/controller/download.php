@@ -14,18 +14,32 @@ defined('SYSPATH') or die('No direct script access.');
 class Controller_Download extends Controller_Page {
 
     public function action_episode($id) {
+        $this->auto_render = false;
+        
         $ep = ORM::factory('episode', array('id' => $id));
         $series = $ep->getSeriesInfo();
         $search = sprintf('%s S%02dE%02d', $series->series_name, $ep->season, $ep->episode);
 
-        $matrix = new NzbMatrix(Kohana::config('default.default'));
+        $config = Kohana::config('default');
+        if ($config->default['useNzbSite'] == 'nzbs') {
+            $nzbs = new Nzbs($config->nzbs);
+            $xml = $nzbs->search($search);
+            return $this->handleNZBsResults($xml, $search, $ep, $series);
 
-        $results = $matrix->search($search, $series->matrix_cat);
+            
+        } else {
+            $matrix = new NzbMatrix(Kohana::config('default.default'));
+            $results = $matrix->search($search, $series->matrix_cat);
+        }
 
         if (isset($results[0]['error']) or is_numeric($results)) {
             if (is_numeric($results)) {
                 if ($results == 404) {
-                    
+                    if ($config->default['useNzbSite'] == 'both') {
+                        $nzbs = new Nzbs($config->nzbs);
+                        $xml = $nzbs->search($search);
+                        return $this->handleNZBsResults($xml, $search, $ep, $series);
+                    }
                 }
                 $msg = Helper::getHttpCodeMessage($results);
             } else if (preg_match('#^(.*)_(?P<num>\d{1,2})$#', $results[0]['error'], $matches)) {
@@ -83,14 +97,37 @@ class Controller_Download extends Controller_Page {
                 $d->save();
 
                 $this->request->redirect(URL::query(array('msg' => "Download: " . $search)));
+                exit;
             }
 
             $session = Session::instance();
             $session->set('seachResults', $searchResult);
             $this->request->redirect("download/no_match/$ep->id");
+            exit;
         }
 
         $this->request->redirect("episodes/$series->id/" . URL::query(array('msg' => "nothing found [$search]")));
+    }
+
+    protected function handleNZBsResults($xml, $search, $ep, $series) {
+        $sab = new Sabnzbd(Kohana::config('default.Sabnzbd'));
+        foreach($xml->channel->item as $item) {
+            $parse = new NameParser((string) $item->title);
+            $parsed = $parse->parse();
+
+            $parsed['name'] = str_replace('.', ' ', $parsed['name']);
+
+            if (sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
+                sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
+                strtolower($parsed['name']) == strtolower($series->series_name) &&
+                $series->matrix_cat == Nzbs::cat2MatrixNum((string) $item->category)) {
+
+                $sab->sendNzb((string) $item->link, (string) $item->title);
+                $this->request->redirect(URL::query(array('msg' => "Download: " . $search)));
+                exit;
+            }
+            
+        }
     }
 
     public function action_no_match($id) {
@@ -102,6 +139,7 @@ class Controller_Download extends Controller_Page {
 
         if (!$results) {
             $this->request->redirect(URL::query(array('msg' => "nothing found")));
+            exit;
         }
 
         $this->template->title = __('Click to download') . '?';

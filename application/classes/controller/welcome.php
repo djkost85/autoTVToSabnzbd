@@ -20,7 +20,6 @@ class Controller_Welcome extends Controller_Page {
 //        $matrix = new NzbMatrix(Kohana::config('default.default'));
 //        var_dump($matrix->search('Top Gear s15e04', 41));
 
-
         
         $this->template->title = 'Visa alla serier';
 
