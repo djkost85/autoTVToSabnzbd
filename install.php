@@ -47,6 +47,9 @@ $loadedArr['systemDir'] = is_dir(SYSPATH) AND is_file(SYSPATH.'classes/kohana'.E
 $loadedArr['applicationDir'] = is_dir(APPPATH) AND is_file(APPPATH.'bootstrap'.EXT);
 $loadedArr['cacheDir'] = is_dir(APPPATH) AND is_dir(APPPATH.'cache') AND is_writable(APPPATH.'cache');
 $loadedArr['logsDir'] = is_dir(APPPATH) AND is_dir(APPPATH.'logs') AND is_writable(APPPATH.'logs');
+$loadedArr['configDir'] = is_dir(APPPATH) AND is_dir(APPPATH.'config') AND is_writable(APPPATH.'config');
+
+
 $loadedArr['utf8Support'] = @preg_match('/^.$/u', 'ñ');
 $loadedArr['unicodeSupport'] = @preg_match('/^\pL$/u', 'ñ');
 $loadedArr['URI_Determination'] = isset($_SERVER['REQUEST_URI']) OR isset($_SERVER['PHP_SELF']) OR isset($_SERVER['PATH_INFO']);
@@ -58,6 +61,8 @@ if (filter_has_var(INPUT_GET, 'save')) {
 
     $defs = array(
         'series_autocomplete'  => FILTER_SANITIZE_STRING,
+        'use_nzb_site'  => FILTER_SANITIZE_STRING,
+        'nzbs_query_string'  => FILTER_SANITIZE_STRING,
         'matrix_api_key'    => FILTER_SANITIZE_STRING,
         'matrix_api_user'    => FILTER_SANITIZE_STRING,
         'thetvdb_api_key'   => FILTER_SANITIZE_STRING,
@@ -105,6 +110,7 @@ return array(
         'TheTvDB_api_key' => '{$get['thetvdb_api_key']}',
         'NzbMatrix_api_key' => '{$get['matrix_api_key']}',
         'NzbMatrix_api_user' => '{$get['matrix_api_user']}',
+        'useNzbSite' => '{$get['use_nzb_site']}', //nzbs
     ),
 
     'Sabnzbd' => array(
@@ -115,7 +121,11 @@ return array(
     'rss' => array(
         'numberOfResults' => {$get['rss_num_results']},
         'howOld' => '{$get['rss_how_old']}' //\"-1 week\" \"-2 days\" \"-4 hours\" \"-2 seconds\" uses strtotime()
-    )
+    ),
+
+    'nzbs' => array(
+        'queryString' => '{$get['nzbs_query_string']}'
+    ),
 );
 
 ?>";
@@ -206,8 +216,7 @@ return array
                 return (RE.test(num));
             }
 
-
-            jQuery.fn.extend({
+            $.fn.extend({
                 scrollTo : function(speed, easing) {
                     return this.each(function() {
                         var targetOffset = $(this).offset().top;
@@ -215,7 +224,6 @@ return array
                     });
                 }
             });
-
 
             $(document).ready(function(){
                 //hide message_body after the first one
@@ -324,6 +332,41 @@ return array
                     }
                 });
 
+            });
+
+            $(document).ready(function(){
+                $('#nzb_matrix').click(function () {
+                    $('#nzbs_wrapper').hide().find('input').removeClass('needsfilled');
+                    $('#nzb_matrix_wrapper').show().find('input').each(function (){
+                        var input = $(this);
+                        if (input.val() == '') {
+                            input.addClass('needsfilled');
+                        }
+                    });
+                });
+                $('#nzbs').click(function () {
+                    $('#nzb_matrix_wrapper').hide().find('input').removeClass('needsfilled');
+                    $('#nzbs_wrapper').show().find('input').each(function (){
+                        var input = $(this);
+                        if (input.val() == '') {
+                            input.addClass('needsfilled');
+                        }
+                    });
+                });
+                $('#both').click(function () {
+                    $('#nzb_matrix_wrapper').show().find('input').find('input').each(function (){
+                        var input = $(this);
+                        if (input.val() == '') {
+                            input.addClass('needsfilled');
+                        }
+                    });
+                    $('#nzbs_wrapper').show().find('input').find('input').each(function (){
+                        var input = $(this);
+                        if (input.val() == '') {
+                            input.addClass('needsfilled');
+                        }
+                    });
+                });
             });
 
         </script>
@@ -520,20 +563,34 @@ return array
 
             </li>
             <li>
-                <p class="message_head"><cite class="down">Set NZB Matrix variables</cite> <span class="order">3</span></p>
+                <p class="message_head"><cite class="down">Set NZB site variables</cite> <span class="order">3</span></p>
                 <div class="message_body">
                     <div>
-                        <label for="matrix_api_key">NZB Matrix api key</label>
-                        <input type="text" name="matrix_api_key" id="matrix_api_key" size="35" value="<?php if (isset($get['matrix_api_key'])) echo $get['matrix_api_key'] ?>" class="<?php if (!isset($get['matrix_api_key'])) echo 'needsfilled'?>" />
+                        <label for="matrix_api_key">Use NZB Site</label>
+                        Use NZB Matrix<input type="radio" name="use_nzb_site" value="nzbMatrix" id="nzb_matrix" />
+                        Use NZBs.org<input type="radio" name="use_nzb_site" value="nzbs" id="nzbs" />
+                        Use Both<input type="radio" name="use_nzb_site" value="both" id="both" />
                     </div>
-                    <div>
-                        <label for="matrix_api_user">NZB Matrix username</label>
-                        <input type="text" name="matrix_api_user" id="matrix_api_user" size="35" value="<?php if (isset($get['matrix_api_user'])) echo $get['matrix_api_user'] ?>" class="<?php if (!isset($get['matrix_api_user'])) echo 'needsfilled'?>" />
+                    <div id="nzb_matrix_wrapper">
+                        <div>
+                            <label for="matrix_api_key">NZB Matrix api key</label>
+                            <input type="text" name="matrix_api_key" id="matrix_api_key" size="35" value="<?php if (isset($get['matrix_api_key'])) echo $get['matrix_api_key'] ?>" class="<?php if (!isset($get['matrix_api_key'])) echo 'needsfilled'?>" />
+                        </div>
+                        <div>
+                            <label for="matrix_api_user">NZB Matrix username</label>
+                            <input type="text" name="matrix_api_user" id="matrix_api_user" size="35" value="<?php if (isset($get['matrix_api_user'])) echo $get['matrix_api_user'] ?>" class="<?php if (!isset($get['matrix_api_user'])) echo 'needsfilled'?>" />
+                        </div>
+                        <div>
+                            If you dont have an VIP account on Nzbmatrix.com
+                            <a href="http://nzbmatrix.com/account-signup.php">click here</a>
+                            and register for one
+                        </div>
                     </div>
-                    <div>
-                        If you dont have an VIP account on Nzbmatrix.com
-                        <a href="http://nzbmatrix.com/account-signup.php">click here</a>
-                        and register for one
+                    <div id="nzbs_wrapper" style="display: none;">
+                        <div>
+                            <label for="nzbs_query_string">NZBs.org URL String</label>
+                            <input type="text" name="nzbs_query_string" id="nzbs_query_string" size="35" value="<?php if (isset($get['nzbs_query_string'])) echo $get['nzbs_query_string'] ?>" />
+                        </div>
                     </div>
                 </div>
             </li>
@@ -615,6 +672,14 @@ return array
                             <td class="pass"><?php echo APPPATH.'logs/' ?></td>
                             <?php else: $failed = TRUE ?>
                             <td class="fail">The <code><?php echo APPPATH.'logs/' ?></code> directory is not writable.</td>
+                            <?php endif ?>
+                        </tr>
+                        <tr>
+                            <th>Config Directory</th>
+                            <?php if (is_dir(APPPATH) AND is_dir(APPPATH.'config') AND is_writable(APPPATH.'config')): ?>
+                            <td class="pass"><?php echo APPPATH.'config/' ?></td>
+                            <?php else: $failed = TRUE ?>
+                            <td class="fail">The <code><?php echo APPPATH.'config/' ?></code> directory is not writable.</td>
                             <?php endif ?>
                         </tr>
                         <tr>
@@ -719,7 +784,7 @@ return array
                     <?php endif ?>
                 </div>
             </li>
-            <li>
+            <!--<li>
                 <p class="message_head"><cite>Autocomplete series</cite> <span class="order">7</span></p>
                 <?php $config = include "application/config/series.php"; ?>
                 <div class="message_body">
@@ -733,7 +798,7 @@ return array
                         </ol>
                     </p>
                 </div>
-            </li>
+            </li>-->
 
         </ol>
             <p>
