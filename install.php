@@ -30,6 +30,12 @@ function getWarnings($server, $apiKey) {
         return $json->warnings;
 }
 
+function apacheModuleLoaded($modName) {
+    $modules = apache_get_modules();
+
+    return in_array($modName, $modules);
+}
+
 $loadedArr['isPHP_5_2_3'] = version_compare(PHP_VERSION, '5.2.3', '>=');
 $loadedArr['curlLoaded'] = extension_loaded('curl');
 $loadedArr['mcryptLoaded'] = extension_loaded('mcrypt');
@@ -58,11 +64,17 @@ if (is_dir(realpath(APPPATH.'../images')) AND
 } else {
     $loadedArr['imagesDir'] = false;
 }
-var_dump($loadedArr['imagesDir']);
+
+$loadedArr['modeRewriteLoded'] = apacheModuleLoaded('mod_rewrite');
+
+$requestUri = preg_replace('/\/index.php/', '', $_SERVER['REQUEST_URI']);
+$requestUri = '/' . trim($requestUri, '/') . '/';
+$loadedArr['requestUri'] = ($requestUri == '/autoTvToSab/');
 
 $loadedArr['utf8Support'] = @preg_match('/^.$/u', 'ñ');
 $loadedArr['unicodeSupport'] = @preg_match('/^\pL$/u', 'ñ');
 $loadedArr['URI_Determination'] = isset($_SERVER['REQUEST_URI']) OR isset($_SERVER['PHP_SELF']) OR isset($_SERVER['PATH_INFO']);
+
 
 $errorMsg = array();
 $configSaved = false;
@@ -649,7 +661,7 @@ return array
                             <?php if ($loadedArr['isPHP_5_2_3']): ?>
                             <td class="pass"><?php echo PHP_VERSION ?></td>
                             <?php else: $failed = TRUE ?>
-                            <td class="fail">Kohana requires PHP 5.2.3 or newer, this version is <?php echo PHP_VERSION ?>.</td>
+                            <td class="fail">AutoTvToSab requires PHP 5.2.3 or newer, this version is <?php echo PHP_VERSION ?>.</td>
                             <?php endif ?>
                         </tr>
                         <tr>
@@ -765,7 +777,7 @@ return array
                             <?php if ($loadedArr['curlLoaded']): ?>
                             <td class="pass">Pass</td>
                             <?php else: ?>
-                            <td class="fail">Kohana requires <a href="http://php.net/curl">cURL</a> for the Remote class.</td>
+                            <td class="fail">AutoTvToSab requires <a href="http://php.net/curl">cURL</a> for the Remote class.</td>
                             <?php endif ?>
                         </tr>
                         <tr>
@@ -773,18 +785,38 @@ return array
                             <?php if ($loadedArr['gdLoaded']): ?>
                             <td class="pass">Pass</td>
                             <?php else: ?>
-                            <td class="fail">Kohana requires <a href="http://php.net/gd">GD</a> v2 for the Image class.</td>
+                            <td class="fail">AutoTvToSab requires <a href="http://php.net/gd">GD</a> v2 for the Image class.</td>
+                            <?php endif ?>
+                        </tr>
+                        <tr>
+                            <th>Base url</th>
+                            <?php if ($loadedArr['requestUri']): ?>
+                            <td class="pass">Pass</td>
+                            <?php else: ?>
+                            <td class="fail">AutoTvToSab requires this line <code>'base_url' => '/autoTvToSab/',</code> in application/bootstrap.php to be set to <code>'base_url' => '<?php echo $requestUri?>'</code>.</td>
                             <?php endif ?>
                         </tr>
                         <tr>
                             <th colspan="2">Optional</th>
                         </tr>
                         <tr>
+                            <th>Apache mod_rewrite</th>
+                            <?php if ($loadedArr['modeRewriteLoded']): ?>
+                            <td class="pass">Pass</td>
+                            <?php else: $failed = TRUE ?>
+                            <td class="fail">
+                                AutoTvToSab requires <a href="http://httpd.apache.org/docs/2.0/mod/mod_rewrite.html">mod_rewrite</a> to rewrite requested URLs on the fly.
+                                You can use autoTvToSab without mod_rewrite. But then you must change this line <code>'index_file' => FALSE,</code> in application/bootstrap.php to
+                                <code>'index_file' => 'index.php',</code> and delete the .htaccess file.
+                            </td>
+                            <?php endif ?>
+                        </tr>
+                        <tr>
                             <th>mcrypt Enabled</th>
                             <?php if ($loadedArr['mcryptLoaded']): ?>
                             <td class="pass">Pass</td>
                             <?php else: ?>
-                            <td class="fail">Kohana requires <a href="http://php.net/mcrypt">mcrypt</a> for the Encrypt class.</td>
+                            <td class="fail">AutoTvToSab requires <a href="http://php.net/mcrypt">mcrypt</a> for the Encrypt class.</td>
                             <?php endif ?>
                         </tr>
                         <tr>
@@ -792,7 +824,7 @@ return array
                             <?php if ($loadedArr['pdoLoaded']): ?>
                             <td class="pass">Pass</td>
                             <?php else: ?>
-                            <td class="fail">Kohana can use <a href="http://php.net/pdo">PDO</a> to support additional databases.</td>
+                            <td class="fail">AutoTvToSab can use <a href="http://php.net/pdo">PDO</a> to support additional databases.</td>
                             <?php endif ?>
                         </tr>
                     </table>
@@ -802,22 +834,6 @@ return array
                     <?php endif ?>
                 </div>
             </li>
-            <!--<li>
-                <p class="message_head"><cite>Autocomplete series</cite> <span class="order">7</span></p>
-                <?php $config = include "application/config/series.php"; ?>
-                <div class="message_body">
-                    <p>
-                        <label for="series_autocomplete">Add series</label>
-                        <input type="text" name="series_autocomplete" id="series_autocomplete" size="25" />
-                        <ol>
-                            <?php foreach ($config['autocomplete'] as $autocomplete) { ?>
-                            <li><?php echo $autocomplete ?></li>
-                            <?php } ?>
-                        </ol>
-                    </p>
-                </div>
-            </li>-->
-
         </ol>
             <p>
                 <input type="submit" name="save" value="save" />
