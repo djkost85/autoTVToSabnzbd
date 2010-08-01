@@ -24,8 +24,9 @@ class Controller_Download extends Controller_Page {
         if ($config->default['useNzbSite'] == 'nzbs') {
             $nzbs = new Nzbs($config->nzbs);
             $xml = $nzbs->search($search);
-            return $this->handleNZBsResults($xml, $search, $ep, $series);
-
+            if (!$this->handleNZBsResults($xml, $search, $ep, $series)) {
+                $this->request->redirect("episodes/$series->id/" . URL::query(array('msg' => "nothing found [$search]")));
+            }
             
         } else {
             $matrix = new NzbMatrix(Kohana::config('default.default'));
@@ -38,7 +39,9 @@ class Controller_Download extends Controller_Page {
                     if ($config->default['useNzbSite'] == 'both') {
                         $nzbs = new Nzbs($config->nzbs);
                         $xml = $nzbs->search($search);
-                        return $this->handleNZBsResults($xml, $search, $ep, $series);
+                        if (!$this->handleNZBsResults($xml, $search, $ep, $series)) {
+                            $this->request->redirect("episodes/$series->id/" . URL::query(array('msg' => "nothing found [$search]")));
+                        }
                     }
                 }
                 $msg = Helper::getHttpCodeMessage($results);
@@ -128,6 +131,8 @@ class Controller_Download extends Controller_Page {
             }
             
         }
+
+        return false;
     }
 
     public function action_no_match($id) {

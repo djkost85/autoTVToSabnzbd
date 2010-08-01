@@ -38,9 +38,7 @@ function apacheModuleLoaded($modName) {
 
 $loadedArr['isPHP_5_2_3'] = version_compare(PHP_VERSION, '5.2.3', '>=');
 $loadedArr['curlLoaded'] = extension_loaded('curl');
-$loadedArr['mcryptLoaded'] = extension_loaded('mcrypt');
 $loadedArr['gdLoaded'] = function_exists('gd_info');
-$loadedArr['pdoLoaded'] = class_exists('PDO');
 
 $loadedArr['splLoaded'] = function_exists('spl_autoload_register');
 $loadedArr['reflectionLoaded'] = class_exists('ReflectionClass');
@@ -65,8 +63,6 @@ if (is_dir(realpath(APPPATH.'../images')) AND
     $loadedArr['imagesDir'] = false;
 }
 
-$loadedArr['modeRewriteLoded'] = apacheModuleLoaded('mod_rewrite');
-
 $requestUri = preg_replace('/\/index.php/', '', $_SERVER['REQUEST_URI']);
 $requestUri = '/' . trim($requestUri, '/') . '/';
 $loadedArr['requestUri'] = ($requestUri == '/autoTvToSab/');
@@ -75,6 +71,11 @@ $loadedArr['utf8Support'] = @preg_match('/^.$/u', 'ñ');
 $loadedArr['unicodeSupport'] = @preg_match('/^\pL$/u', 'ñ');
 $loadedArr['URI_Determination'] = isset($_SERVER['REQUEST_URI']) OR isset($_SERVER['PHP_SELF']) OR isset($_SERVER['PATH_INFO']);
 
+
+
+$optionalLoadedArr['pdoLoaded'] = class_exists('PDO');
+$optionalLoadedArr['modeRewriteLoded'] = apacheModuleLoaded('mod_rewrite');
+$optionalLoadedArr['mcryptLoaded'] = extension_loaded('mcrypt');
 
 $errorMsg = array();
 $configSaved = false;
@@ -266,7 +267,7 @@ return array
                     return false;
                 });
 
-                <?php if (in_array(false, $loadedArr, true)) { ?>
+                <?php if (in_array(false, $loadedArr, true) || in_array(false, $optionalLoadedArr, true)) { ?>
                     $(".message_list .environment").show();
                     $("#environment_header").scrollTo(1000)
                 <?php } ?>
@@ -797,11 +798,11 @@ return array
                             <?php endif ?>
                         </tr>
                         <tr>
-                            <th colspan="2">Optional</th>
+                            <th colspan="2"><h2>This is optional</h2></th>
                         </tr>
                         <tr>
                             <th>Apache mod_rewrite</th>
-                            <?php if ($loadedArr['modeRewriteLoded']): ?>
+                            <?php if ($optionalLoadedArr['modeRewriteLoded']): ?>
                             <td class="pass">Pass</td>
                             <?php else: $failed = TRUE ?>
                             <td class="fail">
@@ -813,7 +814,7 @@ return array
                         </tr>
                         <tr>
                             <th>mcrypt Enabled</th>
-                            <?php if ($loadedArr['mcryptLoaded']): ?>
+                            <?php if ($optionalLoadedArr['mcryptLoaded']): ?>
                             <td class="pass">Pass</td>
                             <?php else: ?>
                             <td class="fail">AutoTvToSab requires <a href="http://php.net/mcrypt">mcrypt</a> for the Encrypt class.</td>
@@ -821,7 +822,7 @@ return array
                         </tr>
                         <tr>
                             <th>PDO Enabled</th>
-                            <?php if ($loadedArr['pdoLoaded']): ?>
+                            <?php if ($optionalLoadedArr['pdoLoaded']): ?>
                             <td class="pass">Pass</td>
                             <?php else: ?>
                             <td class="fail">AutoTvToSab can use <a href="http://php.net/pdo">PDO</a> to support additional databases.</td>
