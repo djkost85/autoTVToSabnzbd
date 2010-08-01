@@ -48,6 +48,17 @@ $loadedArr['applicationDir'] = is_file(APPPATH.'bootstrap'.EXT);
 $loadedArr['cacheDir'] = is_dir(APPPATH.'cache') AND is_writable(APPPATH.'cache');
 $loadedArr['logsDir'] = is_dir(APPPATH.'logs') AND is_writable(APPPATH.'logs');
 $loadedArr['configDir'] = is_dir(APPPATH.'config') AND is_writable(APPPATH.'config');
+if (is_dir(realpath(APPPATH.'../images')) AND
+        is_writable(realpath(APPPATH.'../images')) AND
+        is_writable(realpath(APPPATH.'../images/__cache')) AND
+        is_writable(realpath(APPPATH.'../images/banner')) AND
+        is_writable(realpath(APPPATH.'../images/poster')) AND
+        is_writable(realpath(APPPATH.'../images/fanart'))) {
+    $loadedArr['imagesDir'] = true;
+} else {
+    $loadedArr['imagesDir'] = false;
+}
+var_dump($loadedArr['imagesDir']);
 
 $loadedArr['utf8Support'] = @preg_match('/^.$/u', 'ñ');
 $loadedArr['unicodeSupport'] = @preg_match('/^\pL$/u', 'ñ');
@@ -659,7 +670,7 @@ return array
                         </tr>
                         <tr>
                             <th>Cache Directory</th>
-                            <?php if (is_dir(APPPATH) AND is_dir(APPPATH.'cache') AND is_writable(APPPATH.'cache')): ?>
+                            <?php if ($loadedArr['cacheDir']): ?>
                             <td class="pass"><?php echo APPPATH.'cache/' ?></td>
                             <?php else: $failed = TRUE ?>
                             <td class="fail">The <code><?php echo APPPATH.'cache/' ?></code> directory is not writable.</td>
@@ -667,7 +678,7 @@ return array
                         </tr>
                         <tr>
                             <th>Logs Directory</th>
-                            <?php if (is_dir(APPPATH) AND is_dir(APPPATH.'logs') AND is_writable(APPPATH.'logs')): ?>
+                            <?php if ($loadedArr['logsDir']): ?>
                             <td class="pass"><?php echo APPPATH.'logs/' ?></td>
                             <?php else: $failed = TRUE ?>
                             <td class="fail">The <code><?php echo APPPATH.'logs/' ?></code> directory is not writable.</td>
@@ -675,10 +686,18 @@ return array
                         </tr>
                         <tr>
                             <th>Config Directory</th>
-                            <?php if (is_dir(APPPATH) AND is_dir(APPPATH.'config') AND is_writable(APPPATH.'config')): ?>
+                            <?php if ($loadedArr['configDir']): ?>
                             <td class="pass"><?php echo APPPATH.'config/' ?></td>
                             <?php else: $failed = TRUE ?>
                             <td class="fail">The <code><?php echo APPPATH.'config/' ?></code> directory is not writable.</td>
+                            <?php endif ?>
+                        </tr>
+                        <tr>
+                            <th>Images Directory</th>
+                            <?php if ($loadedArr['imagesDir']): ?>
+                            <td class="pass"><?php echo APPPATH.'images/' ?></td>
+                            <?php else: $failed = TRUE ?>
+                            <td class="fail">The <code><?php echo APPPATH.'images/' ?></code> directory or it´s subdirectories is not writable.</td>
                             <?php endif ?>
                         </tr>
                         <tr>
@@ -742,9 +761,6 @@ return array
                             <?php endif ?>
                         </tr>
                         <tr>
-                            <th colspan="2">Optional</th>
-                        </tr>
-                        <tr>
                             <th>cURL Enabled</th>
                             <?php if ($loadedArr['curlLoaded']): ?>
                             <td class="pass">Pass</td>
@@ -753,19 +769,22 @@ return array
                             <?php endif ?>
                         </tr>
                         <tr>
-                            <th>mcrypt Enabled</th>
-                            <?php if ($loadedArr['mcryptLoaded']): ?>
-                            <td class="pass">Pass</td>
-                            <?php else: ?>
-                            <td class="fail">Kohana requires <a href="http://php.net/mcrypt">mcrypt</a> for the Encrypt class.</td>
-                            <?php endif ?>
-                        </tr>
-                        <tr>
                             <th>GD Enabled</th>
                             <?php if ($loadedArr['gdLoaded']): ?>
                             <td class="pass">Pass</td>
                             <?php else: ?>
                             <td class="fail">Kohana requires <a href="http://php.net/gd">GD</a> v2 for the Image class.</td>
+                            <?php endif ?>
+                        </tr>
+                        <tr>
+                            <th colspan="2">Optional</th>
+                        </tr>
+                        <tr>
+                            <th>mcrypt Enabled</th>
+                            <?php if ($loadedArr['mcryptLoaded']): ?>
+                            <td class="pass">Pass</td>
+                            <?php else: ?>
+                            <td class="fail">Kohana requires <a href="http://php.net/mcrypt">mcrypt</a> for the Encrypt class.</td>
                             <?php endif ?>
                         </tr>
                         <tr>

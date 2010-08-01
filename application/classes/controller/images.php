@@ -18,7 +18,7 @@ class Controller_Images extends Controller {
         }
 
         //$this->request->headers['Content-Type'] = 'image/jpeg';
-        $this->request->headers['Content-Type'] = File::mime($image);
+        $this->request->headers['Content-Type'] = $image->mime;
         //$this->request->headers['Content-length'] = filesize($file);
 
         //$this->request->send_headers();
@@ -49,7 +49,9 @@ class Controller_Images extends Controller {
     }
 
     protected function showImage($file) {
-        $this->request->headers['Content-Type'] = File::mime($file);
+        $image = Image::factory($file);
+//        $this->request->headers['Content-Type'] = File::mime($file);
+        $this->request->headers['Content-Type'] = $image->mime;
 
         // Send the set headers to the browser
         $this->request->send_headers();
