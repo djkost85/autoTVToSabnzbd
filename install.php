@@ -44,11 +44,10 @@ $loadedArr['mbstringLoadeed'] = extension_loaded('mbstring');
 
 
 $loadedArr['systemDir'] = is_dir(SYSPATH) AND is_file(SYSPATH.'classes/kohana'.EXT);
-$loadedArr['applicationDir'] = is_dir(APPPATH) AND is_file(APPPATH.'bootstrap'.EXT);
-$loadedArr['cacheDir'] = is_dir(APPPATH) AND is_dir(APPPATH.'cache') AND is_writable(APPPATH.'cache');
-$loadedArr['logsDir'] = is_dir(APPPATH) AND is_dir(APPPATH.'logs') AND is_writable(APPPATH.'logs');
-$loadedArr['configDir'] = is_dir(APPPATH) AND is_dir(APPPATH.'config') AND is_writable(APPPATH.'config');
-
+$loadedArr['applicationDir'] = is_file(APPPATH.'bootstrap'.EXT);
+$loadedArr['cacheDir'] = is_dir(APPPATH.'cache') AND is_writable(APPPATH.'cache');
+$loadedArr['logsDir'] = is_dir(APPPATH.'logs') AND is_writable(APPPATH.'logs');
+$loadedArr['configDir'] = is_dir(APPPATH.'config') AND is_writable(APPPATH.'config');
 
 $loadedArr['utf8Support'] = @preg_match('/^.$/u', 'ñ');
 $loadedArr['unicodeSupport'] = @preg_match('/^\pL$/u', 'ñ');
