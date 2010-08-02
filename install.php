@@ -131,16 +131,16 @@ if (filter_has_var(INPUT_GET, 'save')) {
     if (is_string($SabWarnings)) {
         $errorMsg[] = "SABnzbd error: $SabWarnings";
     }
+	
+	if (empty($get['use_nzb_site'])) {
+		if (empty($get['matrix_api_user']) && !empty($get['nzbs_query_string'])) {
+			$get['use_nzb_site'] = 'nzbs';
+		} else {
+			$get['use_nzb_site'] = 'nzbMatrix';
+		}
+	}
 
     if (!in_array(false, $loadedArr, true) && !in_array(null, $get, true) && !in_array(false, $get, true) && empty($errorMsg)) {
-
-        if (empty($get['use_nzb_site'])) {
-            if (empty($get['matrix_api_user']) && !empty($get['nzbs_query_string'])) {
-                $get['use_nzb_site'] = 'nzbs';
-            } else {
-                $get['use_nzb_site'] = 'nzbMatrix';
-            }
-        }
 
         $config = "<?php defined('SYSPATH') or die('No direct script access.');
 
