@@ -67,7 +67,7 @@ if (is_dir(realpath(APPPATH.'../images')) AND
 $loadedArr['requestUri'] = true;
 
 if (!filter_has_var(INPUT_GET, 'save')) {
-    $requestUri = preg_replace('/\/index.php/', '', $_SERVER['REQUEST_URI']);
+    $requestUri = preg_replace('/\/index.php/', '', $_SERVER['PHP_SELF']);
     $requestUri = '/' . trim($requestUri, '/') . '/';
     $loadedArr['requestUri'] = ($requestUri == '/autoTvToSab/');
 }
@@ -122,6 +122,14 @@ if (filter_has_var(INPUT_GET, 'save')) {
             }
         }
     }
+	
+	
+	$sql = "SHOW TABLES";
+	$result = mysql_query($sql, $link);
+	
+	if (mysql_num_rows( $result ) < 5) {
+		$errorMsg[] = "You have to create tables in you database";
+	}
 
     if (!testSab($get['sab_url'])) {
         $errorMsg[] = "Incorrect URL: {$get['sab_url']}";
@@ -547,7 +555,8 @@ return array
     <body>
         <?php if ($configSaved) { ?>
         <p id="results" class="pass">✔ Your environment passed all requirements.<br />
-			Remove or rename the <code>install<?php echo EXT ?></code> file now.</p>
+			Remove or rename the <code>install<?php echo EXT ?></code> file <br />
+			and <a href="<?php echo preg_replace('/\/index.php/', '', $_SERVER['PHP_SELF'])?>">click here</a>.</p>
         <?php if (isset($SabWarnings) && is_array($SabWarnings) && !empty($SabWarnings)) { ?>
         <p class="fail">SABnzbd errors:</p>
         <ul class="fail">
