@@ -109,7 +109,14 @@ if (filter_has_var(INPUT_GET, 'save')) {
 
     $db_selected = @mysql_select_db($get['db_dbname'], $link);
     if (!$db_selected) {
-        $errorMsg[] = 'Can\'t use "'.$get['db_dbname'].'" as a database : ' . mysql_error();
+        if (!@mysql_query("CREATE DATABASE {$get['db_dbname']}", $link)) {
+            $errorMsg[] = 'Error creating database: "'.$get['db_dbname'].'". Mysql error: ' . mysql_error();
+        } else if (@mysql_select_db($get['db_dbname'], $link)) {
+            $tables = file_get_contents('database.sql');
+            foreach (explode(';', $tables) as $table) {
+                mysql_query($table, $link);
+            }
+        }
     }
 
     if (!testSab($get['sab_url'])) {
@@ -122,6 +129,14 @@ if (filter_has_var(INPUT_GET, 'save')) {
     }
 
     if (!in_array(false, $loadedArr, true) && !in_array(null, $get, true) && !in_array(false, $get, true) && empty($errorMsg)) {
+
+        if (empty($get['use_nzb_site'])) {
+            if (empty($get['matrix_api_user']) && !empty($get['nzbs_query_string'])) {
+                $get['use_nzb_site'] = 'nzbs';
+            } else {
+                $get['use_nzb_site'] = 'nzbMatrix';
+            }
+        }
 
         $config = "<?php defined('SYSPATH') or die('No direct script access.');
 
@@ -565,7 +580,8 @@ return array
                     </div>
                     <div>
                         <label for="db_dbname">Database name</label>
-                        <input type="text" name="db_dbname" id="db_dbname" size="35" class="<?php if (!isset($get['db_dbname'])) echo 'needsfilled'?>" value="<?php if (isset($get['db_dbname'])) echo $get['db_dbname'] ?>" />
+                        <!--<input type="text" name="db_dbname" id="db_dbname" size="35" class="<?php //if (!isset($get['db_dbname'])) echo 'needsfilled'?>" value="<?php //if (isset($get['db_dbname'])) echo $get['db_dbname'] ?>" />-->
+                        <input type="text" name="db_dbname" id="db_dbname" size="35" value="<?php if (isset($get['db_dbname'])) echo $get['db_dbname']; else echo 'autotvtosab'; ?>" />
                     </div>
                 </div>
 
