@@ -573,7 +573,7 @@ return array
         <h2>Fields marked in red are important</h2>
         <p>Follow the instructions <a href="http://sourceforge.net/apps/trac/autotvtosab/">here</a> before continuing.</p>
         <p id="error">You have an error in the installation form</p>
-        <form action="<?php echo $_SERVER['PHP_SELF']?>" method="get">
+        <form action="<?php echo preg_replace('/\/index.php/', '', $_SERVER['PHP_SELF'])?>" method="get">
         <ol class="message_list">
             <li>
 
