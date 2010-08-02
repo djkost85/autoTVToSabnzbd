@@ -63,9 +63,14 @@ if (is_dir(realpath(APPPATH.'../images')) AND
     $loadedArr['imagesDir'] = false;
 }
 
-$requestUri = preg_replace('/\/index.php/', '', $_SERVER['REQUEST_URI']);
-$requestUri = '/' . trim($requestUri, '/') . '/';
-$loadedArr['requestUri'] = ($requestUri == '/autoTvToSab/');
+
+$loadedArr['requestUri'] = true;
+
+if (!filter_has_var(INPUT_GET, 'save')) {
+    $requestUri = preg_replace('/\/index.php/', '', $_SERVER['REQUEST_URI']);
+    $requestUri = '/' . trim($requestUri, '/') . '/';
+    $loadedArr['requestUri'] = ($requestUri == '/autoTvToSab/');
+}
 
 $loadedArr['utf8Support'] = @preg_match('/^.$/u', 'ñ');
 $loadedArr['unicodeSupport'] = @preg_match('/^\pL$/u', 'ñ');
@@ -83,7 +88,6 @@ if (filter_has_var(INPUT_GET, 'save')) {
 //    var_dump($_GET);
 
     $defs = array(
-        'series_autocomplete'  => FILTER_SANITIZE_STRING,
         'use_nzb_site'  => FILTER_SANITIZE_STRING,
         'nzbs_query_string'  => FILTER_SANITIZE_STRING,
         'matrix_api_key'    => FILTER_SANITIZE_STRING,
@@ -560,7 +564,7 @@ return array
         <h2>Fields marked in red are important</h2>
         <p>Follow the instructions <a href="http://sourceforge.net/apps/trac/autotvtosab/">here</a> before continuing.</p>
         <p id="error">You have an error in the installation form</p>
-        <form action="#" method="get">
+        <form action="<?php echo $_SERVER['PHP_SELF']?>" method="get">
         <ol class="message_list">
             <li>
 
