@@ -69,12 +69,13 @@ $loadedArr['URI_Determination'] = isset($_SERVER['REQUEST_URI']) OR isset($_SERV
 
 
 
-$optionalLoadedArr['requestUri'] = true;
+$warningLoadedArr['requestUri'] = true;
 
 if (!filter_has_var(INPUT_GET, 'save')) {
     $requestUri = preg_replace('/\/index.php/', '', $_SERVER['PHP_SELF']);
     $requestUri = rtrim($requestUri, '/') . '/';
-    $optionalLoadedArr['requestUri'] = ($requestUri == '/autoTvToSab/');
+    $requestUri = str_replace('//', '/', $requestUri);
+    $warningLoadedArr['requestUri'] = ($requestUri == '/autoTvToSab/');
 }
 
 $optionalLoadedArr['pdoLoaded'] = class_exists('PDO');
@@ -562,7 +563,7 @@ return array
             <li><?php echo implode('</li><li>', $SabWarnings)?></li>
         </ul>
        <?php } ?>
-        <?php if (!$optionalLoadedArr['requestUri']) { ?>
+        <?php if (!$warningLoadedArr['requestUri']) { ?>
             <p class="fail">AutoTvToSab requires this line <code>'base_url' => '/autoTvToSab/',</code> in application/bootstrap.php to be set to <code>'base_url' => '<?php echo $requestUri?>'</code>.</p>
             <?php } ?>
         <?php } else { ?>
@@ -821,8 +822,11 @@ return array
                             <?php endif ?>
                         </tr>
                         <tr>
+                            <th colspan="2">Warnings</th>
+                        </tr>
+                        <tr>
                             <th>Base url</th>
-                            <?php if ($optionalLoadedArr['requestUri']): ?>
+                            <?php if ($warningLoadedArr['requestUri']): ?>
                             <td class="pass">Pass</td>
                             <?php else: ?>
                             <td class="fail">AutoTvToSab requires this line <code>'base_url' => '/autoTvToSab/',</code> in application/bootstrap.php to be set to <code>'base_url' => '<?php echo $requestUri?>'</code>.</td>
