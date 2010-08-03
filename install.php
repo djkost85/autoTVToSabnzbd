@@ -328,7 +328,7 @@ return array
 
 
 
-                var required = ["sab_api_key", "matrix_api_key", "thetvdb_api_key", "rss_num_results",
+                var required = ["sab_api_key", "thetvdb_api_key", "rss_num_results",
                     "rss_how_old", "db_host", "db_user", /*"db_pass", */"db_dbname"];
                 // If using an ID other than #email or #error then replace it here
                 var url = $("#sab_url");
