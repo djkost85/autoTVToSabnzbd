@@ -552,7 +552,7 @@ return array
         <?php if ($configSaved) { ?>
         <p id="results" class="pass">✔ Your environment passed all requirements.<br />
 			Remove or rename the <code>install<?php echo EXT ?></code> file <br />
-			and <a href="<?php echo preg_replace('/\/index.php/', '', $_SERVER['PHP_SELF'])?>">click here</a>.</p>
+			and <a href="<?php echo str_replace('//', '/', preg_replace('/\/index.php/', '', $_SERVER['PHP_SELF']))?>">click here</a>.</p>
         <?php if (isset($SabWarnings) && is_array($SabWarnings) && !empty($SabWarnings)) { ?>
         <p class="fail">SABnzbd errors:</p>
         <ul class="fail">
@@ -576,7 +576,7 @@ return array
         <h2>Fields marked in red are important</h2>
         <p>Follow the instructions <a href="http://sourceforge.net/apps/trac/autotvtosab/">here</a> before continuing.</p>
         <p id="error">You have an error in the installation form</p>
-        <form action="<?php echo preg_replace('/\/index.php/', '', $_SERVER['PHP_SELF'])?>" method="get">
+        <form action="<?php echo str_replace('//', '/', preg_replace('/\/index.php/', '', $_SERVER['PHP_SELF']))?>" method="get">
         <ol class="message_list">
             <li>
 
