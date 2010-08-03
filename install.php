@@ -63,20 +63,19 @@ if (is_dir(realpath(APPPATH.'../images')) AND
     $loadedArr['imagesDir'] = false;
 }
 
-
-$loadedArr['requestUri'] = true;
-
-if (!filter_has_var(INPUT_GET, 'save')) {
-    $requestUri = preg_replace('/\/index.php/', '', $_SERVER['PHP_SELF']);
-    $requestUri = '/' . trim($requestUri, '/') . '/';
-    $loadedArr['requestUri'] = ($requestUri == '/autoTvToSab/');
-}
-
 $loadedArr['utf8Support'] = @preg_match('/^.$/u', 'ñ');
 $loadedArr['unicodeSupport'] = @preg_match('/^\pL$/u', 'ñ');
 $loadedArr['URI_Determination'] = isset($_SERVER['REQUEST_URI']) OR isset($_SERVER['PHP_SELF']) OR isset($_SERVER['PATH_INFO']);
 
 
+
+$optionalLoadedArr['requestUri'] = true;
+
+if (!filter_has_var(INPUT_GET, 'save')) {
+    $requestUri = preg_replace('/\/index.php/', '', $_SERVER['PHP_SELF']);
+    $requestUri = rtrim($requestUri, '/') . '/';
+    $optionalLoadedArr['requestUri'] = ($requestUri == '/autoTvToSab/');
+}
 
 $optionalLoadedArr['pdoLoaded'] = class_exists('PDO');
 $optionalLoadedArr['modeRewriteLoded'] = apacheModuleLoaded('mod_rewrite');
@@ -122,11 +121,11 @@ if (filter_has_var(INPUT_GET, 'save')) {
             }
         }
     }
-	
-	
+
+
 	$sql = "SHOW TABLES";
 	$result = mysql_query($sql, $link);
-	
+
 	if (mysql_num_rows( $result ) < 5) {
 		$errorMsg[] = "You have to create tables in you database";
 	}
@@ -139,7 +138,7 @@ if (filter_has_var(INPUT_GET, 'save')) {
     if (is_string($SabWarnings)) {
         $errorMsg[] = "SABnzbd error: $SabWarnings";
     }
-	
+
 	if (empty($get['use_nzb_site'])) {
 		if (empty($get['matrix_api_user']) && !empty($get['nzbs_query_string'])) {
 			$get['use_nzb_site'] = 'nzbs';
@@ -563,6 +562,9 @@ return array
             <li><?php echo implode('</li><li>', $SabWarnings)?></li>
         </ul>
        <?php } ?>
+        <?php if (!$optionalLoadedArr['requestUri']) { ?>
+            <p class="fail">AutoTvToSab requires this line <code>'base_url' => '/autoTvToSab/',</code> in application/bootstrap.php to be set to <code>'base_url' => '<?php echo $requestUri?>'</code>.</p>
+            <?php } ?>
         <?php } else { ?>
 
         <?php if (!empty($errorMsg)) { ?>
@@ -820,7 +822,7 @@ return array
                         </tr>
                         <tr>
                             <th>Base url</th>
-                            <?php if ($loadedArr['requestUri']): ?>
+                            <?php if ($optionalLoadedArr['requestUri']): ?>
                             <td class="pass">Pass</td>
                             <?php else: ?>
                             <td class="fail">AutoTvToSab requires this line <code>'base_url' => '/autoTvToSab/',</code> in application/bootstrap.php to be set to <code>'base_url' => '<?php echo $requestUri?>'</code>.</td>
