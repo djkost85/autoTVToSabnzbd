@@ -69,14 +69,10 @@ $loadedArr['URI_Determination'] = isset($_SERVER['REQUEST_URI']) OR isset($_SERV
 
 
 
-$warningLoadedArr['requestUri'] = true;
-
-if (!filter_has_var(INPUT_GET, 'save')) {
-    $requestUri = preg_replace('/\/index.php/', '', $_SERVER['PHP_SELF']);
-    $requestUri = rtrim($requestUri, '/') . '/';
-    $requestUri = str_replace('//', '/', $requestUri);
-    $warningLoadedArr['requestUri'] = ($requestUri == '/autoTvToSab/');
-}
+$requestUri = preg_replace('/\/index.php/', '', $_SERVER['PHP_SELF']);
+$requestUri = rtrim($requestUri, '/') . '/';
+$requestUri = str_replace('//', '/', $requestUri);
+$warningLoadedArr['requestUri'] = ($requestUri == '/autoTvToSab/');
 
 $optionalLoadedArr['pdoLoaded'] = class_exists('PDO');
 $optionalLoadedArr['modeRewriteLoded'] = apacheModuleLoaded('mod_rewrite');
@@ -564,7 +560,11 @@ return array
         </ul>
        <?php } ?>
         <?php if (!$warningLoadedArr['requestUri']) { ?>
-            <p class="fail">AutoTvToSab requires this line <code>'base_url' => '/autoTvToSab/',</code> in application/bootstrap.php to be set to <code>'base_url' => '<?php echo $requestUri?>'</code>.</p>
+            <p class="fail">
+                AutoTvToSab requires this line <code>'base_url' => '/autoTvToSab/',</code> in application/bootstrap.php to be set to
+                <code>'base_url' => '<?php echo $requestUri?>'</code>. But you might already have done so. I can´t see it.
+                Sorry if I'm barking at you unnecessarily.
+            </p>
             <?php } ?>
         <?php } else { ?>
 
@@ -829,7 +829,11 @@ return array
                             <?php if ($warningLoadedArr['requestUri']): ?>
                             <td class="pass">Pass</td>
                             <?php else: ?>
-                            <td class="fail">AutoTvToSab requires this line <code>'base_url' => '/autoTvToSab/',</code> in application/bootstrap.php to be set to <code>'base_url' => '<?php echo $requestUri?>'</code>.</td>
+                            <td class="fail">
+                                AutoTvToSab requires this line <code>'base_url' => '/autoTvToSab/',</code> in application/bootstrap.php to be set to
+                                <code>'base_url' => '<?php echo $requestUri?>'</code>. But you might already have done so. I can´t see it.
+                                Sorry if I'm barking at you unnecessarily.
+                            </td>
                             <?php endif ?>
                         </tr>
                         <tr>
