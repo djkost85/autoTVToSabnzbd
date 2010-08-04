@@ -113,7 +113,7 @@ jQuery(document).ready(function($) {
             $('#spinner').css({ top: position.top , left: position.left + $(this).width() + 30 }).fadeIn();
             var value = select.val();
             if (value == "select") return false;
-            $.get(baseUrl + 'series/setMatrix/' + element.attr('id'), { cat: value }, function(data) {
+            $.get(ajaxUrl + 'series/setMatrix/' + element.attr('id'), { cat: value }, function(data) {
                 $('#spinner').fadeOut();
                 form.remove();
                 element.removeClass('doNoEdit');

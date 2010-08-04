@@ -60,13 +60,13 @@ jQuery(document).ready(function($) {
     $('select').change(function () {
         var url = $(this).val()
         $.get(url, function () {
-            window.location = baseUrl + 'queue/index';
+            window.location = ajaxUrl + 'queue/index';
         });
     });
     $('.sab').click(function () {
         var url = $(this).attr('href');
         $.get(url, function () {
-            window.location = baseUrl + 'queue/index';
+            window.location = ajaxUrl + 'queue/index';
         });
         return false;
     });
@@ -87,7 +87,7 @@ jQuery(document).ready(function($) {
     });
 
     var refreshBar = setInterval(function() {
-        $.getJSON(baseUrl + 'queue/getProcent', function (data) {
+        $.getJSON(ajaxUrl + 'queue/getProcent', function (data) {
             $("#total-percentage").text(data.total_text);
             $("div.progress-container.total").progress(data.total_percent);
             $('#speed').text(data.speed);

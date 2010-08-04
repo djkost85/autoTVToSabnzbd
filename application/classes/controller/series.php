@@ -39,6 +39,13 @@ class Controller_Series extends Controller_Page {
         if (empty($_GET['name'])) {
             $this->request->redirect(URL::query(array('save' => 'Error')));
         }
+        
+//        $this->auto_render = false;
+//        Helper::backgroundExec(URL::site('episodes/doBackAdd' . URL::query($_GET), true));
+//        $this->request->redirect('series/add/?' . http_build_query(array('msg' => $_GET['name'] . ' ' . __('is saved'))));
+//    }
+//
+//    public function action_doBackAdd() {
 
         $this->auto_render = false;
 
@@ -117,7 +124,7 @@ class Controller_Series extends Controller_Page {
 
         Helper::backgroundExec(URL::site('episodes/downloadAllImages/' . $lastId, true));
 
-        $this->request->redirect('series/add' . URL::query(array('msg' => $_GET['name'] . ' ' . __('is saved'))));
+        $this->request->redirect('series/add/?' . http_build_query(array('msg' => $_GET['name'] . ' ' . __('is saved'))));
     }
 
     public function action_update($id) {
@@ -140,7 +147,7 @@ class Controller_Series extends Controller_Page {
 
     public function action_doUpdate($id) {
         if (!is_numeric($id)) {
-            $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
+            $this->request->redirect('?' . http_build_query(array('msg' => 'Error: no id')));
         }
 
         $this->auto_render = false;
@@ -153,9 +160,9 @@ class Controller_Series extends Controller_Page {
             $tv = new TheTvDB($this->TheTvDB_api_key, $series->series_name);
             $info = $tv->getSeriesInfo();
         } catch (InvalidArgumentException $e) {
-            $this->request->redirect(URL::query(array('error' => $e->getMessage())));
+            $this->request->redirect('?' . http_build_query(array('error' => $e->getMessage())));
         } catch (ErrorException $e) {
-            $this->request->redirect(URL::query(array('error' => $e->getMessage())));
+            $this->request->redirect('?' . http_build_query(array('error' => $e->getMessage())));
         }
 
         $overwrite = Kohana::config('default.default.saveImagesAsNew');
@@ -169,7 +176,7 @@ class Controller_Series extends Controller_Page {
 
         $lastId = $series->save();
         if (!$lastId) {
-            $this->request->redirect(URL::query(array('msg' => 'Error: databas series error')));
+            $this->request->redirect('?' . http_build_query(array('msg' => 'Error: databas series error')));
         }
 
         foreach ($series->episodes->find_all() as $ep) {
@@ -236,14 +243,14 @@ class Controller_Series extends Controller_Page {
         Cache::instance('default')->delete('series');
         /** Only update if the reques is not internaly **/
         if ($this->request == Request::instance()) {
-            $this->request->redirect('' . URL::query(array('msg' => $name . ' ' . __('is updated'))));
+            $this->request->redirect('?' . http_build_query(array('msg' => $name . ' ' . __('is updated'))));
         }
 
     }
 
     public function action_edit($id) {
         if (!is_numeric($id)) {
-            $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
+            $this->request->redirect('?' . http_build_query(array('msg' => 'Error: no id')));
         }
 
         $series = ORM::factory('series', $id);
@@ -263,7 +270,7 @@ class Controller_Series extends Controller_Page {
 
     public function action_doEdit($id) {
         if (!is_numeric($id)) {
-            $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
+            $this->request->redirect('?' . http_build_query(array('msg' => 'Error: no id')));
         }
 
         $this->auto_render = false;
@@ -297,11 +304,11 @@ class Controller_Series extends Controller_Page {
         }
 
         if (!$series->save()) {
-            $this->request->redirect(URL::query(array('msg' => 'Error: databas series error')));
+            $this->request->redirect('?' . http_build_query(array('msg' => 'Error: databas series error')));
         }
 		
 	Cache::instance('default')->delete('series');
-        $this->request->redirect('' . URL::query(array('msg' => $series->series_name . ' ' . __('is updated'))));
+        $this->request->redirect('?' . http_build_query(array('msg' => $series->series_name . ' ' . __('is updated'))));
     }
 
     public function action_delete($id) {
@@ -318,7 +325,7 @@ class Controller_Series extends Controller_Page {
 
     public function action_doDelete($id) {
         if (!is_numeric($id)) {
-            $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
+            $this->request->redirect('?' . http_build_query(array('msg' => 'Error: no id')));
         }
 
         $this->auto_render = false;
@@ -348,7 +355,7 @@ class Controller_Series extends Controller_Page {
 
         $series->delete();
 	Cache::instance('default')->delete('series');
-        $this->request->redirect('' . URL::query(array('msg' => $name . ' ' . __('is deleted'))));
+        $this->request->redirect('?' . http_build_query(array('msg' => $name . ' ' . __('is deleted'))));
     }
 
     protected function saveInfo(ORM $series, SimpleXMLElement $info, $saveAsNew = false) {
@@ -377,7 +384,7 @@ class Controller_Series extends Controller_Page {
             } else {
                 $posterFile = $path . basename($_GET['poster']);
                 if (!rename($_GET['poster'], $posterFile)) {
-                    $this->request->redirect('' . URL::query(array('msg' => 'Error: can´t move image')));
+                    $this->request->redirect('?' . http_build_query(array('msg' => 'Error: can´t move image')));
                 }
                 $this->clearCache();
             }
@@ -450,7 +457,7 @@ class Controller_Series extends Controller_Page {
             $tv = new TheTvDB($this->TheTvDB_api_key, $series_name);
             $banners = $tv->getBanners();
         } catch (InvalidArgumentException $e) {
-            $this->request->redirect(URL::query(array('error' => $e->getMessage())));
+            $this->request->redirect('?' . http_build_query(array('error' => $e->getMessage())));
         }
 
 
