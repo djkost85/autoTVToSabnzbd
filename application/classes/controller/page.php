@@ -53,6 +53,7 @@ class Controller_Page extends Controller_Template {
 
             $codes = array(
                 'home path' => 'var baseUrl = "' . URL::base() . '"',
+                'ajax path' => 'var ajaxUrl = "' . URL::site() . '"',
             );
 
             $this->template->styles = array_merge($styles, $this->template->styles);

@@ -52,9 +52,8 @@ ini_set('unserialize_callback_func', 'spl_autoload_call');
  */
 Kohana::init(array(
     'base_url' => str_replace('//', '/', rtrim(str_replace('index.php', '', str_replace(str_replace($_SERVER['SCRIPT_NAME'], '', $_SERVER['PHP_SELF']), '', $_SERVER['PHP_SELF'])), '/') . '/'),
-    'index_file' => FALSE,
+    //'index_file' => FALSE,
     ));
-//'base_url' => '/autoTvToSab/',
 
 //Kohana::$environment = Kohana::DEVELOPMENT;
 Kohana::$environment = Kohana::PRODUCTION;

@@ -74,7 +74,7 @@ function getImages(search) {
     var position = $('#name').offset();
     $('#spinner').css({ top: position.top , left: position.left + $('#name').width() + 30 }).fadeIn();
     
-    var url = baseUrl + 'series/getBanners/' + search;
+    var url = ajaxUrl + 'series/getBanners/' + search;
     $.get(url, function (data) {
         $('#spinner').fadeOut();
         $('#search-result').html(data).fadeIn();
