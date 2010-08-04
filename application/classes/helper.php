@@ -83,16 +83,16 @@ class Helper {
 
     public static function backgroundExec($url) {
         $parts = parse_url($url);
-
         $fp = @fsockopen($parts['host'], isset($parts['port']) ? $parts['port'] : 80, $errno, $errstr, 30);
 
         if (!$fp) {
             return false;
         } else {
+            $contentLength = isset($parts['query']) ? strlen($parts['query']) : 10;
             $out = "POST " . $parts['path'] . " HTTP/1.0\r\n";
             $out.= "Host: " . $parts['host'] . "\r\n";
             $out.= "Content-Type: application/x-www-form-urlencoded\r\n";
-            $out.= "Content-Length: " . strlen(isset($parts['query']) ? $parts['query'] : '') . "\r\n";
+            $out.= "Content-Length: $contentLength \r\n";
             $out.= "Connection: Close\r\n\r\n";
             if (isset($parts['query']))
                 $out.= $parts['query'];

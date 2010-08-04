@@ -86,6 +86,7 @@ if (filter_has_var(INPUT_GET, 'save')) {
     $defs = array(
         'use_nzb_site'  => FILTER_SANITIZE_STRING,
         'nzbs_query_string'  => FILTER_SANITIZE_STRING,
+        'series_update_every'  => FILTER_SANITIZE_STRING,
         'matrix_api_key'    => FILTER_SANITIZE_STRING,
         'matrix_api_user'    => FILTER_SANITIZE_STRING,
         'thetvdb_api_key'   => FILTER_SANITIZE_STRING,
@@ -171,6 +172,10 @@ return array(
 
     'nzbs' => array(
         'queryString' => '{$get['nzbs_query_string']}'
+    ),
+
+    'update' => array(
+        'seriesUpdateEvery' => '{$get['series_update_every']}'
     ),
 );
 
@@ -665,7 +670,7 @@ return array
                 </div>
             </li>
             <li>
-                <p class="message_head"><cite class="down">RSS variables</cite> <span class="order">5</span></p>
+                <p class="message_head"><cite class="down">Update variables</cite> <span class="order">5</span></p>
                 <div class="message_body">
                     <p>Do not touch unless you know what you are doing</p>
                     <div>
@@ -673,9 +678,14 @@ return array
                         <input type="text" name="rss_num_results" id="rss_num_results" value="<?php if (isset($get['rss_num_results'])) echo $get['rss_num_results']; else echo '10' ?>" />
                     </div>
                     <div>
-                        <label for="rss_how_old">How old the results should be</label>
-                        <input type="text" name="rss_how_old" id="rss_how_old" value="<?php if (isset($get['rss_how_old'])) echo $get['rss_how_old']; else echo '-1 days' ?>" />
+                        <label for="rss_how_old">Rss update before one is older then</label>
+                        <input type="text" name="rss_how_old" id="rss_how_old" value="<?php if (isset($get['rss_how_old'])) echo $get['rss_how_old']; else echo '-3 hours' ?>" />
                         <em>Example: -1 week or -4 hours</em>
+                    </div>
+                    <div>
+                        <label for="series_update_every">All series are updated every</label>
+                        <input type="text" name="series_update_every" id="series_update_every" value="<?php if (isset($get['series_update_every'])) echo $get['series_update_every']; else echo '1 week' ?>" />
+                        <em>Example: 1 week or 4 days</em>
                     </div>
                 </div>
             </li>

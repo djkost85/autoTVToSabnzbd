@@ -78,6 +78,24 @@ class Controller_Page extends Controller_Template {
             $this->template->footer = $footer->__toString();
         }
         parent::after();
+
+
+        $config = Kohana::config('default');
+
+        $rss = ORM::factory('rss');
+        $expr = 'DATE_SUB(NOW(),INTERVAL ' . Inflector::singular(ltrim($config->rss['howOld'], '-')) . ')';
+        $result = $rss->where(DB::expr($expr), '>=', DB::expr('updated'));
+
+        if ($result->count_all() > 0) {
+            Helper::backgroundExec(URL::site('rss/update', true));
+        }
+
+        $lastUpdate = Cookie::get('seriesUpdateEvery', null);
+        if (is_null($lastUpdate) || $lastUpdate < strtotime($config->update['seriesUpdateEvery'])) {
+            Helper::backgroundExec(URL::site('update/doAll', true));
+            Cookie::set('seriesUpdateEvery', time());
+        }
+
     }
 
 }

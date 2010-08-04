@@ -53,8 +53,8 @@ class Controller_Update extends Controller_Page {
 
         $phpPath = (isset($_GET['path_to_php'])) ? $_GET['path_to_php'] : 'C:\wamp\bin\php\php5.3.0\php.exe';
 
-        $urlRss = "http://dev/autoTvToSab/rss/update";
-        $urlSeries = "http://dev/autoTvToSab/update/doAll";
+        $urlRss = URL::site('rss/update', true);
+        $urlSeries = URL::site('update/doAll', true);
         $data = "<?php
 set_time_limit(0);
 

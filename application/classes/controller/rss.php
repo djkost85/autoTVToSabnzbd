@@ -39,18 +39,19 @@ class Controller_Rss extends Controller {
         $config = Kohana::config('default');
 
         $rss = ORM::factory('rss');
-        if ($this->request != Request::instance()) {
-            $expr = 'DATE_SUB(NOW(),INTERVAL ' . Inflector::singular(ltrim($config->rss['howOld'], '-')) . ')';
-
-            $result = $rss->where(DB::expr($expr), '>=', DB::expr('updated'));
-
-            if ($result->count_all() <= 0) {
-                if ($rss->count_all() == $config->rss['numberOfResults']) {
-                    $this->request->response = __('Already updated');
-                    return;
-                }
-            }
-        }
+//        if ($this->request != Request::instance()) {
+//            $expr = 'DATE_SUB(NOW(),INTERVAL ' . Inflector::singular(ltrim($config->rss['howOld'], '-')) . ')';
+//
+//            $result = $rss->where(DB::expr($expr), '>=', DB::expr('updated'));
+//
+//            if ($result->count_all() <= 0) {
+//                if ($rss->count_all() == $config->rss['numberOfResults']) {
+//                    $this->request->response = __('Already updated');
+//                    return;
+//                }
+//            }
+//        }
+        ignore_user_abort(true);
         set_time_limit(0);
 
 //        $rss->truncate();
@@ -72,11 +73,14 @@ class Controller_Rss extends Controller {
                     # If NzbMatrix is not alive use NzbIndex instead
                     if (is_numeric($result)) {
                         if ($config->default['useNzbSite'] == 'nzbMatrix') {
-                            $this->request->redirect('nzbindex/fillRss');
+                            $this->request->response = Request::factory('nzbindex/fillRss')->execute()->response;
+                            //$this->request->redirect('nzbindex/fillRss');
                         } else if ($config->default['useNzbSite'] == 'nzbs' || $config->default['useNzbSite'] == 'both' && !empty($config->nzbs['queryString'])) {
-                            $this->request->redirect('nzbs/fillRss');
+                            $this->request->response = Request::factory('nzbs/fillRss')->execute()->response;
+                            //$this->request->redirect('nzbs/fillRss');
                         } else {
-                            $this->request->redirect('nzbindex/fillRss');
+                            $this->request->response = Request::factory('nzbindex/fillRss')->execute()->response;
+                            //$this->request->redirect('nzbindex/fillRss');
                         }
                         exit;
                     }
