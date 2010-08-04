@@ -197,7 +197,7 @@ class Controller_Download extends Controller_Page {
 
         $history = $sab->getHistory();
 
-        $this->template->title = 'Visa alla nerladdningar';
+        $this->template->title = __('Show all downloads');
         $xhtml = View::factory('download/listAll');
 
         $xhtml->set('history', $history);

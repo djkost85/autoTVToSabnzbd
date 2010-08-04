@@ -74,10 +74,13 @@ return array(
     'add-slow-page' => 'Jag laddar ner bilder just nu, därför är jag lite seg',
 
     /*Welcome Controller*/
-    'show all series' => 'Visa alla tv serier',
+    'Show all series' => 'Visa alla tv serier',
     'Add new series' => 'Lägg till en ny serie',
     'today' => 'idag',
     'In RSS' => 'I RSS',
+    'Show all episodes from' => 'Visa alla avsnitt från',
+    'Show all special episodes from' => 'Visa alla special avsnitt från',
+    'Show all downloads' => 'Visa alla nerladdningar',
 
     /*Menu*/
     'Home' => 'Hem',

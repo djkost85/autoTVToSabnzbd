@@ -66,30 +66,40 @@ class Posters {
         $series = $this->getXml()->xpath('/Data/Series');
     }
 
-
-    function saveImage($img, $savePath) {
-        if (!file_exists($img)) {
-            //throw new InvalidArgumentException('Error: No file at: ' . $img);
+    function saveImage($inPath, $outPath) {
+        $in=    fopen($inPath, "rb");
+        $out=   fopen($outPath, "wb");
+        while ($chunk = fread($in,8192)) {
+            fwrite($out, $chunk, 8192);
         }
-        
-        $ch = curl_init ($img);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
-        $rawdata = curl_exec($ch);
-        if ($rawdata === false) {
-            throw new InvalidArgumentException('Error: No image at: ' . $img . '. Msg: ' . curl_error($ch));
-        }
-        curl_close ($ch);
-
-        if(file_exists($savePath)) {
-            unlink($savePath);
-        }
-
-        $fp = fopen($savePath, 'x');
-        fwrite($fp, $rawdata);
-        fclose($fp);
+        fclose($in);
+        fclose($out);
     }
+
+
+//    function saveImage($img, $savePath) {
+//        if (!file_exists($img)) {
+//            //throw new InvalidArgumentException('Error: No file at: ' . $img);
+//        }
+//
+//        $ch = curl_init ($img);
+//        curl_setopt($ch, CURLOPT_HEADER, 0);
+//        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+//        curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+//        $rawdata = curl_exec($ch);
+//        if ($rawdata === false) {
+//            throw new InvalidArgumentException('Error: No image at: ' . $img . '. Msg: ' . curl_error($ch));
+//        }
+//        curl_close ($ch);
+//
+//        if(file_exists($savePath)) {
+//            unlink($savePath);
+//        }
+//
+//        $fp = fopen($savePath, 'x');
+//        fwrite($fp, $rawdata);
+//        fclose($fp);
+//    }
 
     function ifFileExist($file, $path) {
         if (!preg_match("/(.+)\.[a-z]{2,4}$/i", $file)) {

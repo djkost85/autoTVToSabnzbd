@@ -33,7 +33,7 @@ class Controller_Images extends Controller {
         }
         $file = $_GET['image'];
 
-        $this->showImage($file);
+        $this->showImage($file, true);
     }
 
     public function action_ordImage() {
@@ -48,10 +48,13 @@ class Controller_Images extends Controller {
         $this->showImage($file);
     }
 
-    protected function showImage($file) {
-        $image = Image::factory($file);
-//        $this->request->headers['Content-Type'] = File::mime($file);
-        $this->request->headers['Content-Type'] = $image->mime;
+    protected function showImage($file, $remote = false) {
+        if ($remote) {
+            $this->request->headers['Content-Type'] = File::mime($file);
+        } else {
+            $image = Image::factory($file);
+            $this->request->headers['Content-Type'] = $image->mime;
+        }
 
         // Send the set headers to the browser
         $this->request->send_headers();

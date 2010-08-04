@@ -36,29 +36,31 @@ class Controller_Series extends Controller_Page {
     }
 
     public function action_doAdd() {
-        if (empty($_POST['name'])) {
+        if (empty($_GET['name'])) {
             $this->request->redirect(URL::query(array('save' => 'Error')));
         }
 
-        $lang = ORM::factory('language')->find($_POST['language']);
+        $this->auto_render = false;
+
+        $lang = ORM::factory('language')->find($_GET['language']);
 
         try {
-            $tv = new TheTvDB($this->TheTvDB_api_key, $_POST['name'], $lang->abbreviation);
+            $tv = new TheTvDB($this->TheTvDB_api_key, $_GET['name'], $lang->abbreviation);
 
             $series = ORM::factory('series');
             $arr = $tv->toArray();
             if ($series->isAdded($arr['seriesName'])) {
-                $this->request->redirect('series/add' . URL::query(array('msg' => $_POST['name'] . ' ' . __('alredy exists'))));
+                $this->request->redirect('series/add' . URL::query(array('msg' => $_GET['name'] . ' ' . __('alredy exists'))));
             }
 
             $info = $tv->getSeriesInfo();
         } catch (InvalidArgumentException $e) {
             $this->request->redirect(URL::query(array('error' => $e->getMessage())));
         }
-
+        
         $saveAsNew = Kohana::config('default.default.saveImagesAsNew');
         $series = $this->saveInfo($series, $info, $saveAsNew);
-        $series->language_id = $_POST['language'];
+        $series->language_id = $_GET['language'];
         $lastId = $series->save();
         if (!$lastId) {
             $this->request->redirect('series/add' . URL::query(array('msg' => 'Error: databas series error')));
@@ -113,7 +115,9 @@ class Controller_Series extends Controller_Page {
 
 	Cache::instance('default')->delete('series');
 
-        $this->request->redirect('series/add' . URL::query(array('msg' => $_POST['name'] . ' ' . __('is saved'))));
+        Helper::backgroundExec(URL::site('episodes/downloadAllImages/' . $lastId, true));
+
+        $this->request->redirect('series/add' . URL::query(array('msg' => $_GET['name'] . ' ' . __('is saved'))));
     }
 
     public function action_update($id) {
@@ -139,6 +143,8 @@ class Controller_Series extends Controller_Page {
             $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
         }
 
+        $this->auto_render = false;
+
         $series = ORM::factory('series', $id);
 
         $name = $series->series_name;
@@ -158,7 +164,7 @@ class Controller_Series extends Controller_Page {
 
         $series = $this->saveInfo($series, $info, $overwrite);
 
-        if (isset($_POST['matrix_cat'])) $series->matrix_cat = $_POST['matrix_cat'];
+        if (isset($_GET['matrix_cat'])) $series->matrix_cat = $_GET['matrix_cat'];
         else $series->matrix_cat = $matrix_cat;
 
         $lastId = $series->save();
@@ -260,31 +266,33 @@ class Controller_Series extends Controller_Page {
             $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
         }
 
+        $this->auto_render = false;
+
         $series = ORM::factory('series', $id);
-        $series->matrix_cat = $_POST['matrix_cat'];
+        $series->matrix_cat = $_GET['matrix_cat'];
         $poster = new Posters();
-        if (!empty($_POST['fanart'])) {
+        if (!empty($_GET['fanart'])) {
             $path = "images/fanart/";
             if (file_exists($series->fanart))
             unlink($series->fanart);
-            $fanartFile = $path . basename($_POST['fanart']);
-            $poster->saveImage($_POST['fanart'], $fanartFile);
+            $fanartFile = $path . basename($_GET['fanart']);
+            $poster->saveImage($_GET['fanart'], $fanartFile);
             $series->fanart = $fanartFile;
         }
-        if (!empty($_POST['poster'])) {
+        if (!empty($_GET['poster'])) {
             $path = "images/poster/";
             if (file_exists($series->poster))
             unlink($series->poster);
-            $posterFile = $path . basename($_POST['poster']);
-            $poster->saveImage($_POST['poster'], $posterFile);
+            $posterFile = $path . basename($_GET['poster']);
+            $poster->saveImage($_GET['poster'], $posterFile);
             $series->poster = $posterFile;
         }
-        if (!empty($_POST['banner'])) {
+        if (!empty($_GET['banner'])) {
             $path = "images/banner/";
             if (file_exists($series->banner))
             unlink($series->banner);
-            $bannerFile = $path . basename($_POST['banner']);
-            $poster->saveImage($_POST['banner'], $bannerFile);
+            $bannerFile = $path . basename($_GET['banner']);
+            $poster->saveImage($_GET['banner'], $bannerFile);
             $series->banner = $bannerFile;
         }
 
@@ -312,6 +320,9 @@ class Controller_Series extends Controller_Page {
         if (!is_numeric($id)) {
             $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
         }
+
+        $this->auto_render = false;
+
         $series = ORM::factory('series', $id);
 
         $name = $series->series_name;
@@ -350,7 +361,7 @@ class Controller_Series extends Controller_Page {
             $path = "images/poster/";
             $image = 'http://thetvdb.com/banners/' . (string) $info->Series->poster;
 
-            if (empty($_POST['poster'])) {
+            if (empty($_GET['poster'])) {
                 if (isset($series->poster) && file_exists($series->poster)) {
                     $posterFile = $series->poster;
                 } else {
@@ -364,8 +375,8 @@ class Controller_Series extends Controller_Page {
                     $poster->saveImage($image, $posterFile);
                 }
             } else {
-                $posterFile = $path . basename($_POST['poster']);
-                if (!rename($_POST['poster'], $posterFile)) {
+                $posterFile = $path . basename($_GET['poster']);
+                if (!rename($_GET['poster'], $posterFile)) {
                     $this->request->redirect('' . URL::query(array('msg' => 'Error: can´t move image')));
                 }
                 $this->clearCache();
@@ -416,7 +427,7 @@ class Controller_Series extends Controller_Page {
                 'rating'         => (string) $info->Series->Rating,
                 'runtime'        => (string) $info->Series->Runtime,
                 'series_id'      => (int) $info->Series->SeriesID,
-                'series_name'    => (empty($info->Series->SeriesName) && isset($_POST['name'])) ? $_POST['name'] : (string) $info->Series->SeriesName,
+                'series_name'    => (empty($info->Series->SeriesName) && isset($_GET['name'])) ? $_GET['name'] : (string) $info->Series->SeriesName,
                 'status'         => (string) $info->Series->Status,
                 'added'          => (string) $info->Series->added,
                 'added_by'       => (string) $info->Series->addedBy,
@@ -426,7 +437,7 @@ class Controller_Series extends Controller_Page {
                 'lastupdated'    => (string) $info->Series->lastupdated,
                 'poster'         => $posterFile,
                 'zap2it_id'      => (string) $info->Series->zap2it_id,
-                'matrix_cat'     => (isset($_POST['cat'])) ? $_POST['cat'] : 'tv-all'
+                'matrix_cat'     => (isset($_GET['cat'])) ? $_GET['cat'] : 'tv-all'
         );
 
         $series->values($data);

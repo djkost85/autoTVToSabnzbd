@@ -17,14 +17,15 @@ class Controller_Welcome extends Controller_Page {
             'items_per_page' => 12 // default 10
         ));
 
+
 //        $matrix = new NzbMatrix(Kohana::config('default.default'));
 //        var_dump($matrix->search('Top Gear s15e04', 41));
 
         
-        $this->template->title = 'Visa alla serier';
+        $this->template->title = __('Show all series');
 
         $xhtml = View::factory('welcome/index');
-        $xhtml->set('title', 'Visa alla tv serier')
+        $xhtml->set('title', __('Show all series'))
             ->set('noSeries', __('No series'))
             ->set('imdb', Kohana::config('default.imdb'))
             ->set('pagination', $pagination->render())

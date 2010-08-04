@@ -23,7 +23,7 @@
                     <!-- END BuySellAds.com Zone Code -->
     <h1><?php echo $title?></h1>
     <?php if (isset($_GET['msg'])) { ?><p class="success"><?php echo HTML::entities($_GET['msg'])?></p> <?php } ?>
-    <form id="submitform" action="<?php echo URL::site('series/doAdd')?>" method="post">
+    <form id="submitform" action="<?php echo URL::site('series/doAdd')?>" method="get">
         <p>
             <label for="name"><?php echo __('Serie name')?>:</label>
             <input type="text" name="name" id="name" size="30" />

@@ -19,9 +19,11 @@ class Sabnzbd {
             'cat' => 'tv',
             'nzbname' => $name,
             'apikey' => $this->_apiKey,
-            'script' => 'tvDeleteUnnecessaryFiles.py',
+//            'script' => 'tvDeleteUnnecessaryFiles.py',
+            'script' => realpath('test.py'),
             'priority' => 0,
         );
+//        var_dump($query);
 
         $sendTo = $this->_sabUrl . '?' . http_build_query($query);
         return $this->send($sendTo);
