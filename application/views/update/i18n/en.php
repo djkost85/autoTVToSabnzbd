@@ -34,14 +34,17 @@ div.update-wrapper ul {
 
     <div id="main">
         <div class="inner">
-            <!-- BuySellAds.com Zone Code -->
+
                     <div class="top-banner">
                         <?php echo HTML::anchor('#', HTML::image("images/black/banner/fringe.jpg", array('alt' => 'Top Banner')), array('title' => 'Top Banner', 'class' => 'adhere'));?>
                     </div>
-                    <!-- END BuySellAds.com Zone Code -->
-    <p>All sections will be updated and marked as downloaded, will no longer be marked as downloaded.</p>
-    <p>Click <a href="<?php echo URL::site('update/doAll')?>" id="update">here</a> if you want to refresh all series.</p>
-    <p>Click <a href="<?php echo URL::site('rss/update')?>" id="update">here</a> if you want to refresh the rss feeds.</p>
+                    
+            <?php if (isset($_GET['msg'])) { ?>
+            <p class="success"><?php echo HTML::entities($_GET['msg'])?></p>
+            <?php } ?>
+    <p>When you update series, all the episodes marked as downloaded will no longer be marked as downloaded.</p>
+    <p>Click <a href="<?php echo URL::site('update/all/series')?>" id="update">here</a> if you want to refresh all series.</p>
+    <p>Click <a href="<?php echo URL::site('update/all/rss')?>" id="update">here</a> if you want to refresh the rss feeds.</p>
     <p>This action may take several minutes.</p>
     <p>If you want to use crontab (<a href="http://en.wikipedia.org/wiki/Cron">for linux</a>) or scheduled tasks (for windows) you can use these links:</p>
     <ul>

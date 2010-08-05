@@ -98,6 +98,7 @@ class Controller_Page extends Controller_Template {
         $rssUpdate = $session->get('rss_update', null);
 
 //        var_dump(time() >= strtotime($config->rss['howOld'], $rssUpdate));
+//        var_dump(date('d/m -Y H:i:s', strtotime($config->rss['howOld'], $rssUpdate)));
 
         if (time() >= strtotime($config->rss['howOld'], $rssUpdate)) {
 

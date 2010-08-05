@@ -48,7 +48,20 @@ class Controller_Update extends Controller_Page {
     
     
 
-    public function action_all() {
+    public function action_all($what = null) {
+        if ($what == 'rss') {
+            $session = Session::instance();
+            $session->set('rss_update', time());
+            Helper::backgroundExec(URL::site('rss/update', true));
+            $this->request->redirect('update/all'.URL::query(array('msg' => __('Updating the rss feed.'))));
+            exit;
+        } else if ($what == 'series') {
+            Cookie::set('seriesUpdateEvery', time());
+            Helper::backgroundExec(URL::site('update/doAll', true));
+            $this->request->redirect('update/all'.URL::query(array('msg' => __('Updating all series.'))));
+            exit;
+        }
+
         $this->template->title = __('Update all series');
 
         $phpPath = (isset($_GET['path_to_php'])) ? $_GET['path_to_php'] : 'C:\wamp\bin\php\php5.3.0\php.exe';

@@ -33,14 +33,18 @@ div.update-wrapper ul {
 
     <div id="main">
         <div class="inner">
-            <!-- BuySellAds.com Zone Code -->
+
                     <div class="top-banner">
                         <?php echo HTML::anchor('#', HTML::image("images/black/banner/fringe.jpg", array('alt' => 'Top Banner')), array('title' => 'Top Banner', 'class' => 'adhere'));?>
                     </div>
-                    <!-- END BuySellAds.com Zone Code -->
+
+    <?php if (isset($_GET['msg'])) { ?>
+    <p class="success"><?php echo HTML::entities($_GET['msg'])?></p>
+    <?php } ?>
+    
     <p>Alla avsnitt som blir uppdaterade och är markerade som nerladdade, kommer inte längre vara markerade som nedladdade.</p>
-    <p>Klicka <a href="<?php echo URL::site('update/doAll')?>" id="update">här</a> om du vill updatera alla serier.</p>
-    <p>Klicka <a href="<?php echo URL::site('rss/update')?>" id="update">här</a> om du vill updatera rss flödet.</p>
+    <p>Klicka <a href="<?php echo URL::site('update/all/series')?>" id="update">här</a> om du vill updatera alla serier.</p>
+    <p>Klicka <a href="<?php echo URL::site('update/all/rss')?>" id="update">här</a> om du vill updatera rss flödet.</p>
     <p>Denna åtgärd kan ta flera minuter.</p>
     <p>Om du vill använda dig av crontab (<a href="http://en.wikipedia.org/wiki/Cron">för linux</a>) eller schemalagda aktiviteter (för windows). 
         Kan du använda dessa länkar:</p>
