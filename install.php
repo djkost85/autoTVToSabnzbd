@@ -52,6 +52,7 @@ $loadedArr['applicationDir'] = is_file(APPPATH.'bootstrap'.EXT);
 $loadedArr['cacheDir'] = is_dir(APPPATH.'cache') AND is_writable(APPPATH.'cache');
 $loadedArr['logsDir'] = is_dir(APPPATH.'logs') AND is_writable(APPPATH.'logs');
 $loadedArr['configDir'] = is_dir(APPPATH.'config') AND is_writable(APPPATH.'config');
+
 if (is_dir(realpath(APPPATH.'../images')) AND
         is_writable(realpath(APPPATH.'../images')) AND
         is_writable(realpath(APPPATH.'../images/__cache')) AND
@@ -678,9 +679,9 @@ return array
                         <input type="text" name="rss_num_results" id="rss_num_results" value="<?php if (isset($get['rss_num_results'])) echo $get['rss_num_results']; else echo '10' ?>" />
                     </div>
                     <div>
-                        <label for="rss_how_old">Rss update before one is older then</label>
-                        <input type="text" name="rss_how_old" id="rss_how_old" value="<?php if (isset($get['rss_how_old'])) echo $get['rss_how_old']; else echo '-3 hours' ?>" />
-                        <em>Example: -1 week or -4 hours</em>
+                        <label for="rss_how_old">Rss update every</label>
+                        <input type="text" name="rss_how_old" id="rss_how_old" value="<?php if (isset($get['rss_how_old'])) echo $get['rss_how_old']; else echo '3 hours' ?>" />
+                        <em>Example: 2 days or 4 hours</em>
                     </div>
                     <div>
                         <label for="series_update_every">All series are updated every</label>
@@ -750,9 +751,9 @@ return array
                         <tr>
                             <th>Images Directory</th>
                             <?php if ($loadedArr['imagesDir']): ?>
-                            <td class="pass"><?php echo APPPATH.'images/' ?></td>
+                            <td class="pass"><?php echo realpath(APPPATH.'../images') ?></td>
                             <?php else: $failed = TRUE ?>
-                            <td class="fail">The <code><?php echo APPPATH.'images/' ?></code> directory or it´s subdirectories is not writable.</td>
+                            <td class="fail">The <code><?php echo realpath(APPPATH.'../images') ?></code> directory or it´s subdirectories is not writable.</td>
                             <?php endif ?>
                         </tr>
                         <tr>

@@ -28,9 +28,11 @@ class Controller_Series extends Controller_Page {
 
         $this->template->codes['jquery autocomplete code'] = "var data = ".json_encode($autocomplete).";";
 
+        $session = Session::instance();
         $xhtml = View::factory('series/add');
         $xhtml->set('title', __('Add new series'))
-                ->set('languages', ORM::factory('language')->find_all());
+                ->set('languages', ORM::factory('language')->find_all())
+                ->set('matrixCat', $session->get('matrixCat', 'tv-all'));
 
         $this->template->content = $xhtml;
     }
@@ -39,6 +41,9 @@ class Controller_Series extends Controller_Page {
         if (empty($_GET['name'])) {
             $this->request->redirect(URL::query(array('save' => 'Error')));
         }
+
+        $session = Session::instance();
+        $session->set('matrixCat', $_GET['cat']);
         
 //        $this->auto_render = false;
 //        Helper::backgroundExec(URL::site('episodes/doBackAdd' . URL::query($_GET), true));
@@ -532,15 +537,16 @@ class Controller_Series extends Controller_Page {
     public function action_ajax_getBanners($name) {
 
         $this->auto_render = false;
+        $series = ORM::factory('series');
+        if ($series->isAdded($name)) {
+            $this->request->response = $name . ' ' . __('alredy exists');
+            return;
+        }
         try {
             $tv = new TheTvDB($this->TheTvDB_api_key, $name);
 
             $series = ORM::factory('series');
             $tvArray = $tv->toArray();
-            if ($series->isAdded($tvArray['seriesName'])) {
-                $this->request->response = $name . ' ' . __('alredy exists');
-                return;
-            }
             $banners = $tv->getBanners();
         } catch (InvalidArgumentException $e) {
             $this->request->response = $e->getMessage();

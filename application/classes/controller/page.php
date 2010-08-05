@@ -82,16 +82,38 @@ class Controller_Page extends Controller_Template {
 
         $config = Kohana::config('default');
 
-        $rss = ORM::factory('rss');
-        $expr = 'DATE_SUB(NOW(),INTERVAL ' . Inflector::singular(ltrim($config->rss['howOld'], '-')) . ')';
-        $result = $rss->where(DB::expr($expr), '>=', DB::expr('updated'));
+//        $rss = ORM::factory('rss');
+//        $expr = 'DATE_SUB(NOW(),INTERVAL ' . Inflector::singular(ltrim($config->rss['howOld'], '-')) . ')';
+//        $result = $rss->where(DB::expr($expr), '>=', DB::expr('updated'));
+//
+//        //if ($result->count_all() > 0 || $rss->count_all() != $config->rss['numberOfResults']) {
+//        if ($result->count_all() > 0) {
+//            Helper::backgroundExec(URL::site('rss/update', true));
+//        }
 
-        if ($result->count_all() > 0) {
+        $session = Session::instance();
+
+//        $session->delete('rss_update');
+        
+        $rssUpdate = $session->get('rss_update', null);
+
+//        var_dump(time() >= strtotime($config->rss['howOld'], $rssUpdate));
+
+        if (time() >= strtotime($config->rss['howOld'], $rssUpdate)) {
+
+//            var_dump('rss update');
+
+            $session->set('rss_update', time());
             Helper::backgroundExec(URL::site('rss/update', true));
         }
 
         $lastUpdate = Cookie::get('seriesUpdateEvery', null);
-        if (is_null($lastUpdate) || $lastUpdate < strtotime($config->update['seriesUpdateEvery'])) {
+        if (is_null($lastUpdate)) {
+            $lastUpdate = time();
+            Cookie::set('seriesUpdateEvery', $lastUpdate);
+        }
+
+        if (time() > strtotime($config->update['seriesUpdateEvery'], $lastUpdate)) {
             Helper::backgroundExec(URL::site('update/doAll', true));
             Cookie::set('seriesUpdateEvery', time());
         }

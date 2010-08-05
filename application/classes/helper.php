@@ -85,7 +85,7 @@ class Helper {
         $parts = parse_url($url);
         $fp = @fsockopen($parts['host'], isset($parts['port']) ? $parts['port'] : 80, $errno, $errstr, 30);
 
-        if (!$fp) {
+        if (!is_resource($fp)) {
             return false;
         } else {
             $contentLength = isset($parts['query']) ? strlen($parts['query']) : 10;

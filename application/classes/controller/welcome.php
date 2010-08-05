@@ -17,6 +17,9 @@ class Controller_Welcome extends Controller_Page {
             'items_per_page' => 12 // default 10
         ));
 
+
+        //var_dump(Helper::backgroundExec(URL::site('rss/update', true)));
+
 //        $matrix = new NzbMatrix(Kohana::config('default.default'));
 //        var_dump($matrix->search('Top Gear s15e04', 41));
 

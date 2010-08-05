@@ -52,7 +52,8 @@ class Controller_Nzbindex extends Controller {
             if ($rss->count_all() >= $config->rss['numberOfResults']) {
                 break;
             }
-            if (strtotime($ep->first_aired) < strtotime($config->rss['howOld']) && $ep->season > 0) {
+            //if (strtotime($ep->first_aired) < strtotime($config->rss['howOld']) && $ep->season > 0) {
+            if ($ep->season > 0) {
                 $search = sprintf('%s S%02dE%02d', $ep->series_name, $ep->season, $ep->episode);
 
                 if (!$rss->alreadySaved($search)) {

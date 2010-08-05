@@ -40,7 +40,8 @@ class Controller_Nzbs extends Controller {
             if ($rss->count_all() >= $config->rss['numberOfResults']) {
                 break;
             }
-            if (strtotime($ep->first_aired) < strtotime($config->rss['howOld']) && $ep->season > 0) {
+            //if (strtotime($ep->first_aired) < strtotime($config->rss['howOld']) && $ep->season > 0) {
+            if ($ep->season > 0) {
                 $search = sprintf('%s S%02dE%02d', $ep->series_name, $ep->season, $ep->episode);
 
                 if (!$rss->alreadySaved($search)) {
@@ -67,9 +68,9 @@ class Controller_Nzbs extends Controller {
                 sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
                 strtolower($parsed['name']) == strtolower($ep->series_name) &&
                 $ep->matrix_cat == Nzbs::cat2MatrixNum((string) $item->category) &&
-                !$rss->alreadySaved($search)) {
+                !$rss->alreadySaved((string) $item->title)) {
                 
-                $rss->title = $item->title;
+                $rss->title = (string) $item->title;
                 $rss->guid = (string) $item->link;
                 $rss->link = (string) $item->link;
                 $rss->description = (string) $item->description;

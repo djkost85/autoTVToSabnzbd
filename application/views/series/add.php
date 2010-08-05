@@ -33,11 +33,11 @@
             <label for="cat"><?php echo __('Download catagory')?>:</label>
             <select id="cat" name="cat">
                 <option value="tv-all" style="font-weight: bold;">TV: ALL</option>
-                <option value="5">TV: DVD</option>
-                <option value="6">TV: Divx/Xvid</option>
-                <option value="41" selected>TV: HD</option>
-                <option value="7">TV: Sport/Event</option>
-                <option value="8">TV: Other</option>
+                <option value="5" <?php if ($matrixCat == '5') echo 'selected'?> >TV: DVD</option>
+                <option value="6" <?php if ($matrixCat == '6') echo 'selected'?> >TV: Divx/Xvid</option>
+                <option value="41" <?php if ($matrixCat == '41') echo 'selected'?> >TV: HD</option>
+                <option value="7" <?php if ($matrixCat == '7') echo 'selected'?> >TV: Sport/Event</option>
+                <option value="8" <?php if ($matrixCat == '8') echo 'selected'?> >TV: Other</option>
             </select>
         </p>
         <p>
