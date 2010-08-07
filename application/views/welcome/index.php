@@ -26,12 +26,11 @@
             <?php if (empty($series)) { ?>
                 <h1 class="page-title"><?php echo $noSeries?></h1>
             <?php } ?>
-            <?php if (isset($_GET['msg'])) { ?>
-            <p class="success"><?php echo HTML::entities($_GET['msg'])?></p>
-            <?php } ?>
+                
+            <?php if (MsgFlash::has()) { ?><p class="success"><?php echo HTML::entities(MsgFlash::get())?></p> <?php } ?>
 <ul class="thumbnail">
 <?php
-$i = (isset($_GET['page']) && $_GET['page'] > 1) ? 100: 1;
+$i = (isset($_GET['page']) && $_GET['page'] > 2) ? 100: 1;
 $useNzbSite = Kohana::config('default.default.useNzbSite');
 foreach ($series as $ser) {
     if ($ser->poster == "") {

@@ -22,7 +22,7 @@
                     </div>
 
                     <h1><?php echo $title?></h1>
-    <p class="msg"><?php if (isset($_GET['msg'])) echo HTML::entities($_GET['msg'])?></p>
+    <?php if (MsgFlash::has()) { ?><p class="msg"><?php echo HTML::entities(MsgFlash::get())?></p> <?php } ?>
     <form id="submitform" action="<?php echo URL::site('search/result')?>" method="get">
         <p>
             <label for="q"><?php echo __('Search')?>:</label>

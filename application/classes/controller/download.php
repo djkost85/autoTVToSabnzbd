@@ -25,7 +25,9 @@ class Controller_Download extends Controller_Page {
             $nzbs = new Nzbs($config->nzbs);
             $xml = $nzbs->search($search);
             if (!$this->handleNZBsResults($xml, $search, $ep, $series)) {
-                $this->request->redirect("episodes/$series->id/" . URL::query(array('msg' => "nothing found [$search]")));
+                MsgFlash::set("Nothing found \"$search\"");
+//                $this->request->redirect("episodes/$series->id/" . URL::query(array('msg' => "Nothing found \"$search\"")));
+                $this->request->redirect("episodes/$series->id/");
             }
             
         } else {
@@ -40,7 +42,9 @@ class Controller_Download extends Controller_Page {
                         $nzbs = new Nzbs($config->nzbs);
                         $xml = $nzbs->search($search);
                         if (!$this->handleNZBsResults($xml, $search, $ep, $series)) {
-                            $this->request->redirect("episodes/$series->id/" . URL::query(array('msg' => "nothing found [$search]")));
+                            MsgFlash::set("Nothing found \"$search\"");
+//                            $this->request->redirect("episodes/$series->id/" . URL::query(array('msg' => "nothing found [$search]")));
+                            $this->request->redirect("episodes/$series->id/");
                         }
                     }
                 }
@@ -51,7 +55,9 @@ class Controller_Download extends Controller_Page {
                 $msg = __($results[0]['error']);
             }
 
-            $this->request->redirect("episodes/$series->id/" . URL::query(array('msg' => "Mzb Matrix error: $msg")));
+            MsgFlash::set("Mzb Matrix error: $msg");
+//            $this->request->redirect("episodes/$series->id/" . URL::query(array('msg' => "Mzb Matrix error: $msg")));
+            $this->request->redirect("episodes/$series->id/");
         }
 
         $sab = new Sabnzbd(Kohana::config('default.Sabnzbd'));
@@ -99,7 +105,9 @@ class Controller_Download extends Controller_Page {
                 $d->found = $result['nzbname'];
                 $d->save();
 
-                $this->request->redirect(URL::query(array('msg' => "Download: " . $search)));
+                MsgFlash::set("Download: " . $search);
+//                $this->request->redirect(URL::query(array('msg' => "Download: " . $search)));
+                $this->request->redirect('');
                 exit;
             }
 
@@ -109,7 +117,9 @@ class Controller_Download extends Controller_Page {
             exit;
         }
 
-        $this->request->redirect("episodes/$series->id/" . URL::query(array('msg' => "nothing found [$search]")));
+        MsgFlash::set("Nothing found \"$search\"");
+//        $this->request->redirect("episodes/$series->id/" . URL::query(array('msg' => "nothing found [$search]")));
+        $this->request->redirect("episodes/$series->id/");
     }
 
     protected function handleNZBsResults($xml, $search, $ep, $series) {
@@ -126,7 +136,10 @@ class Controller_Download extends Controller_Page {
                 $series->matrix_cat == Nzbs::cat2MatrixNum((string) $item->category)) {
 
                 $sab->sendNzb((string) $item->link, (string) $item->title);
-                $this->request->redirect(URL::query(array('msg' => "Download: " . $search)));
+
+                MsgFlash::set("Download: " . $search);
+//                $this->request->redirect(URL::query(array('msg' => "Download: " . $search)));
+                $this->request->redirect('');
                 exit;
             }
             
@@ -143,7 +156,8 @@ class Controller_Download extends Controller_Page {
         $results = $session->get('seachResults');
 
         if (!$results) {
-            $this->request->redirect(URL::query(array('msg' => "nothing found")));
+            MsgFlash::set('Nothing found');
+            $this->request->redirect('');
             exit;
         }
 
@@ -163,7 +177,8 @@ class Controller_Download extends Controller_Page {
         $results = $session->get('seachResults');
 
         if (!isset($results[$id])) {
-            $this->request->redirect(URL::query(array('msg' => "nothing found")));
+            MsgFlash::set('Nothing found');
+            $this->request->redirect('');
         }
 
         $result = $results[$id];
@@ -184,7 +199,9 @@ class Controller_Download extends Controller_Page {
         $d->found = $result['nzbname'];
         $d->save();
 
-        $this->request->redirect(URL::query(array('msg' => "Downloading $name")));
+        MsgFlash::set("Downloading $name");
+        $this->request->redirect('');
+//        $this->request->redirect(URL::query(array('msg' => "Downloading $name")));
     }
 
     public function action_listAll() {

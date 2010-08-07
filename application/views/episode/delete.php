@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.'); ?>
 <h1 class="page-title episodes-title"><?php echo HTML::anchor("", HTML::image('index.php/' . $banner, array('alt' => "Banner for $seriesName")))?></h1>
-<p class="msg"><?php if (isset($_GET['msg'])) echo HTML::entities($_GET['msg'])?></p>
+<?php if (MsgFlash::has()) { ?><p class="msg"><?php echo HTML::entities(MsgFlash::get())?></p> <?php } ?>
 
 <ul class="list episodes">
     <li class="img">

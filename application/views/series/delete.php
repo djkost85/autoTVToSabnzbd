@@ -28,9 +28,8 @@ defined('SYSPATH') or die('No direct script access.');
             <?php if (empty($series)) { ?>
                 <h1><?php echo $noSeries?></h1>
             <?php } ?>
-            <?php if (isset($_GET['msg'])) { ?>
-                <p class="success"><?php echo HTML::entities($_GET['msg'])?></p>
-            <?php } ?>
+                
+            <?php if (MsgFlash::has()) { ?><p class="success"><?php echo HTML::entities(MsgFlash::get())?></p> <?php } ?>
 
             <?php 
             if ($series->poster == "") {

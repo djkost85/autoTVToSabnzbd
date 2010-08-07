@@ -53,12 +53,16 @@ class Controller_Update extends Controller_Page {
             $session = Session::instance();
             $session->set('rss_update', time());
             Helper::backgroundExec(URL::site('rss/update', true));
-            $this->request->redirect('update/all'.URL::query(array('msg' => __('Updating the rss feed.'))));
+
+            MsgFlash::set('Updating the rss feed.');
+            $this->request->redirect('update/all');
             exit;
         } else if ($what == 'series') {
             Cookie::set('seriesUpdateEvery', time());
             Helper::backgroundExec(URL::site('update/doAll', true));
-            $this->request->redirect('update/all'.URL::query(array('msg' => __('Updating all series.'))));
+
+            MsgFlash::set('Updating all series.');
+            $this->request->redirect('update/all');
             exit;
         }
 

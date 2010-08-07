@@ -80,6 +80,7 @@ return array(
                 'Fuskbyggarna',
                 'Band of Brothers',
                 'Detective Conan',
+                'Rome',
         )
 );
 

@@ -46,8 +46,10 @@ class Controller_Series extends Controller_Page {
         $session->set('matrixCat', $_GET['cat']);
         
 //        $this->auto_render = false;
-//        Helper::backgroundExec(URL::site('episodes/doBackAdd' . URL::query($_GET), true));
-//        $this->request->redirect('series/add/?' . http_build_query(array('msg' => $_GET['name'] . ' ' . __('is saved'))));
+//        Helper::backgroundExec(URL::site('series/doBackAdd/?' . http_build_query($_GET), true));
+//        
+//        MsgFlash::set($_GET['name'] . ' ' . __('is saved'));
+//        $this->request->redirect('series/add/');
 //    }
 //
 //    public function action_doBackAdd() {
@@ -62,12 +64,14 @@ class Controller_Series extends Controller_Page {
             $series = ORM::factory('series');
             $arr = $tv->toArray();
             if ($series->isAdded($arr['seriesName'])) {
-                $this->request->redirect('series/add' . URL::query(array('msg' => $_GET['name'] . ' ' . __('alredy exists'))));
+                MsgFlash::set($_GET['name'] . ' ' . __('alredy exists'));
+                $this->request->redirect('series/add');
             }
 
             $info = $tv->getSeriesInfo();
         } catch (InvalidArgumentException $e) {
-            $this->request->redirect(URL::query(array('error' => $e->getMessage())));
+            MsgFlash::set($e->getMessage());
+            $this->request->redirect('');
         }
         
         $saveAsNew = Kohana::config('default.default.saveImagesAsNew');
@@ -75,7 +79,8 @@ class Controller_Series extends Controller_Page {
         $series->language_id = $_GET['language'];
         $lastId = $series->save();
         if (!$lastId) {
-            $this->request->redirect('series/add' . URL::query(array('msg' => 'Error: databas series error')));
+            MsgFlash::set('Error: databas series error');
+            $this->request->redirect('series/add');
         }
 
         $poster = new Posters();
@@ -129,12 +134,14 @@ class Controller_Series extends Controller_Page {
 
         Helper::backgroundExec(URL::site('episodes/downloadAllImages/' . $lastId, true));
 
-        $this->request->redirect('series/add/?' . http_build_query(array('msg' => $_GET['name'] . ' ' . __('is saved'))));
+        MsgFlash::set($_GET['name'] . ' ' . __('is saved'));
+        $this->request->redirect('series/add/');
     }
 
     public function action_update($id) {
         if (!is_numeric($id)) {
-            $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
+            MsgFlash::set('Error: no id');
+            $this->request->redirect('');
         }
 
         $series = ORM::factory('series', $id);
@@ -152,7 +159,8 @@ class Controller_Series extends Controller_Page {
 
     public function action_doUpdate($id) {
         if (!is_numeric($id)) {
-            $this->request->redirect('?' . http_build_query(array('msg' => 'Error: no id')));
+            MsgFlash::set('Error: no id');
+            $this->request->redirect('');
         }
 
         $this->auto_render = false;
@@ -181,7 +189,8 @@ class Controller_Series extends Controller_Page {
 
         $lastId = $series->save();
         if (!$lastId) {
-            $this->request->redirect('?' . http_build_query(array('msg' => 'Error: databas series error')));
+            MsgFlash::set('Error: databas series error');
+            $this->request->redirect('');
         }
 
         foreach ($series->episodes->find_all() as $ep) {
@@ -248,14 +257,16 @@ class Controller_Series extends Controller_Page {
         Cache::instance('default')->delete('series');
         /** Only update if the reques is not internaly **/
         if ($this->request == Request::instance()) {
-            $this->request->redirect('?' . http_build_query(array('msg' => $name . ' ' . __('is updated'))));
+            MsgFlash::set($name . ' ' . __('is updated'));
+            $this->request->redirect('');
         }
 
     }
 
     public function action_edit($id) {
         if (!is_numeric($id)) {
-            $this->request->redirect('?' . http_build_query(array('msg' => 'Error: no id')));
+            MsgFlash::set('Error: no id');
+            $this->request->redirect('');
         }
 
         $series = ORM::factory('series', $id);
@@ -275,7 +286,8 @@ class Controller_Series extends Controller_Page {
 
     public function action_doEdit($id) {
         if (!is_numeric($id)) {
-            $this->request->redirect('?' . http_build_query(array('msg' => 'Error: no id')));
+            MsgFlash::set('Error: no id');
+            $this->request->redirect('');
         }
 
         $this->auto_render = false;
@@ -309,11 +321,13 @@ class Controller_Series extends Controller_Page {
         }
 
         if (!$series->save()) {
-            $this->request->redirect('?' . http_build_query(array('msg' => 'Error: databas series error')));
+            MsgFlash::set('Error: databas series error');
+            $this->request->redirect('');
         }
 		
 	Cache::instance('default')->delete('series');
-        $this->request->redirect('?' . http_build_query(array('msg' => $series->series_name . ' ' . __('is updated'))));
+        MsgFlash::set($series->series_name . ' ' . __('is updated'));
+        $this->request->redirect('');
     }
 
     public function action_delete($id) {
@@ -330,7 +344,8 @@ class Controller_Series extends Controller_Page {
 
     public function action_doDelete($id) {
         if (!is_numeric($id)) {
-            $this->request->redirect('?' . http_build_query(array('msg' => 'Error: no id')));
+            MsgFlash::set('Error: no id');
+            $this->request->redirect('');
         }
 
         $this->auto_render = false;
@@ -360,7 +375,9 @@ class Controller_Series extends Controller_Page {
 
         $series->delete();
 	Cache::instance('default')->delete('series');
-        $this->request->redirect('?' . http_build_query(array('msg' => $name . ' ' . __('is deleted'))));
+
+        MsgFlash::set($name . ' ' . __('is deleted'));
+        $this->request->redirect('');
     }
 
     protected function saveInfo(ORM $series, SimpleXMLElement $info, $saveAsNew = false) {
@@ -389,7 +406,8 @@ class Controller_Series extends Controller_Page {
             } else {
                 $posterFile = $path . basename($_GET['poster']);
                 if (!rename($_GET['poster'], $posterFile)) {
-                    $this->request->redirect('?' . http_build_query(array('msg' => 'Error: can´t move image')));
+                    MsgFlash::set('Error: can´t move image');
+                    $this->request->redirect('');
                 }
                 $this->clearCache();
             }

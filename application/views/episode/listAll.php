@@ -16,9 +16,12 @@
 
     <div id="main">
         <div class="inner">
-            <p class="msg"><?php if (isset($_GET['msg'])) echo HTML::entities($_GET['msg'])?></p>
-            <?php echo HTML::anchor('', HTML::image('index.php/' . $banner, array('alt' => 'Top Banner', 'class' => 'banner')), array('title' => 'Top Banner'));?>
+            <?php if (MsgFlash::has()) { ?><p class="success"><?php echo HTML::entities(MsgFlash::get())?></p> <?php } ?>
 
+            <div class="episode-banner">
+            <?php echo HTML::anchor('', HTML::image('index.php/' . $banner, array('alt' => 'Top Banner', 'class' => 'banner')), array('title' => 'Top Banner'));?>
+            </div>
+            
             <h1><?php echo $title?></h1>
 <style type="text/css">
 .thumbnail img {

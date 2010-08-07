@@ -38,9 +38,7 @@ div.update-wrapper ul {
                         <?php echo HTML::anchor('#', HTML::image("images/black/banner/fringe.jpg", array('alt' => 'Top Banner')), array('title' => 'Top Banner', 'class' => 'adhere'));?>
                     </div>
 
-    <?php if (isset($_GET['msg'])) { ?>
-    <p class="success"><?php echo HTML::entities($_GET['msg'])?></p>
-    <?php } ?>
+    <?php if (MsgFlash::has()) { ?><p class="success"><?php echo HTML::entities(MsgFlash::get())?></p> <?php } ?>
     
     <p>Alla avsnitt som blir uppdaterade och är markerade som nerladdade, kommer inte längre vara markerade som nedladdade.</p>
     <p>Klicka <a href="<?php echo URL::site('update/all/series')?>" id="update">här</a> om du vill updatera alla serier.</p>

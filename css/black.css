@@ -812,6 +812,10 @@ li div.successMsg {
 	font-weight: bold;
 }
 
+div.episode-banner {
+    margin-top: 10px;
+}
+
 img.banner {
 	background-color: #161B1D;
 	border: 1px solid #000;

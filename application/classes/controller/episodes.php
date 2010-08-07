@@ -23,7 +23,8 @@ class Controller_Episodes extends Controller_Page {
 
     public function action_listAll($id) {
         if (!is_numeric($id)) {
-            $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
+            MsgFlash::set('Error: no id');
+            $this->request->redirect('');
         }
 
         $cacheName = "series_ep_id_$id";
@@ -124,7 +125,8 @@ class Controller_Episodes extends Controller_Page {
 
     public function action_listSpecials($id) {
         if (!is_numeric($id)) {
-            $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
+            MsgFlash::set('Error: no id');
+            $this->request->redirect('');
         }
         $cacheName = "series_specials_ep_id_$id";
 
@@ -224,7 +226,8 @@ class Controller_Episodes extends Controller_Page {
 
     public function action_update($id) {
         if (!is_numeric($id)) {
-            $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
+            MsgFlash::set('Error: no id');
+            $this->request->redirect('');
         }
         $ep = ORM::factory('episode', array('ep_id' => $id));
 
@@ -275,11 +278,13 @@ class Controller_Episodes extends Controller_Page {
 
         $ep->values($epData);
         if (!$ep->save()) {
-            $this->request->redirect('' . URL::query(array('msg' => 'Error: databas episodes error')));
+            MsgFlash::set('Error: databas episodes error');
+            $this->request->redirect('');
         }
 
         if (!isset($_GET['series_id']) && !is_numeric($_GET['series_id'])) {
-            $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
+            MsgFlash::set('Error: no id');
+            $this->request->redirect('');
         }
 
         $series = ORM::factory('series', $_GET['series_id']);
@@ -295,19 +300,23 @@ class Controller_Episodes extends Controller_Page {
         $cacheName = "episodes_id_$series->id";
 
         Cache::instance('default')->delete($cacheName);
-        $this->request->redirect('episodes/' . $_GET['series_id'] . URL::query(array('msg' => $msg)));
+
+        MsgFlash::set($msg);
+        $this->request->redirect('episodes/' . $_GET['series_id']);
     }
 
     public function action_delete($id, $epId) {
         if (!is_numeric($id) || !is_numeric($epId)) {
-            $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
+            MsgFlash::set('Error: no id');
+            $this->request->redirect('');
         }
         $series = ORM::factory('series', $id);
         $name = $series->series_name;
 
         if (isset($_GET['delete'])) {
             $this->delete($id, $epId);
-            $this->request->redirect('' . URL::query(array('msg' => $name . ' ' . __('is deleted'))));
+            MsgFlash::set($name . ' ' . __('is deleted'));
+            $this->request->redirect('');
         }
 
         $this->template->title = __('Delete') . ' ' . $name;
@@ -416,7 +425,8 @@ class Controller_Episodes extends Controller_Page {
 
     protected function delete($id, $epId) {
         if (!is_numeric($id) || !is_numeric($epId)) {
-            $this->request->redirect('' . URL::query(array('msg' => 'Error: no id')));
+            MsgFlash::set('Error: no id');
+            $this->request->redirect('');
         }
         $series = ORM::factory('series', $id);
 

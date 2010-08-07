@@ -39,7 +39,8 @@ class Controller_Search extends Controller_Page {
         } else if ($result->count() == 1) {
             $this->request->redirect("episodes/" . $result->get('id'));
         } else {
-            $this->request->redirect('search' . URL::query(array('msg' => sprintf(__('no results'), $_GET['q']))));
+            MsgFlash::set(sprintf(__('no results'), $_GET['q']));
+            $this->request->redirect('search');
         }
     }
 }
