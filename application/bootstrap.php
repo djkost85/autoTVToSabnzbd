@@ -161,6 +161,17 @@ array(
     'action' => 'delete',
 ));
 
+
+
+// Error
+Route::set('error', 'error(/<action>(/<id>))', array('id' => '.+'))
+->defaults(array(
+    'controller' => 'error',
+    'action'     => '404',
+    'id'	 => FALSE,
+));
+
+
 /*Route::set('static2', 'page/<page>', array('page' => '.*'))
   	->defaults(array(
   		'controller' => 'page',
@@ -189,8 +200,26 @@ Route::set('default', '(<controller>(/<action>(/<id>)))')
  * Execute the main request. A source of the URI can be passed, eg: $_SERVER['PATH_INFO'].
  * If no source is specified, the URI will be automatically detected.
  */
-echo Request::instance()
+/*echo Request::instance()
 	->execute()
 	->send_headers()
-	->response;
+	->response;*/
+
+$request = Request::instance();
+try {
+	$request->execute();
+} catch( ReflectionException $e ) {
+    // URL for new route
+    $new_request = Request::factory('error/404/'.$request->uri());
+    $new_request->execute();
+    $new_request->status = 404;
+    if ( $new_request->send_headers() ) {
+            die( $new_request->response );
+    }
+}
+
+if ($request->send_headers()->response) {
+    echo $request->response;
+}
+
 

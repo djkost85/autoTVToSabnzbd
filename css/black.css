@@ -308,7 +308,7 @@ blockquote {
     position: relative;
 }
 
-.thumbnail li em {
+.thumbnail li a em {
 	background: #fff;
 	color: #000;
 	font-style: normal;

@@ -17,7 +17,6 @@ class Controller_Welcome extends Controller_Page {
             'items_per_page' => 12 // default 10
         ));
 
-        
 
 //        if (MsgFlash::has()) {
 //            echo MsgFlash::get();

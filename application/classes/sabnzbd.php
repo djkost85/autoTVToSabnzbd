@@ -20,7 +20,6 @@ class Sabnzbd {
             'nzbname' => $name,
             'apikey' => $this->_apiKey,
 //            'script' => 'tvDeleteUnnecessaryFiles.py',
-            'script' => realpath('test.py'),
             'priority' => 0,
         );
 //        var_dump($query);
@@ -83,7 +82,7 @@ class Sabnzbd {
     }
 
     function isDownloaded($name) {
-        foreach ($this->getHistory()->slots as $history) {
+        foreach ($this->get('history')->slots as $history) {
             if (strcmp($name . '.nzb', $history->nzb_name) == 0) {
                 return true;
             }

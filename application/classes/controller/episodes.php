@@ -101,10 +101,19 @@ class Controller_Episodes extends Controller_Page {
                 $res->isDownloaded = ($ep->isDownloaded($ep->id)) ? ' <em>' . __('is downloaded') . '</em>' : '';
                 $res->posterFile = $posterFile;
                 $res->posterMsg = $posterMsg;
-                $epRes[] = $res;
+                $epRes['ep'][] = $res;
             }
+
+            $epRes = array_merge($epRes, array('downloads' => array()));
+            foreach ($series->episodes->where('season', '>', 0)->find_all() as $ep) {
+                $res = new stdClass;
+                $res->id = $ep->id;
+                $res->episode = sprintf('S%02dE%02d', $ep->season, $ep->episode);
+                $epRes['downloads'][$ep->season][] = $res;
+            }
+
             if ($posterMsg == "") {
-                Cache::instance('default')->set($cacheName, $epRes);
+//                Cache::instance('default')->set($cacheName, $epRes);
             }
             Cache::instance('default')->set($cacheName . '_pagination', $pagination->render());
         }
@@ -117,7 +126,8 @@ class Controller_Episodes extends Controller_Page {
                 ->set('id', $series->id)
                 ->set('pagination', Cache::instance('default')->get($cacheName . '_pagination'))
                 ->set('banner', $series->banner)
-                ->set('episodes', $epRes)
+                ->set('episodes', $epRes['ep'])
+                ->set('downloads', $epRes['downloads'])
                 ->set('matrix_cat', NzbMatrix::cat2string($series->matrix_cat));
 
         $this->template->content = $xhtml;

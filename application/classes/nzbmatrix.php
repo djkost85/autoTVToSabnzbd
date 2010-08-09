@@ -1,16 +1,16 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 class NzbMatrix extends Tv_Info {
 
-    protected $searchUrl = "http://nzbmatrix.com/api-nzb-search.php";
+    protected $searchUrl = "http://api.nzbmatrix.com/v1.1/search.php";
     protected $searchResult = array();
-    protected $downloadUrl = "http://nzbmatrix.com/api-nzb-download.php";
-    protected $detailsUrl = "http://nzbmatrix.com/api-nzb-details.php";
+    protected $downloadUrl = "http://api.nzbmatrix.com/v1.1/download.php";
+    protected $detailsUrl = "http://api.nzbmatrix.com/v1.1/details.php";
     private $_apiKey = '';
     private $_apiUser = '';
 
     public function  __construct($options) {
         $this->_apiKey = $options['NzbMatrix_api_key'];
-        $this->_aapiUser = $options['NzbMatrix_api_user'];
+        $this->_apiUser = $options['NzbMatrix_api_user'];
     }
 
     public function search($search, $catId = "6") {
@@ -46,6 +46,17 @@ class NzbMatrix extends Tv_Info {
                 $expl = explode(':', trim($part));
                 if (count($expl) == 2) {
                     list($key, $value) = $expl;
+
+                    /**
+                     * provisionally until it is patched
+                     */
+                    if (strtolower($key) == 'link') {
+                        parse_str(parse_url($value, PHP_URL_QUERY));
+                        $res['nzbid'] = $id;
+                        unset ($id);
+                        unset ($hit);
+                    }
+                    
                     $res[strtolower($key)] = $value;
                 } else if (preg_match('#^(IMAGE|WEBLINK):http://#', trim($part))) {
                     $expl = explode(':', trim($part), 2);
