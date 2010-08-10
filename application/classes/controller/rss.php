@@ -54,41 +54,48 @@ class Controller_Rss extends Controller {
         ignore_user_abort(true);
         set_time_limit(0);
 
-        if ($config->default['useNzbSite'] == 'nzbMatrix') {
-            $rss->truncate();
+        if ($config->default['useNzbSite'] == 'nzbs' && !empty($config->nzbs['queryString'])) {
+            $this->request->response = Request::factory('nzbs/fillRss')->execute()->response;
+            return;
         }
+
+//        if ($config->default['useNzbSite'] == 'nzbMatrix') {
+            $rss->truncate();
+//        }
 
         $matrix = new NzbMatrix_Rss($config->default);
         $series = Model_SortFirstAired::getSeries();
 
 //        echo '<pre>';
-        
+
         $i = 0;
         $secToSleep = 10;
         foreach ($series as $ep) {
 //            if (strtotime($ep->first_aired) < strtotime($config->rss['howOld']) && $ep->season > 0) {
             if ($ep->season > 0) {
                 $search = sprintf('%s S%02dE%02d', $ep->series_name, $ep->season, $ep->episode);
-
+//                var_dump($rss->alreadySaved($search));
+//                return;
                 if (!$rss->alreadySaved($search)) {
                     $result = $matrix->search($search, $ep->matrix_cat);
 
                     # If NzbMatrix is not alive use NzbIndex instead
                     if (is_numeric($result)) {
-                        if ($config->default['useNzbSite'] == 'nzbs' || $config->default['useNzbSite'] == 'both' && !empty($config->nzbs['queryString'])) {
-                            $this->request->response = Request::factory('nzbs/fillRss')->execute()->response;
-                            return;
-                            //$this->request->redirect('nzbs/fillRss');
-                        } else if ($config->default['useNzbSite'] == 'nzbMatrix') {
-                            $this->request->response = Request::factory('nzbindex/fillRss')->execute()->response;
-                            return;
-                            //$this->request->redirect('nzbindex/fillRss');
-                        } else {
-                            $this->request->response = Request::factory('nzbindex/fillRss')->execute()->response;
-                            return;
-                            //$this->request->redirect('nzbindex/fillRss');
-                        }
-                        exit;
+//                        if ($config->default['useNzbSite'] == 'both' && !empty($config->nzbs['queryString'])) {
+//                            $this->request->response = Request::factory('nzbs/fillRss')->execute()->response;
+//                            return;
+//                            //$this->request->redirect('nzbs/fillRss');
+//                        } else if ($config->default['useNzbSite'] == 'nzbMatrix') {
+//                            $this->request->response = Request::factory('nzbindex/fillRss')->execute()->response;
+//                            return;
+//                            //$this->request->redirect('nzbindex/fillRss');
+//                        } else {
+//                            $this->request->response = Request::factory('nzbindex/fillRss')->execute()->response;
+//                            return;
+//                            //$this->request->redirect('nzbindex/fillRss');
+//                        }
+                        
+                        break;
                     }
 
                     $time = time();
@@ -149,6 +156,14 @@ class Controller_Rss extends Controller {
 //            $this->request->redirect('nzbindex/fillRss');
 //            exit;
 //        }
+
+        if ($rss->count_all() <= $config->rss['numberOfResults'] && $config->default['useNzbSite'] == 'both' && !empty($config->nzbs['queryString'])) {
+            $this->request->response = Request::factory('nzbs/fillRss')->execute()->response;
+            return;
+        } else {
+            $this->request->response = Request::factory('nzbindex/fillRss')->execute()->response;
+            return;
+        }
 
         $this->request->response = __('Updated');
     }

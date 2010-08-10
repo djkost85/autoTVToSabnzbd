@@ -41,7 +41,7 @@ foreach ($series as $ser) {
 
     $paperClip = "";
     $searchName = sprintf("%s S%02dE%02d", $ser->series_name, $ser->season, $ser->episode);
-    if ($useNzbSite == 'nzbs') $searchName = str_replace (' ', '.', $searchName);
+//    if ($useNzbSite == 'nzbs') $searchName = str_replace (' ', '.', $searchName);
     if ($i <= 10 && $rss->inFeed($searchName)) {
         $i++;
         $paperClip = "<p></p><em>".__('In RSS')."</em>";

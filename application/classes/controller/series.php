@@ -42,6 +42,9 @@ class Controller_Series extends Controller_Page {
             $this->request->redirect(URL::query(array('save' => 'Error')));
         }
 
+        ignore_user_abort(true);
+        set_time_limit(0);
+
         $session = Session::instance();
         $session->set('matrixCat', $_GET['cat']);
         
@@ -162,6 +165,9 @@ class Controller_Series extends Controller_Page {
             MsgFlash::set('Error: no id');
             $this->request->redirect('');
         }
+
+        ignore_user_abort(true);
+        set_time_limit(0);
 
         $this->auto_render = false;
 
@@ -289,6 +295,9 @@ class Controller_Series extends Controller_Page {
             MsgFlash::set('Error: no id');
             $this->request->redirect('');
         }
+
+        ignore_user_abort(true);
+        set_time_limit(0);
 
         $this->auto_render = false;
 
@@ -483,6 +492,7 @@ class Controller_Series extends Controller_Page {
             $this->request->redirect('?' . http_build_query(array('error' => $e->getMessage())));
         }
 
+        set_time_limit(0);
 
         $bannerArray = array();
         foreach($banners as $banner) {
@@ -553,7 +563,8 @@ class Controller_Series extends Controller_Page {
     }
 
     public function action_ajax_getBanners($name) {
-
+        set_time_limit(0);
+        
         $this->auto_render = false;
         $series = ORM::factory('series');
         if ($series->isAdded($name)) {

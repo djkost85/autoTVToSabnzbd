@@ -56,14 +56,14 @@ class Controller_Update extends Controller_Page {
 
             MsgFlash::set('Updating the rss feed.');
             $this->request->redirect('update/all');
-            exit;
+            return;
         } else if ($what == 'series') {
             Cookie::set('seriesUpdateEvery', time());
             Helper::backgroundExec(URL::site('update/doAll', true));
 
             MsgFlash::set('Updating all series.');
             $this->request->redirect('update/all');
-            exit;
+            return;
         }
 
         $this->template->title = __('Update all series');

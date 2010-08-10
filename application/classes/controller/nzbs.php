@@ -70,7 +70,8 @@ class Controller_Nzbs extends Controller {
                 $ep->matrix_cat == Nzbs::cat2MatrixNum((string) $item->category) &&
                 !$rss->alreadySaved((string) $item->title)) {
                 
-                $rss->title = (string) $item->title;
+                //$rss->title = (string) $item->title;
+                $rss->title = $search;
                 $rss->guid = (string) $item->link;
                 $rss->link = (string) $item->link;
                 $rss->description = (string) $item->description;
