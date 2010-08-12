@@ -53,6 +53,8 @@ class Model_Series extends ORM {
 //                s.id
 //            ORDER BY
 //                last_aired DESC";
+
+
         $query = "SELECT
                 s.*,
                 MAX(e.first_aired) AS last_aired
@@ -60,6 +62,8 @@ class Model_Series extends ORM {
                 series s
             LEFT JOIN
                 episodes e ON e.series_id = s.id
+            WHERE
+                e.first_aired < CURDATE()
             GROUP BY
                 s.id
             ORDER BY

@@ -4,13 +4,16 @@ class Controller_Welcome extends Controller_Page {
 
     public function action_index() {
         $series = Cache::instance('default')->get('series');
-        
+
         if (is_null($series)) {
             $series = Model_SortFirstAired::getSeries();
             Cache::instance('default')->set('series', $series);
         }
 
         $seriesNum = $series->count();
+
+//        $series = ORM::factory('series');
+//        $seriesNum = $series->count_all();
         $pagination = Pagination::factory( array (
             'base_url' => "",
             'total_items' => $seriesNum,
@@ -44,6 +47,7 @@ class Controller_Welcome extends Controller_Page {
             ->set('banner', Model_Series::getRandBanner())
             ->set('rss', ORM::factory('rss'))
             ->set('series', ($seriesNum > 0) ? new LimitIterator($series, $pagination->offset, $pagination->items_per_page) : array());
+//            ->set('series', $series->getByFirtAired($pagination->items_per_page, $pagination->offset));
 
         $this->template->content = $xhtml;
         
