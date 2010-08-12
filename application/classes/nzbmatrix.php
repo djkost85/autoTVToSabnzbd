@@ -56,7 +56,6 @@ class NzbMatrix extends Tv_Info {
                         unset ($id);
                         unset ($hit);
                     }
-                    
                     $res[strtolower($key)] = $value;
                 } else if (preg_match('#^(IMAGE|WEBLINK):http://#', trim($part))) {
                     $expl = explode(':', trim($part), 2);
@@ -66,10 +65,12 @@ class NzbMatrix extends Tv_Info {
                     $expl = explode(':', trim($part), 2);
                     list($key, $value) = $expl;
                     $res[strtolower($key)] = $value;
-                } else {
-                    //var_dump(trim($parts));
-                    //var_dump(trim($part));
-                    //var_dump($expl);
+                } else if (preg_match('#error:(.*)#', trim($part), $matches)) {
+                    $res['error'] = $matches[1];
+                }else {
+//                    var_dump(trim($parts));
+//                    var_dump(trim($part));
+//                    var_dump($expl);
                 }
             }
             if (!empty($res)) {

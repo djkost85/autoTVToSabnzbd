@@ -154,11 +154,11 @@ return array(
     'imdb' => false,
     'default' => array(
         'saveImagesAsNew' => false,
-        'cacheTimeImages' => (3600 * 3),
+        'cacheTimeImages' => 7776000, //90 days
         'TheTvDB_api_key' => '{$get['thetvdb_api_key']}',
         'NzbMatrix_api_key' => '{$get['matrix_api_key']}',
         'NzbMatrix_api_user' => '{$get['matrix_api_user']}',
-        'useNzbSite' => '{$get['use_nzb_site']}', //nzbs
+        'useNzbSite' => '{$get['use_nzb_site']}', //'nzbs', 'nzbMatrix', 'both'
     ),
 
     'Sabnzbd' => array(

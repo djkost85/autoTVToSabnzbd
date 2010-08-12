@@ -94,7 +94,8 @@ class Controller_Rss extends Controller {
 //                            return;
 //                            //$this->request->redirect('nzbindex/fillRss');
 //                        }
-                        
+
+
                         break;
                     }
 
@@ -131,13 +132,17 @@ class Controller_Rss extends Controller {
 //                            echo("/******** ERROR *********/ \n");
 //                            var_dump($result[0]['error']);
 //                            echo("/******** END ERROR Continue!!!! *********/ \n");
-                            
-                            continue;
+                            if ('nothing_found' == $result[0]['error']) {
+                                continue;
+                            } else {
+                                break;
+                            }
                         }
                     }
                     
                     $this->handleResult($search, $result, $ep, $i);
                     if ($i >= $config->rss['numberOfResults']) {
+//                    if ($rss->count_all() >= $config->rss['numberOfResults']) {
                         break;
                     }
 
@@ -157,10 +162,11 @@ class Controller_Rss extends Controller {
 //            exit;
 //        }
 
-        if ($rss->count_all() <= $config->rss['numberOfResults'] && $config->default['useNzbSite'] == 'both' && !empty($config->nzbs['queryString'])) {
+        $rssCount = $rss->count_all();
+        if ($rssCount < $config->rss['numberOfResults'] && $config->default['useNzbSite'] == 'both' && !empty($config->nzbs['queryString'])) {
             $this->request->response = Request::factory('nzbs/fillRss')->execute()->response;
             return;
-        } else {
+        } else if ($rssCount < $config->rss['numberOfResults']) {
             $this->request->response = Request::factory('nzbindex/fillRss')->execute()->response;
             return;
         }
