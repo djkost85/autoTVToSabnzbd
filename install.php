@@ -47,7 +47,7 @@ function getWarnings($server, $apiKey) {
     if (is_numeric($contents)) {
         return $contents;
     }
-    $json = json_decode(file_get_contents($filename));
+    $json = json_decode($contents);
     if (isset($json->status))
         return $json->error;
     else
@@ -160,8 +160,9 @@ if (filter_has_var(INPUT_GET, 'save')) {
     $SabWarnings = getWarnings($get['sab_url'], $get['sab_api_key']);
     if (is_string($SabWarnings)) {
         $errorMsg[] = "SABnzbd error: $SabWarnings";
+    } else if (is_numeric($SabWarnings)) {
+        $errorMsg[] = "SABnzbd url status: " . Helper::getHttpCodeMessage($SabWarnings);
     }
-
 	if (empty($get['use_nzb_site'])) {
 		if (empty($get['matrix_api_user']) && !empty($get['nzbs_query_string'])) {
 			$get['use_nzb_site'] = 'nzbs';
