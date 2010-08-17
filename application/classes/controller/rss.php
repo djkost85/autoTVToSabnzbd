@@ -155,7 +155,8 @@ class Controller_Rss extends Controller {
             }
         }
         
-        Cache::instance('default')->delete('series');
+//        Cache::instance('default')->delete('series');
+        Cache::instance('default')->delete_all();
 
 //        if ($rss->count_all() <= $config->rss['numberOfResults']) {
 //            $this->request->redirect('nzbindex/fillRss');

@@ -133,7 +133,8 @@ class Controller_Series extends Controller_Page {
             $episodes->save();
         }
 
-	Cache::instance('default')->delete('series');
+//	Cache::instance('default')->delete('series');
+        Cache::instance('default')->delete_all();
 
         Helper::backgroundExec(URL::site('episodes/downloadAllImages/' . $lastId, true));
 
@@ -260,7 +261,8 @@ class Controller_Series extends Controller_Page {
             }
         }
 
-        Cache::instance('default')->delete('series');
+//        Cache::instance('default')->delete('series');
+        Cache::instance('default')->delete_all();
         /** Only update if the reques is not internaly **/
         if ($this->request == Request::instance()) {
             MsgFlash::set($name . ' ' . __('is updated'));
@@ -334,7 +336,8 @@ class Controller_Series extends Controller_Page {
             $this->request->redirect('');
         }
 		
-	Cache::instance('default')->delete('series');
+//	Cache::instance('default')->delete('series');
+        Cache::instance('default')->delete_all();
         MsgFlash::set($series->series_name . ' ' . __('is updated'));
         $this->request->redirect('');
     }
@@ -383,7 +386,8 @@ class Controller_Series extends Controller_Page {
 
 
         $series->delete();
-	Cache::instance('default')->delete('series');
+//	Cache::instance('default')->delete('series');
+        Cache::instance('default')->delete_all();
 
         MsgFlash::set($name . ' ' . __('is deleted'));
         $this->request->redirect('');
@@ -640,7 +644,8 @@ class Controller_Series extends Controller_Page {
         $series->matrix_cat = $_GET['cat'];
         $series->save();
 
-        Cache::instance('default')->delete('series');
+//        Cache::instance('default')->delete('series');
+        Cache::instance('default')->delete_all();
         $this->request->response = NzbMatrix::cat2string($series->matrix_cat);
     }
 }

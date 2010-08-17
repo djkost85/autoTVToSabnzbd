@@ -30,6 +30,7 @@
             <?php if (MsgFlash::has()) { ?><p class="success"><?php echo HTML::entities(MsgFlash::get())?></p> <?php } ?>
 <ul class="thumbnail">
 <?php
+
 $i = (isset($_GET['page']) && $_GET['page'] > 2) ? 100: 1;
 $useNzbSite = Kohana::config('default.default.useNzbSite');
 foreach ($series as $ser) {
@@ -68,7 +69,7 @@ foreach ($series as $ser) {
                 <div><?php echo __('Next') . ': ' . $ser->next_episode?></div>
             </li>
     
-    <?php } ?>
+    <?php }    ?>
 </ul>
 <?php echo $pagination; ?>
 <?php echo HTML::anchor('', HTML::image((isset($banner)) ? $banner : "images/black/banner/star-wars.jpg", array('alt' => 'Bottom Banner', 'class' => 'banner')));?>

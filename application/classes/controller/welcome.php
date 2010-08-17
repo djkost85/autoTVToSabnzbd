@@ -3,22 +3,30 @@
 class Controller_Welcome extends Controller_Page {
 
     public function action_index() {
-        $series = Cache::instance('default')->get('series');
+//        $series = Cache::instance('default')->get('series');
+//
+//        if (is_null($series)) {
+//            $series = Model_SortFirstAired::getSeries();
+//            Cache::instance('default')->set('series', $series);
+//        }
+//
+//        $seriesNum = $series->count();
 
-        if (is_null($series)) {
-            $series = Model_SortFirstAired::getSeries();
-            Cache::instance('default')->set('series', $series);
-        }
-
-        $seriesNum = $series->count();
-
-//        $series = ORM::factory('series');
-//        $seriesNum = $series->count_all();
         $pagination = Pagination::factory( array (
             'base_url' => "",
-            'total_items' => $seriesNum,
+            'total_items' => ORM::factory('series')->count_all(),
             'items_per_page' => 12 // default 10
         ));
+
+        $cacheName = (isset($_GET['page'])) ? "series_{$_GET['page']}" : "series";
+        $series = Cache::instance('default')->get($cacheName);
+
+        if (is_null($series)) {
+            $series = Model_SortFirstAired::getWelcomeSeries($pagination->items_per_page, $pagination->offset);
+            Cache::instance('default')->set($cacheName, $series);
+        }
+
+//        $series = Model_SortFirstAired::getWelcomeSeries($pagination->items_per_page, $pagination->offset);
 
 
 //        if (MsgFlash::has()) {
@@ -31,7 +39,6 @@ class Controller_Welcome extends Controller_Page {
 
 //        $matrix = new NzbMatrix(Kohana::config('default.default'));
 //        var_dump($matrix->search('Top Gear s15e04', 41));
-
         
         $this->template->title = __('Show all series');
 
@@ -46,8 +53,8 @@ class Controller_Welcome extends Controller_Page {
             ->set('listAllSpecials', __('List all specials'))
             ->set('banner', Model_Series::getRandBanner())
             ->set('rss', ORM::factory('rss'))
-            ->set('series', ($seriesNum > 0) ? new LimitIterator($series, $pagination->offset, $pagination->items_per_page) : array());
-//            ->set('series', $series->getByFirtAired($pagination->items_per_page, $pagination->offset));
+//            ->set('series', ($seriesNum > 0) ? new LimitIterator($series, $pagination->offset, $pagination->items_per_page) : array());
+            ->set('series', $series);
 
         $this->template->content = $xhtml;
         

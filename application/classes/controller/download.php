@@ -236,8 +236,15 @@ class Controller_Download extends Controller_Page {
     public function action_multiEp() {
         $this->auto_render = false;
 
+        $serializeFile = "application/cache/episodes.ep";
+        if (is_file($serializeFile)) {
+            MsgFlash::set("There is alredy a download in progress");
+            $this->request->redirect("");
+            return;
+        }
+
         if (isset($_GET['episodes'])) {
-            file_put_contents('application/cache/episodes.ep', serialize($_GET['episodes']));
+            file_put_contents($serializeFile, serialize($_GET['episodes']));
             $downloadUrl = URL::site('download/doMultiEpBackground', true);
             Helper::backgroundExec($downloadUrl);
 
@@ -262,12 +269,16 @@ class Controller_Download extends Controller_Page {
         ignore_user_abort(true);
         set_time_limit(0);
         $this->auto_render = false;
+        $this->_auto_update = false;
 
         $serFile = 'application/cache/episodes.ep';
-        $downloadSeriesArr = unserialize(file_get_contents($serFile));
+        $downloadSeriesArr = null;
+        if (is_readable($serFile)) {
+            $downloadSeriesArr = unserialize(file_get_contents($serFile));
+            unlink($serFile);
+        }
 
         if (is_array($downloadSeriesArr)) {
-            unlink($serFile);
             $config = Kohana::config('default');
             foreach ($downloadSeriesArr as $id) {
                 $ep = ORM::factory('episode', array('id' => $id));

@@ -1,5 +1,8 @@
 <?php defined('SYSPATH') or exit('Install tests must be loaded from within index.php!');
 
+
+include 'application/classes/helper.php';
+
 function getSabStatus($response) {
     if (preg_match('@^HTTP/[0-9]\.[0-9] ([0-9]{3})@', $response, $matches)) {
         return $matches[1];
@@ -20,9 +23,30 @@ function testSab($server) {
     return (getSabStatus(@fgets($fp)) == 200);
 }
 
+function getContents($url, array $options = array()) {
+    $ch = curl_init();
+    curl_setopt_array($ch, $options + array(
+            CURLOPT_URL => $url,
+            CURLOPT_USERAGENT => 'morresInstallScript/0.1.5',
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_SSL_VERIFYPEER => 0,
+            CURLOPT_HEADER => 1
+    ));
+
+    $content = curl_exec($ch);
+
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    return ($httpCode == 200) ? $content : $httpCode;
+}
+
 function getWarnings($server, $apiKey) {
     $query = "/sabnzbd/api?mode=warnings&output=json&apikey=$apiKey";
     $filename = $server.$query;
+    $contents = getContents($filename);
+    if (is_numeric($contents)) {
+        return $contents;
+    }
     $json = json_decode(file_get_contents($filename));
     if (isset($json->status))
         return $json->error;

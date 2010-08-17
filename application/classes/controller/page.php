@@ -6,6 +6,8 @@ class Controller_Page extends Controller_Template {
 
     public $template = 'autoTvToSab/template';
 
+    protected $_auto_update = true;
+
     /**
      * The before() method is called before your controller action.
      * In our template controller we override this method so that we can
@@ -77,46 +79,33 @@ class Controller_Page extends Controller_Template {
 
             $this->template->footer = $footer->__toString();
         }
+
         parent::after();
 
 
-        $config = Kohana::config('default');
+        if ($this->_auto_update) {
+            $config = Kohana::config('default');
+            $session = Session::instance();
 
-//        $rss = ORM::factory('rss');
-//        $expr = 'DATE_SUB(NOW(),INTERVAL ' . Inflector::singular(ltrim($config->rss['howOld'], '-')) . ')';
-//        $result = $rss->where(DB::expr($expr), '>=', DB::expr('updated'));
-//
-//        //if ($result->count_all() > 0 || $rss->count_all() != $config->rss['numberOfResults']) {
-//        if ($result->count_all() > 0) {
-//            Helper::backgroundExec(URL::site('rss/update', true));
-//        }
+//            $session->delete('rss_update');
 
-        $session = Session::instance();
+            $rssUpdate = $session->get('rss_update', null);
 
-//        $session->delete('rss_update');
-        
-        $rssUpdate = $session->get('rss_update', null);
+            if (time() >= strtotime($config->rss['howOld'], $rssUpdate)) {
+                $session->set('rss_update', time());
+                Helper::backgroundExec(URL::site('rss/update', true));
+            }
 
-//        var_dump(time() >= strtotime($config->rss['howOld'], $rssUpdate));
-//        var_dump(date('d/m -Y H:i:s', strtotime($config->rss['howOld'], $rssUpdate)));
+            $lastUpdate = Cookie::get('seriesUpdateEvery', null);
+            if (is_null($lastUpdate)) {
+                $lastUpdate = time();
+                Cookie::set('seriesUpdateEvery', $lastUpdate);
+            }
 
-        if (time() >= strtotime($config->rss['howOld'], $rssUpdate)) {
-
-//            var_dump('rss update');
-
-            $session->set('rss_update', time());
-            Helper::backgroundExec(URL::site('rss/update', true));
-        }
-
-        $lastUpdate = Cookie::get('seriesUpdateEvery', null);
-        if (is_null($lastUpdate)) {
-            $lastUpdate = time();
-            Cookie::set('seriesUpdateEvery', $lastUpdate);
-        }
-
-        if (time() > strtotime($config->update['seriesUpdateEvery'], $lastUpdate)) {
-            Helper::backgroundExec(URL::site('update/doAll', true));
-            Cookie::set('seriesUpdateEvery', time());
+            if (time() > strtotime($config->update['seriesUpdateEvery'], $lastUpdate)) {
+                Helper::backgroundExec(URL::site('update/doAll', true));
+                Cookie::set('seriesUpdateEvery', time());
+            }
         }
 
     }

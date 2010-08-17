@@ -411,6 +411,9 @@ class Controller_Episodes extends Controller_Page {
         ignore_user_abort(true);
         set_time_limit(0);
 
+        $this->auto_render = false;
+        $this->_update = false;
+
         $series = ORM::factory('series', $id);
 
         foreach ($series->episodes->find_all() as $ep) {

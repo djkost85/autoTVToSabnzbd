@@ -102,6 +102,7 @@ file_get_contents(\$filename);
 
     public function action_doAll() {
         $this->auto_render = false;
+        $this->_auto_update = false;
         //ini_set('max_execution_time', 1000);
         set_time_limit(0);
         $series = ORM::factory('series');

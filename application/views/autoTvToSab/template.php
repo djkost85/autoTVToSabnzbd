@@ -20,8 +20,13 @@
 
     </head>
     <body id="<?php echo $bodyPage?>">
-        <?php echo $menu ?>
-        <?php echo $content; ?>
-        <?php echo $footer; ?>
+        <?php
+        echo $menu;
+        echo $content; 
+        echo $footer; 
+        if (Kohana::$environment == Kohana::DEVELOPMENT) {
+            echo '<div id="kohana-profiler">'.View::factory('profiler/stats').'</div>';
+        }
+        ?>
     </body>
 </html>
