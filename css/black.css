@@ -176,6 +176,9 @@ blockquote {
     width: 10em;
     margin-right: 1em;
 }
+#submitform.config-form label {
+    width: 15em;
+}
 #submitform .button {
     background-color: #B1D918;
     color: #1A2022;
@@ -198,6 +201,13 @@ blockquote {
     font-size: 14px;
     clear: both;
 }
+#submitform input.radio-button {
+    width: 20px;
+    margin: 5px 0 5px 0;
+    border: none;
+    clear: both;
+}
+
 #submitform .textarea {
     background-color: #1A2022;
     border: 1px solid #101415;
@@ -337,7 +347,7 @@ blockquote {
 #nav {
 	padding: 0;
 	height: 50px;
-	width: 700px;
+	width: 690px;
 	float: right;
 	margin-top: 65px;
 	margin-right: 0;
@@ -359,7 +369,7 @@ blockquote {
 #nav ul li a {
 	display:inline;
 	text-decoration:none;
-	padding:0 16px 8px;
+	padding:0 12px 8px;
 	color:#bbb;
 	background:url(../images/black/nav_spacer.gif) 100% 100% no-repeat;
 	font-size:13px;
@@ -369,7 +379,7 @@ blockquote {
 #nav ul li a:active {
 	display:inline;
 	text-decoration:none;
-	padding:0 16px 8px;
+	padding:0 12px 8px;
 	color:#fff;
 	background:url(../images/black/nav_spacer.gif) 100% 100% no-repeat;
 	font-size:13px;
@@ -382,10 +392,11 @@ body#Controller_Series a#series_link,
 body#Controller_Download a#download_link,
 body#Controller_Search a#search_link,
 body#Controller_Queue a#queue_link,
-body#Controller_Update a#update_link {
+body#Controller_Update a#update_link,
+body#Controller_Config a#config_link {
 	display:inline;
 	text-decoration:none;
-	padding:0 16px 8px;
+	padding:0 12px 8px;
 	color:#fff;
 	background:url(../images/black/nav_spacer.gif) 100% 100% no-repeat;
 	font-size:13px;
@@ -405,7 +416,7 @@ body#Controller_Update a#update_link {
 	width: 100px;
 	background-image: url(../images/black/rss_off.gif);
 	background-position: center center;
-	margin-left: 15px;
+	margin-left: 11px;
 	margin-bottom: 5px;
 }
 #nav li#last a:hover {

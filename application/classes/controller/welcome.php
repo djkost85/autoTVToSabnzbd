@@ -12,9 +12,16 @@ class Controller_Welcome extends Controller_Page {
 //
 //        $seriesNum = $series->count();
 
+        try {
+            $count = ORM::factory('series')->count_all();
+        } catch (ErrorException $e) {
+            MsgFlash::set($e->getMessage());
+            $this->request->redirect('config/database');
+        }
+        
         $pagination = Pagination::factory( array (
             'base_url' => "",
-            'total_items' => ORM::factory('series')->count_all(),
+            'total_items' => $count,
             'items_per_page' => 12 // default 10
         ));
 

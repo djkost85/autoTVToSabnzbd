@@ -33,6 +33,7 @@ return array(
     'Resume' => 'Återuppta',
     'Restart' => 'Starta om',
     'Shutdown' => 'Stäng av',
+    'New' => 'Ny',
     
     'None' => 'Ingen',
     'unknown' => 'okänd',
@@ -49,6 +50,7 @@ return array(
     'Queued' => 'Köad',
     'Completed' => 'Klar',
     'Failed' => 'Misslyckades',
+    'Configure me' => 'Konfigurera mig',
 
     'Order' => 'Ordning',
     'Category' => 'Kategori',
@@ -81,7 +83,7 @@ return array(
     'Show all episodes from' => 'Visa alla avsnitt från',
     'Show all special episodes from' => 'Visa alla special avsnitt från',
     'Show all downloads' => 'Visa alla nerladdningar',
-
+    'Configuration saved' => 'Konfigurationen sparad',
     
     'Updating the rss feed.' => 'Uppdaterar rss födet.',
     'Updating all series.' => 'Uppdaterar alla serier.',
@@ -89,6 +91,7 @@ return array(
     'Home' => 'Hem',
     'New series' => 'Ny serie',
     'Download list' => 'Lista nedladdade',
+    'Downloads' => 'Nedladdade',
     'Search' => 'Sök',
     'Queue' => 'Kö',
 

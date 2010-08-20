@@ -7,6 +7,7 @@ class Controller_Page extends Controller_Template {
     public $template = 'autoTvToSab/template';
 
     protected $_auto_update = true;
+    protected $_no_db = true;
 
     /**
      * The before() method is called before your controller action.
@@ -66,16 +67,23 @@ class Controller_Page extends Controller_Template {
             $this->template->menu = View::factory('menu')->__toString();
             $footer = View::factory('footer');
 
-            $footer->set('endedSeries', ORM::factory('series')->searchEnded(15));
-            $ep = ORM::factory('episode');
-
-            $footer->set('episodes', $ep->where('season', '>', '0')->order_by('first_aired', 'desc')->limit(10)->find_all());
-
             $denySidbar = array(
                 'Controller_Queue',
                 'Controller_Download',
+                'Controller_Config',
                 );
-            $footer->set('showSidebar', !in_array(get_class($this), $denySidbar));
+
+
+
+            $showSidebar = !in_array(get_class($this), $denySidbar);
+            $footer->set('showSidebar', $showSidebar);
+
+            if ($showSidebar) {
+                $footer->set('endedSeries', ORM::factory('series')->searchEnded(15));
+                $ep = ORM::factory('episode');
+
+                $footer->set('episodes', $ep->where('season', '>', '0')->order_by('first_aired', 'desc')->limit(10)->find_all());
+            }
 
             $this->template->footer = $footer->__toString();
         }

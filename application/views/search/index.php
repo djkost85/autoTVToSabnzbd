@@ -30,8 +30,8 @@
         </p>
         <p>
             <label for="where"><?php echo __('Where')?>:</label>
-            <?php echo __('This site')?> <input type="radio" name="where" value="site" checked />
-            <?php echo __('NZBMatrix')?> <input type="radio" name="where" id="matrix" value="matrix" />
+            <?php echo __('This site')?>: <input class="radio-button" type="radio" name="where" value="site" checked />
+            <?php echo __('NZBMatrix')?>: <input class="radio-button" type="radio" name="where" id="matrix" value="matrix" />
         </p>
         <p class="matrix">
             <label for="cat"><?php echo __('Download catagory')?>:</label>
@@ -71,7 +71,7 @@
             $poster = $series->poster . '/147';
         }
 
-        
+
         ?>
                 <li>
                     <?php echo HTML::anchor("episodes/$series->id", $series->series_name)?><br />
@@ -87,7 +87,7 @@
                     <div><?php echo HTML::anchor("episodes/listSpecials/$series->id", __('List all specials'));?></div>
                     <div><?php echo Text::limit_chars(HTML::entities($series->overview), 370)?></div>
                 </li>
-    
+
     <?php } ?>
             </ul>
 <?php } ?>
