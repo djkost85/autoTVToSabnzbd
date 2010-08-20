@@ -99,20 +99,22 @@ class Controller_Page extends Controller_Template {
 
             $rssUpdate = $session->get('rss_update', null);
 
-            if (time() >= strtotime($config->rss['howOld'], $rssUpdate)) {
-                $session->set('rss_update', time());
-                Helper::backgroundExec(URL::site('rss/update', true));
-            }
+            if (isset($config->rss)) {
+                if (time() >= strtotime($config->rss['howOld'], $rssUpdate)) {
+                    $session->set('rss_update', time());
+                    Helper::backgroundExec(URL::site('rss/update', true));
+                }
 
-            $lastUpdate = Cookie::get('seriesUpdateEvery', null);
-            if (is_null($lastUpdate)) {
-                $lastUpdate = time();
-                Cookie::set('seriesUpdateEvery', $lastUpdate);
-            }
+                $lastUpdate = Cookie::get('seriesUpdateEvery', null);
+                if (is_null($lastUpdate)) {
+                    $lastUpdate = time();
+                    Cookie::set('seriesUpdateEvery', $lastUpdate);
+                }
 
-            if (time() > strtotime($config->update['seriesUpdateEvery'], $lastUpdate)) {
-                Helper::backgroundExec(URL::site('update/doAll', true));
-                Cookie::set('seriesUpdateEvery', time());
+                if (time() > strtotime($config->update['seriesUpdateEvery'], $lastUpdate)) {
+                    Helper::backgroundExec(URL::site('update/doAll', true));
+                    Cookie::set('seriesUpdateEvery', time());
+                }
             }
         }
 

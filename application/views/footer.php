@@ -41,11 +41,10 @@
                 </div>
                 <!-- sidebar ends -->
             </div>
-
+            <?php } ?>
             <!-- content-wrap ends-->
             <div class="clearer"></div>
         </div>
-        <?php } ?>
         <!-- footer starts here -->
 
 <div id="footer-wrap">

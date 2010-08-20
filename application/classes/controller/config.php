@@ -11,8 +11,10 @@ class Controller_Config extends Controller_Page {
 //        file_put_contents('application/config/default.data', serialize($default->as_array()));
 //        var_dump(unserialize(file_get_contents('application/config/default.data')));
 
-        $view->set('title', __('Config'))
-                ->set('TheTvDB_api_key', $default->default['TheTvDB_api_key'])
+        $view->set('title', __('Config'));
+
+        if (isset($default->rss)) {
+            $view->set('TheTvDB_api_key', $default->default['TheTvDB_api_key'])
                 ->set('NzbMatrix_api_key', $default->default['NzbMatrix_api_key'])
                 ->set('NzbMatrix_api_user', $default->default['NzbMatrix_api_user'])
                 ->set('use_nzb_site', $default->default['useNzbSite'])
@@ -22,15 +24,19 @@ class Controller_Config extends Controller_Page {
                 ->set('rss_how_old', $default->rss['howOld'])
                 ->set('nzbs_query_string', $default->nzbs['queryString'])
                 ->set('series_update_every', $default->update['seriesUpdateEvery']);
+        } else if (!isset($default->default['useNzbSite'])) {
+            $view->set('use_nzb_site', 'nzbMatrix');
+        }
     
         $this->template->content = $view;
     }
 
     public function action_save() {
         $this->auto_render = false;
-        $default = Kohana::config('default');
-        $default = $default->as_array();
+//        $default = Kohana::config('default');
+//        $default = $default->as_array();
 
+        $default = array();
         if (empty($_GET['use_nzb_site'])) {
             $_GET['use_nzb_site'] = "nzbMatrix";
         }

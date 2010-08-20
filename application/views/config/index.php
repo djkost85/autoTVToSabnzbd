@@ -66,13 +66,13 @@
                     <label for="rss_how_old">Rss update every</label>
                     <input type="text" name="rss_how_old" id="rss_how_old" value="<?php if (isset($rss_how_old)) echo $rss_how_old; else echo '3 hours' ?>" />
                     <br />
-                    <em>Example: 2 days or 4 hours</em>
+                    <em>Example: "2 days" or "4 hours"</em>
                 </p>
                 <p>
                     <label for="series_update_every">All series are updated every</label>
                     <input type="text" name="series_update_every" id="series_update_every" value="<?php if (isset($series_update_every)) echo $series_update_every; else echo '1 week' ?>" />
                     <br />
-                    <em>Example: 1 week or 4 days</em>
+                    <em>Example: "1 week" or "4 days"</em>
                 </p>
 
                 <p>
