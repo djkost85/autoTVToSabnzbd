@@ -21,6 +21,11 @@ class Controller_Welcome extends Controller_Page {
             MsgFlash::set($e->getMessage());
             $this->request->redirect('config/database');
         }
+
+        if (Kohana::config('default.rss') === null) {
+            MsgFlash::set(__('Configure me'));
+            $this->request->redirect('config/index');
+        }
         
         $pagination = Pagination::factory( array (
             'base_url' => "",

@@ -115,10 +115,7 @@ class Controller_Page extends Controller_Template {
                     Helper::backgroundExec(URL::site('update/doAll', true));
                     Cookie::set('seriesUpdateEvery', time());
                 }
-            } else {
-                MsgFlash::set(__('Configure me'));
-                $this->request->redirect('config/index');
-            }
+            } 
         }
 
     }
