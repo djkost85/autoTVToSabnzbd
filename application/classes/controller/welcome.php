@@ -17,6 +17,9 @@ class Controller_Welcome extends Controller_Page {
         } catch (ErrorException $e) {
             MsgFlash::set($e->getMessage());
             $this->request->redirect('config/database');
+        } catch (Database_Exception $e) {
+            MsgFlash::set($e->getMessage());
+            $this->request->redirect('config/database');
         }
         
         $pagination = Pagination::factory( array (
