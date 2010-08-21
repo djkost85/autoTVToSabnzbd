@@ -133,7 +133,7 @@ return array
         }
 
         MsgFlash::set(__('Configuration saved'));
-        $this->request->redirect('config/database');
+        $this->request->redirect('config/index');
     }
 
 }
