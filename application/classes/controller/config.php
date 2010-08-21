@@ -24,7 +24,7 @@ class Controller_Config extends Controller_Page {
                 ->set('rss_how_old', $default->rss['howOld'])
                 ->set('nzbs_query_string', $default->nzbs['queryString'])
                 ->set('series_update_every', $default->update['seriesUpdateEvery']);
-        } else if (!isset($default->default) && !isset($default->default['useNzbSite'])) {
+        } else if (isset($default->default) && !isset($default->default['useNzbSite'])) {
             $view->set('use_nzb_site', 'nzbMatrix');
         }
     
