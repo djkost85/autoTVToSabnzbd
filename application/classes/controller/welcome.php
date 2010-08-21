@@ -28,15 +28,15 @@ class Controller_Welcome extends Controller_Page {
             'items_per_page' => 12 // default 10
         ));
 
-        $cacheName = (isset($_GET['page'])) ? "series_{$_GET['page']}" : "series";
-        $series = Cache::instance('default')->get($cacheName);
+//        $cacheName = (isset($_GET['page'])) ? "series_{$_GET['page']}" : "series";
+//        $series = Cache::instance('default')->get($cacheName);
+//
+//        if (is_null($series)) {
+//            $series = Model_SortFirstAired::getWelcomeSeries($pagination->items_per_page, $pagination->offset);
+//            Cache::instance('default')->set($cacheName, $series);
+//        }
 
-        if (is_null($series)) {
-            $series = Model_SortFirstAired::getWelcomeSeries($pagination->items_per_page, $pagination->offset);
-            Cache::instance('default')->set($cacheName, $series);
-        }
-
-//        $series = Model_SortFirstAired::getWelcomeSeries($pagination->items_per_page, $pagination->offset);
+        $series = Model_SortFirstAired::getWelcomeSeries($pagination->items_per_page, $pagination->offset);
 
 
 //        if (MsgFlash::has()) {
