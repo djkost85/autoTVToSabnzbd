@@ -23,7 +23,9 @@ class Controller_Config extends Controller_Page {
                 ->set('rss_number_of_results', $default->rss['numberOfResults'])
                 ->set('rss_how_old', $default->rss['howOld'])
                 ->set('nzbs_query_string', $default->nzbs['queryString'])
-                ->set('series_update_every', $default->update['seriesUpdateEvery']);
+                ->set('series_update_every', $default->update['seriesUpdateEvery'])
+                ->set('install_error', Helper_Install::checkEnv())
+                ->set('install_warnings', Helper_Install::getWarnings());
         } else if (isset($default->default) && !isset($default->default['useNzbSite'])) {
             $view->set('use_nzb_site', 'nzbMatrix');
         }

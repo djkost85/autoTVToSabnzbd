@@ -791,21 +791,35 @@ body#Controller_Config a#config_link {
 }
 
 
-.error{
-	background-color: #FF0606;
-	width: 560px;
-	margin: 10px;
-	color: #000000;
-	padding: 10px;
-	font-weight: bold;
+.error {
+    background-color: #FF0606;
+    width: 560px;
+    margin: 10px;
+    color: #000000;
+    padding: 10px;
+    font-weight: bold;
 }
-.success{
-	background-color: #B1D918;
-	width: 560px;
-	margin: 10px;
-	color: #000000;
-	padding: 10px;
-	font-weight: bold;
+
+.success {
+    background-color: #B1D918;
+    width: 560px;
+    margin: 10px;
+    color: #000000;
+    padding: 10px;
+    font-weight: bold;
+}
+.warnings {
+    background-color: #ec842b;
+    width: 560px;
+    margin: 10px;
+    color: #000000;
+    padding: 10px;
+    font-weight: bold;
+}
+
+ul.error li, ul.warnings li {
+    margin-left: 28px;
+    list-style-type: decimal-leading-zero;
 }
 
 li div.errorMsg {

@@ -25,6 +25,9 @@
 
             <?php if (MsgFlash::has()) { ?><p class="success"><?php echo HTML::entities(MsgFlash::get())?></p> <?php } ?>
 
+            <?php if (!empty($install_error)) { echo '<h2 class="error">You have errors you must tend to</h2><ul class="error"><li>' . implode('</li><li>', $install_error) . '</li></ul>'; }?>
+            <?php if (!empty($install_warnings)) { echo '<h2 class="warnings">You have warnings</h2><ul class="warnings"><li>' . implode('</li><li>', $install_warnings) . '</li></ul>'; }?>
+
             <form id="submitform" class="config-form" action="<?php echo URL::site('config/save')?>" method="get">
                 <p>
                     <label for="sab_url">Sabnzbd url</label>

@@ -10,7 +10,6 @@
  * @author Morre95
  */
 class Model_Series extends ORM {
-//    protected $_has_many = array('episodes' => array('through' => 'serjoinep'));
     protected $_has_many = array('episodes' => array());
 
     protected $_filters = array( 
@@ -37,24 +36,9 @@ class Model_Series extends ORM {
                     ->where('id', '=', $farId)
                     ->execute($this->_db);
         }
-// Do you mean I should add a new field (series_id) in the episodes table or what?
     }
 
     public function getByFirtAired($limit, $offset) {
-//    public function getByFirtAired() {
-//        $query = "SELECT
-//                s.*,
-//                MAX(e.first_aired) AS last_aired
-//            FROM
-//                series s
-//            LEFT JOIN
-//                episodes e ON e.series_id = s.id
-//            GROUP BY
-//                s.id
-//            ORDER BY
-//                last_aired DESC";
-
-
         $query = "SELECT
                 s.*,
                 MAX(e.first_aired) AS last_aired
@@ -80,66 +64,27 @@ class Model_Series extends ORM {
         
     }
 
-    /**
-     *
-     * $query = "SELECT
+    public function getFirtAiredNoLimit() {
+        $query = "SELECT
                 s.*,
-                MAX(e.first_aired) AS last_aired,
-                ep.episode AS ep_num,
-                ep.id AS ep_id,
-                ep.season AS ep_sea,
-                ep.first_aired AS ep_aired
+                MAX(e.first_aired) AS last_aired
             FROM
                 series s
-            INNER JOIN episodes ep ON ep.id =
-                (
-                SELECT
-                    id
-                FROM
-                    episodes
-                WHERE
-                    id = e.id
-                ORDER BY
-                    first_aired DESC
-                LIMIT 1
-                )
             LEFT JOIN
-                serjoinep se ON se.series_id = s.id
-            LEFT JOIN
-                episodes e ON e.id = se.episode_id
+                episodes e ON e.series_id = s.id
+            WHERE
+                e.first_aired < CURDATE()
             GROUP BY
                 s.id
             ORDER BY
-                last_aired DESC
-            LIMIT
-                :limit
-            OFFSET
-                :offset";
-     *
-     * 
-               INNER JOIN episodes ep ON ep.id =
-                (
-                SELECT
-                    id
-                FROM
-                    episodes
-                WHERE
-                    id = e.id
-                ORDER BY
-                    first_aired DESC
-                LIMIT 1
-                )
-     */
+                last_aired DESC";
+        return DB::query(Database::SELECT, $query)
+                ->as_object()
+                ->execute($this->_db);
+    }
+
 
     public function getPreviousAired($id) {
-        /*return DB::query(Database::SELECT,
-            "SELECT `series`.*, MAX(`episodes`.`first_aired`)
-            FROM `series`
-            JOIN `serjoinep` ON (`serjoinep`.`episode_id` = `series`.`id`)
-            JOIN `episodes` ON (`episodes`.`id` = `serjoinep`.`episode_id`)
-            GROUP BY `episodes`.`id`
-            ORDER BY `episodes`.`id` DESC
-            LIMIT 1")->as_object()->execute($this->_db);*/
         return DB::query(Database::SELECT,
             "SELECT
                 e.*,

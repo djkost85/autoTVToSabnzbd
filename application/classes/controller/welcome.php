@@ -11,7 +11,6 @@ class Controller_Welcome extends Controller_Page {
 //        }
 //
 //        $seriesNum = $series->count();
-
         try {
             $count = ORM::factory('series')->count_all();
         } catch (ErrorException $e) {

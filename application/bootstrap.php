@@ -37,6 +37,9 @@ ini_set('unserialize_callback_func', 'spl_autoload_call');
 
 //-- Configuration and initialization -----------------------------------------
 
+
+$baseUrl = str_replace('//', '/', '/' . trim(str_replace('index.php', '', str_replace(str_replace($_SERVER['SCRIPT_NAME'], '', $_SERVER['PHP_SELF']), '', $_SERVER['PHP_SELF'])), '/') . '/');
+
 /**
  * Initialize Kohana, setting the default options.
  *
@@ -51,7 +54,7 @@ ini_set('unserialize_callback_func', 'spl_autoload_call');
  * - boolean  caching     enable or disable internal caching                 FALSE
  */
 Kohana::init(array(
-    'base_url' => str_replace('//', '/', '/' . trim(str_replace('index.php', '', str_replace(str_replace($_SERVER['SCRIPT_NAME'], '', $_SERVER['PHP_SELF']), '', $_SERVER['PHP_SELF'])), '/') . '/'),
+    'base_url' => $baseUrl,
     //'index_file' => FALSE,
     ));
 
