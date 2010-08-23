@@ -39,7 +39,7 @@ table tr:hover {
     <tbody>
     <?php foreach ($history->slots as $slot) { ?>
         <tr>
-            <td><?php echo HTML::anchor($slot->deleteLink, HTML::image('images/black/bullet_delete.gif'), array('title' => __('Delete'), 'class' => 'sab'))?></td>
+            <td><?php echo HTML::anchor($slot->deleteLink, HTML::image('images/black/delete.gif'), array('title' => __('Delete'), 'class' => 'sab'))?></td>
             <td><?php echo date('d/m -Y H:i:s', $slot->completed)?></td>
             <td><?php echo $slot->name . ' ' . strip_tags($slot->fail_message)?></td>
             <td><?php echo $slot->size?></td>

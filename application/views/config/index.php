@@ -1,5 +1,4 @@
 <?php defined('SYSPATH') or die('No direct script access.'); ?>
-
 <div id="wrap">
 <!-- content-wrap starts -->
 <div id="content-wrap">

@@ -608,7 +608,7 @@ body#Controller_Config a#config_link {
 	border-top-width: 1px;
 	border-top-style: solid;
 	border-top-color: #1a2022;
-	background-image: url(../images/black/footer.gif);
+	/*background-image: url(../images/black/footer.gif);*/
 	background-repeat: repeat-x;
 	background-position: left bottom;
 	color: #CACAC1;

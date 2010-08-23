@@ -20,7 +20,7 @@ class Controller_Config extends Controller_Page {
                 ->set('use_nzb_site', $default->default['useNzbSite'])
                 ->set('sab_api_key', $default->Sabnzbd['api_key'])
                 ->set('sab_url', $default->Sabnzbd['url'])
-                ->set('rss_number_of_results', $default->rss['numberOfResults'])
+                ->set('rss_num_results', $default->rss['numberOfResults'])
                 ->set('rss_how_old', $default->rss['howOld'])
                 ->set('nzbs_query_string', $default->nzbs['queryString'])
                 ->set('series_update_every', $default->update['seriesUpdateEvery'])
