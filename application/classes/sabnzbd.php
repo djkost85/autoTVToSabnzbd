@@ -12,7 +12,7 @@ class Sabnzbd {
         $this->_sabUrl = $options['url'] . '/sabnzbd/api';
         $this->_apiKey = $options['api_key'];
 
-        if ($options['username'] && $options['password']) {
+        if (isset($options['username']) && isset($options['password'])) {
             $this->_login['user'] = urlencode($options['username']);
             $this->_login['pass'] = urlencode($options['password']);
         }
