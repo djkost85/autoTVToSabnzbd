@@ -20,6 +20,8 @@ class Controller_Config extends Controller_Page {
                 ->set('use_nzb_site', $default->default['useNzbSite'])
                 ->set('sab_api_key', $default->Sabnzbd['api_key'])
                 ->set('sab_url', $default->Sabnzbd['url'])
+                ->set('sab_username', $default->Sabnzbd['username'])
+                ->set('sab_password', $default->Sabnzbd['password'])
                 ->set('rss_num_results', $default->rss['numberOfResults'])
                 ->set('rss_how_old', $default->rss['howOld'])
                 ->set('nzbs_query_string', $default->nzbs['queryString'])
@@ -47,14 +49,32 @@ class Controller_Config extends Controller_Page {
         $default['default']['NzbMatrix_api_key'] = $_GET['matrix_api_key'];
         $default['default']['NzbMatrix_api_user'] = $_GET['matrix_api_user'];
         $default['default']['useNzbSite'] = $_GET['use_nzb_site'];
-        $default['Sabnzbd']['api_key'] = $_GET['sab_api_key'];
-        $default['Sabnzbd']['url'] = $_GET['sab_url'];
         $default['nzbs']['queryString'] = $_GET['nzbs_query_string'];
         $default['rss']['numberOfResults'] = $_GET['rss_num_results'];
         $default['rss']['howOld'] = $_GET['rss_how_old'];
         $default['update']['seriesUpdateEvery'] = $_GET['series_update_every'];
 
+        $default['Sabnzbd']['url'] = $_GET['sab_url'];
+        $default['Sabnzbd']['api_key'] = $_GET['sab_api_key'];
+        
+        $default['Sabnzbd']['username'] = (empty($_GET['sab_username'])) ? false : $_GET['sab_username'];
+        $default['Sabnzbd']['password'] = (empty($_GET['sab_password'])) ? false : $_GET['sab_password'];
+
         file_put_contents('application/config/default.data', serialize($default));
+
+        $sab = new Sabnzbd(Kohana::config('default.Sabnzbd'));
+        $checkUrl = trim($sab->checkSabUrl());
+        if ($checkUrl == 'apikey' && empty($_GET['sab_api_key'])) {
+            MsgFlash::set(__('Sabnzbd needs api key', true));
+        } else if ($checkUrl == 'login') {
+            if (empty($_GET['sab_username']) || empty($_GET['sab_password'])) {
+                MsgFlash::set(__('Sabnzbd: authentication is needed'), true);
+            }
+        } else if ($checkUrl == 'None') {
+//            MsgFlash::set(__('Sab is ok'));
+        } else if (is_numeric($checkUrl)) {
+            MsgFlash::set(__('Sabnzbd error: Not Found'), true);
+        }
 
         MsgFlash::set(__('Configuration saved'));
         $this->request->redirect('config/index');

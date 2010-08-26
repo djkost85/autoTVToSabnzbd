@@ -87,7 +87,14 @@ class TheTvDB extends Tv_Info {
 
     protected function setMirror() {
         $url = sprintf('http://www.thetvdb.com/api/%s/mirrors.xml', $this->apiKey);
-        $mirror = simplexml_load_file($url);
+        $xml = $this->send($url, array(CURLOPT_HEADER => false));
+
+        if (is_numeric($xml)) {
+            throw new RuntimeException(Helper::getHttpCodeMessage($xml), $xml);
+        }
+        
+        $mirror = simplexml_load_string($xml);
+//        $mirror = simplexml_load_file($url);
 
         $this->mirror['id'] = (int)$mirror->Mirror->id;
         $this->mirror['path'] = (string)$mirror->Mirror->mirrorpath;

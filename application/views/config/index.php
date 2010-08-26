@@ -23,6 +23,7 @@
             <h1><?php echo $title?></h1>
 
             <?php if (MsgFlash::has()) { ?><p class="success"><?php echo HTML::entities(MsgFlash::get())?></p> <?php } ?>
+            <?php if (MsgFlash::hasError()) { ?><p class="error"><?php echo HTML::entities(MsgFlash::get(true))?></p> <?php } ?>
 
             <?php if (!empty($install_error)) { echo '<h2 class="error">You have errors you must tend to</h2><ul class="error"><li>' . implode('</li><li>', $install_error) . '</li></ul>'; }?>
             <?php if (!empty($install_warnings)) { echo '<h2 class="warnings">You have warnings</h2><ul class="warnings"><li>' . implode('</li><li>', $install_warnings) . '</li></ul>'; }?>
@@ -36,6 +37,17 @@
                     <label for="sab_api_key">Sabnzbd api key</label>
                     <input type="text" name="sab_api_key" id="sab_api_key" size="35" value="<?php if (isset($sab_api_key)) echo $sab_api_key ?>" />
                 </p>
+                <h3><a href="#" id="sab_auth">Sabnzbd Authentication</a></h3>
+                <div class="sab_auth">
+                    <p>
+                        <label for="sab_username">Sabnzbd username</label>
+                        <input type="text" name="sab_username" id="sab_username" size="35" value="<?php if (isset($sab_username)) echo $sab_username ?>" />
+                    </p>
+                    <p>
+                        <label for="sab_password">Sabnzbd password</label>
+                        <input type="password" name="sab_password" id="sab_password" size="35" value="<?php if (isset($sab_password)) echo $sab_password ?>" />
+                    </p>
+                </div>
                 <p>
                     <label for="matrix_api_key">Use NZB Site</label>
                     Use NZB Matrix <input class="radio-button" type="radio" <?php if ($use_nzb_site == 'nzbMatrix') echo 'checked'?> name="use_nzb_site" value="nzbMatrix" id="nzb_matrix" />
@@ -87,3 +99,12 @@
         </div>
     <!-- main ends -->
     </div>
+
+<script type="text/javascript">
+if ($('#sab_username').val() == "") {$('.sab_auth').hide();}
+
+$('#sab_auth').click(function () {
+    $('.sab_auth').toggle();
+    return false;
+});
+</script>

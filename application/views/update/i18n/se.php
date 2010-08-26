@@ -39,6 +39,7 @@ div.update-wrapper ul {
                     </div>
 
     <?php if (MsgFlash::has()) { ?><p class="success"><?php echo HTML::entities(MsgFlash::get())?></p> <?php } ?>
+    <?php if (MsgFlash::hasError()) { ?><p class="error"><?php echo HTML::entities(MsgFlash::get(true))?></p> <?php } ?>
     
     <p>Alla avsnitt som blir uppdaterade och är markerade som nerladdade, kommer inte längre vara markerade som nedladdade.</p>
     <p>Klicka <a href="<?php echo URL::site('update/all/series')?>" id="update">här</a> om du vill updatera alla serier.</p>

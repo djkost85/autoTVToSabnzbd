@@ -40,6 +40,7 @@ div.update-wrapper ul {
                     </div>
                     
     <?php if (MsgFlash::has()) { ?><p class="success"><?php echo HTML::entities(MsgFlash::get())?></p> <?php } ?>
+    <?php if (MsgFlash::hasError()) { ?><p class="error"><?php echo HTML::entities(MsgFlash::get(true))?></p> <?php } ?>
             
     <p>When you update series, all the episodes marked as downloaded will no longer be marked as downloaded.</p>
     <p>Click <a href="<?php echo URL::site('update/all/series')?>" id="update">here</a> if you want to refresh all series.</p>

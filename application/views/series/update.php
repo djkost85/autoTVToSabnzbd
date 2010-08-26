@@ -21,6 +21,9 @@
                         <?php echo HTML::anchor('#', HTML::image("images/black/banner/fringe.jpg", array('alt' => 'Top Banner')), array('title' => 'Top Banner', 'class' => 'adhere'));?>
                     </div>
             <h1><?php echo $title; ?></h1>
+            <?php if (MsgFlash::has()) { ?><p class="success"><?php echo HTML::entities(MsgFlash::get())?></p> <?php } ?>
+            <?php if (MsgFlash::hasError()) { ?><p class="error"><?php echo HTML::entities(MsgFlash::get(true))?></p> <?php } ?>
+            
     <form id="submitform" action="<?php echo $url?>" method="get">
             <p>
                 <label for="series_name"><?php echo __('serie name')?>:</label>

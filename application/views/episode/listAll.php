@@ -17,6 +17,7 @@
     <div id="main">
         <div class="inner">
             <?php if (MsgFlash::has()) { ?><p class="success"><?php echo HTML::entities(MsgFlash::get())?></p> <?php } ?>
+            <?php if (MsgFlash::hasError()) { ?><p class="error"><?php echo HTML::entities(MsgFlash::get(true))?></p> <?php } ?>
 
             <div class="episode-banner">
             <?php echo HTML::anchor('', HTML::image('index.php/' . $banner, array('alt' => 'Top Banner', 'class' => 'banner')), array('title' => 'Top Banner'));?>

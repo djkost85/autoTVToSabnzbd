@@ -23,6 +23,7 @@
                     <!-- END BuySellAds.com Zone Code -->
     <h1><?php echo $title?></h1>
     <?php if (MsgFlash::has()) { ?><p class="success"><?php echo HTML::entities(MsgFlash::get())?></p> <?php } ?>
+    <?php if (MsgFlash::hasError()) { ?><p class="error"><?php echo HTML::entities(MsgFlash::get(true))?></p> <?php } ?>
     <form id="submitform" action="<?php echo URL::site('series/doAdd')?>" method="get">
         <p>
             <label for="name"><?php echo __('Serie name')?>:</label>

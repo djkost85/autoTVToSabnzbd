@@ -75,6 +75,17 @@ class Controller_Series extends Controller_Page {
         } catch (InvalidArgumentException $e) {
             MsgFlash::set($e->getMessage());
             $this->request->redirect('');
+            return;
+        } catch (RuntimeException $e) {
+            MsgFlash::set('Thetvdb.com error: ' . $e->getMessage());
+            if ($e->getCode() == 404) {
+                MsgFlash::get();
+                MsgFlash::set(__('Either thetvdb.com is down or you have entered the wrong api key'), true);
+                $this->request->redirect('');
+                return;
+            }
+            $this->request->redirect('');
+            return;
         }
         
         $saveAsNew = Kohana::config('default.default.saveImagesAsNew');
@@ -181,8 +192,16 @@ class Controller_Series extends Controller_Page {
             $info = $tv->getSeriesInfo();
         } catch (InvalidArgumentException $e) {
             $this->request->redirect('?' . http_build_query(array('error' => $e->getMessage())));
-        } catch (ErrorException $e) {
-            $this->request->redirect('?' . http_build_query(array('error' => $e->getMessage())));
+        } catch (RuntimeException $e) {
+            MsgFlash::set('Thetvdb.com error: ' . $e->getMessage());
+            if ($e->getCode() == 404) {
+                MsgFlash::get();
+                MsgFlash::set(__('Either thetvdb.com is down or you have entered the wrong api key'), true);
+                $this->request->redirect('');
+                return;
+            }
+            $this->request->redirect('');
+            return;
         }
 
         $overwrite = Kohana::config('default.default.saveImagesAsNew');
@@ -494,6 +513,16 @@ class Controller_Series extends Controller_Page {
             $banners = $tv->getBanners();
         } catch (InvalidArgumentException $e) {
             $this->request->redirect('?' . http_build_query(array('error' => $e->getMessage())));
+        } catch (RuntimeException $e) {
+            MsgFlash::set('Thetvdb.com error: ' . $e->getMessage());
+            if ($e->getCode() == 404) {
+                MsgFlash::get();
+                MsgFlash::set(__('Either thetvdb.com is down or you have entered the wrong api key'), true);
+                $this->request->redirect('');
+                return;
+            }
+            $this->request->redirect('');
+            return;
         }
 
         set_time_limit(0);
@@ -502,7 +531,7 @@ class Controller_Series extends Controller_Page {
         foreach($banners as $banner) {
             if ($banner->BannerType == 'poster') {
                 $savePath = 'http://thetvdb.com/banners/' . $banner->BannerPath;
-                $bannerArray['Poster'][] = HTML::anchor('#' ,HTML::image(URL::base() . 'images/thetvdb/125?image=' . $savePath, array(
+                $bannerArray['Poster'][] = HTML::anchor('#' ,HTML::image(URL::site('images/thetvdb/125') . '?image=' . $savePath, array(
                     'alt' => 'Series banner for ' . $series_name,
                     'title' => $savePath,
                     'class' => 'select-poster'
@@ -511,7 +540,7 @@ class Controller_Series extends Controller_Page {
 
             if ($banner->BannerType == 'fanart') {
                 $savePath = 'http://thetvdb.com/banners/' . $banner->BannerPath;
-                $bannerArray['Fanart'][] = HTML::anchor('#' ,HTML::image(URL::base() . 'images/thetvdb/125?image=' . $savePath, array(
+                $bannerArray['Fanart'][] = HTML::anchor('#' ,HTML::image(URL::site('images/thetvdb/125') . '?image=' . $savePath, array(
                     'alt' => 'Series banner for ' . $series_name,
                     'title' => $savePath,
                     'class' => 'select-fanart'
@@ -520,7 +549,7 @@ class Controller_Series extends Controller_Page {
 
             if ($banner->BannerType == 'series') {
                 $savePath = 'http://thetvdb.com/banners/' . $banner->BannerPath;
-                $bannerArray['Banner'][] = HTML::anchor('#' ,HTML::image(URL::base() . 'images/thetvdb/125?image=' . $savePath, array(
+                $bannerArray['Banner'][] = HTML::anchor('#' ,HTML::image(URL::site('images/thetvdb/125') . '?image=' . $savePath, array(
                     'alt' => 'Series banner for ' . $series_name,
                     'title' => $savePath,
                     'class' => 'select-banner'
@@ -554,6 +583,12 @@ class Controller_Series extends Controller_Page {
         } catch (InvalidArgumentException $e) {
             $this->request->response = $e->getMessage() . '. Serach string: ' . $name;
             return;
+        } catch (RuntimeException $e) {
+            $this->request->response = 'Thetvdb.com error: ' . $e->getMessage();
+            if ($e->getCode() == 404) {
+                $this->request->response = __('Either thetvdb.com is down or you have entered the wrong api key');
+            }
+            return;
         }
 
         $html = '<label for="select-ep">'.__("Select").':</label>
@@ -583,6 +618,12 @@ class Controller_Series extends Controller_Page {
             $banners = $tv->getBanners();
         } catch (InvalidArgumentException $e) {
             $this->request->response = $e->getMessage();
+            return;
+        } catch (RuntimeException $e) {
+            $this->request->response ='Thetvdb.com error: ' . $e->getMessage();
+            if ($e->getCode() == 404) {
+                $this->request->response = __('Either thetvdb.com is down or you have entered the wrong api key');
+            }
             return;
         }
 

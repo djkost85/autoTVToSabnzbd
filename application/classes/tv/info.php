@@ -19,7 +19,7 @@ abstract class Tv_Info {
         $this->_ch = curl_init();
         curl_setopt_array($this->_ch, $options + array(
                 CURLOPT_URL => $url,
-                CURLOPT_USERAGENT => 'morresTest/0.2',
+                CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 6.1; nl; rv:1.9.2) Gecko/20100115 Firefox/3.6',
                 CURLOPT_RETURNTRANSFER => 1,
                 CURLOPT_SSL_VERIFYPEER => 0,
                 CURLOPT_HEADER => 1
@@ -33,20 +33,20 @@ abstract class Tv_Info {
     }
 
     protected function getXml($url, array $options = array()) {
-//        $str = $this->send($url, $options);
-//
-//        if (is_numeric($str)) {
-//            $this->_httpCode = $str;
-//            throw new RuntimeException('Error HTTP code: ' . $str);
-//        }
-//
-//        $data = simplexml_load_string($str);
-        $data = @simplexml_load_file($url);
+        $str = $this->send($url, $options + array(CURLOPT_HEADER => false));
 
-        if (!$data or count($data) <= 0) {
-            $this->_httpCode = 500;
-            throw new InvalidArgumentException('No data');
+        if (is_numeric($str)) {
+            $this->_httpCode = $str;
+            throw new RuntimeException(Helper::getHttpCodeMessage($xml), $str);
         }
+
+        $data = simplexml_load_string($str);
+//        $data = @simplexml_load_file($url);
+//
+//        if (!$data or count($data) <= 0) {
+//            $this->_httpCode = 500;
+//            throw new InvalidArgumentException('No data');
+//        }
         return $data;
     }
 
