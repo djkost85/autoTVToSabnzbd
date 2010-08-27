@@ -22,7 +22,9 @@ abstract class Tv_Info {
                 CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 6.1; nl; rv:1.9.2) Gecko/20100115 Firefox/3.6',
                 CURLOPT_RETURNTRANSFER => 1,
                 CURLOPT_SSL_VERIFYPEER => 0,
-                CURLOPT_HEADER => 1
+                CURLOPT_HEADER => 1,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_MAXREDIRS => 5,
         ));
 
         $content = curl_exec($this->_ch);

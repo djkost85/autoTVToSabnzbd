@@ -40,6 +40,7 @@ class Controller_Config extends Controller_Page {
 //        $default = Kohana::config('default');
 //        $default = $default->as_array();
 
+        $_GET = Validate::factory($_GET)->filter(true, 'trim');
         $default = array();
         if (empty($_GET['use_nzb_site'])) {
             $_GET['use_nzb_site'] = "nzbMatrix";

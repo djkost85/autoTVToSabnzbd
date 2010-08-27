@@ -23,7 +23,7 @@ class Controller_Images extends Controller {
 
         //$this->request->send_headers();
 
-        echo $image->render();
+        echo $image->render(null, 80);
         exit;
     }
 

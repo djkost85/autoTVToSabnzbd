@@ -34,23 +34,46 @@ class Helper_Install {
         if (!is_file(APPPATH . 'bootstrap' . EXT)) {
             $error[] = "The configured <code>application</code> directory does not exist or does not contain required files.";
         }
-        if (!is_dir(APPPATH . 'cache') AND is_writable(APPPATH . 'cache')) {
+
+        #Check if dir is writable
+        if (is_dir(APPPATH . 'cache') && !is_writable(APPPATH . 'cache')) {
+            chmod(APPPATH . 'cache', 0777);
+        }
+        
+        if (!is_dir(APPPATH . 'cache') || !is_writable(APPPATH . 'cache')) {
             $error[] = "The <code>".APPPATH."cache/</code> directory is not writable.";
         }
-        if (!is_dir(APPPATH . 'logs') AND is_writable(APPPATH . 'logs')) {
+
+        if (is_dir(APPPATH . 'logs') && !is_writable(APPPATH . 'logs')) {
+            chmod(APPPATH . 'logs', 0777);
+        }
+
+        if (!is_dir(APPPATH . 'logs') || !is_writable(APPPATH . 'logs')) {
             $error[] = "The <code>".APPPATH."logs/</code> directory is not writable.";
         }
-        if (!is_dir(APPPATH . 'config') AND is_writable(APPPATH . 'config')) {
+
+        if (is_dir(APPPATH . 'config') && !is_writable(APPPATH . 'config')) {
+            chmod(APPPATH . 'config', 0777);
+        }
+        
+        if (!is_dir(APPPATH . 'config') || !is_writable(APPPATH . 'config')) {
             $error[] = "The <code>".APPPATH."config/</code> directory is not writable.";
         }
-        if (!is_dir(realpath(APPPATH . '../images')) AND
-                !is_writable(realpath(APPPATH . '../images')) AND
-                !is_writable(realpath(APPPATH . '../images/__cache')) AND
-                !is_writable(realpath(APPPATH . '../images/banner')) AND
-                !is_writable(realpath(APPPATH . '../images/poster')) AND
+
+        if (is_dir(realpath(APPPATH . '../images')) && !is_writable(realpath(APPPATH . '../images'))) {
+            Helper_Path::chmod_recursive(realpath(APPPATH . '../images'), 0777);
+        }
+
+        if (!is_dir(realpath(APPPATH . '../images')) ||
+                !is_writable(realpath(APPPATH . '../images')) ||
+                !is_writable(realpath(APPPATH . '../images/__cache')) ||
+                !is_writable(realpath(APPPATH . '../images/banner')) ||
+                !is_writable(realpath(APPPATH . '../images/poster')) ||
                 !is_writable(realpath(APPPATH . '../images/fanart'))) {
-            $error[] = "";
-        } 
+            $error[] = "The <code>".APPPATH."../images</code> directory or it´s subdirectories is not writable.";
+        }
+
+        
         if (!@preg_match('/^.$/u', 'ñ')) {
             $error[] = "<a href=\"http://php.net/pcre\">PCRE</a> has not been compiled with UTF-8 support.";
         }
