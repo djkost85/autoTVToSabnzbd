@@ -30,6 +30,10 @@ class Controller_Config extends Controller_Page {
                 ->set('install_warnings', Helper_Install::getWarnings());
         } else if (isset($default->default) && !isset($default->default['useNzbSite'])) {
             $view->set('use_nzb_site', 'nzbMatrix');
+            if (!isset($default->Sabnzbd)) {
+                $sabReturn = trim(Helper_Install::checkSabUrl('http://localhost:8080/sabnzbd/api?mode=auth'));
+                $view->set('correct_sab_url', Sabnzbd::confirmAuthAnswer($sabReturn));
+            }
         }
     
         $this->template->content = $view;
@@ -64,17 +68,18 @@ class Controller_Config extends Controller_Page {
         file_put_contents('application/config/default.data', serialize($default));
 
         $sab = new Sabnzbd(Kohana::config('default.Sabnzbd'));
-        $checkUrl = trim($sab->checkSabUrl());
-        if ($checkUrl == 'apikey' && empty($_GET['sab_api_key'])) {
+        $checkUrl = trim($sab->getAuthAnswer());
+        
+        if (is_numeric($checkUrl) || !Sabnzbd::confirmAuthAnswer($checkUrl)) {
+            MsgFlash::set(__('Sabnzbd error: Not Found'), true);
+        } else if ($checkUrl == 'apikey' && empty($_GET['sab_api_key'])) {
             MsgFlash::set(__('Sabnzbd needs api key', true));
         } else if ($checkUrl == 'login') {
-            if (empty($_GET['sab_username']) || empty($_GET['sab_password'])) {
+            if (empty($_GET['sab_username']) && empty($_GET['sab_password'])) {
                 MsgFlash::set(__('Sabnzbd: authentication is needed'), true);
             }
         } else if ($checkUrl == 'None') {
 //            MsgFlash::set(__('Sab is ok'));
-        } else if (is_numeric($checkUrl)) {
-            MsgFlash::set(__('Sabnzbd error: Not Found'), true);
         }
 
         MsgFlash::set(__('Configuration saved'));

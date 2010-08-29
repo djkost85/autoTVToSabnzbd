@@ -81,19 +81,19 @@ class Controller_Rss extends Controller {
 
                     # If NzbMatrix is not alive use NzbIndex instead
                     if (is_numeric($result)) {
-//                        if ($config->default['useNzbSite'] == 'both' && !empty($config->nzbs['queryString'])) {
-//                            $this->request->response = Request::factory('nzbs/fillRss')->execute()->response;
-//                            return;
-//                            //$this->request->redirect('nzbs/fillRss');
-//                        } else if ($config->default['useNzbSite'] == 'nzbMatrix') {
-//                            $this->request->response = Request::factory('nzbindex/fillRss')->execute()->response;
-//                            return;
-//                            //$this->request->redirect('nzbindex/fillRss');
-//                        } else {
-//                            $this->request->response = Request::factory('nzbindex/fillRss')->execute()->response;
-//                            return;
-//                            //$this->request->redirect('nzbindex/fillRss');
-//                        }
+                        if ($config->default['useNzbSite'] == 'both' && !empty($config->nzbs['queryString'])) {
+                            $this->request->response = Request::factory('nzbs/fillRss')->execute()->response;
+                            return;
+                            //$this->request->redirect('nzbs/fillRss');
+                        } else if ($config->default['useNzbSite'] == 'nzbMatrix') {
+                            $this->request->response = Request::factory('nzbindex/fillRss')->execute()->response;
+                            return;
+                            //$this->request->redirect('nzbindex/fillRss');
+                        } else {
+                            $this->request->response = Request::factory('nzbindex/fillRss')->execute()->response;
+                            return;
+                            //$this->request->redirect('nzbindex/fillRss');
+                        }
 
 
                         break;

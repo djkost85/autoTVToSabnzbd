@@ -5,7 +5,7 @@ class Helper_Install {
     public static function checkEnv() {
         $error = array();
         if (!version_compare(PHP_VERSION, '5.2.3', '>=')) {
-            $error[] = "AutoTvToSab requires PHP 5.2.3 or newer, this version is ".PHP_VERSION;
+            $error[] = "AutoTvToSab requires PHP 5.2.3 or newer, this version is " . PHP_VERSION;
         }
         if (!extension_loaded('curl')) {
             $error[] = "AutoTvToSab requires <a href=\"http://php.net/curl\">cURL</a> for the Remote class.";
@@ -39,9 +39,9 @@ class Helper_Install {
         if (is_dir(APPPATH . 'cache') && !is_writable(APPPATH . 'cache')) {
             chmod(APPPATH . 'cache', 0777);
         }
-        
+
         if (!is_dir(APPPATH . 'cache') || !is_writable(APPPATH . 'cache')) {
-            $error[] = "The <code>".APPPATH."cache/</code> directory is not writable.";
+            $error[] = "The <code>" . APPPATH . "cache/</code> directory is not writable.";
         }
 
         if (is_dir(APPPATH . 'logs') && !is_writable(APPPATH . 'logs')) {
@@ -49,15 +49,15 @@ class Helper_Install {
         }
 
         if (!is_dir(APPPATH . 'logs') || !is_writable(APPPATH . 'logs')) {
-            $error[] = "The <code>".APPPATH."logs/</code> directory is not writable.";
+            $error[] = "The <code>" . APPPATH . "logs/</code> directory is not writable.";
         }
 
         if (is_dir(APPPATH . 'config') && !is_writable(APPPATH . 'config')) {
             chmod(APPPATH . 'config', 0777);
         }
-        
+
         if (!is_dir(APPPATH . 'config') || !is_writable(APPPATH . 'config')) {
-            $error[] = "The <code>".APPPATH."config/</code> directory is not writable.";
+            $error[] = "The <code>" . APPPATH . "config/</code> directory is not writable.";
         }
 
         if (is_dir(realpath(APPPATH . '../images')) && !is_writable(realpath(APPPATH . '../images'))) {
@@ -70,10 +70,10 @@ class Helper_Install {
                 !is_writable(realpath(APPPATH . '../images/banner')) ||
                 !is_writable(realpath(APPPATH . '../images/poster')) ||
                 !is_writable(realpath(APPPATH . '../images/fanart'))) {
-            $error[] = "The <code>".APPPATH."../images</code> directory or it´s subdirectories is not writable.";
+            $error[] = "The <code>" . APPPATH . "../images</code> directory or it´s subdirectories is not writable.";
         }
 
-        
+
         if (!@preg_match('/^.$/u', 'ñ')) {
             $error[] = "<a href=\"http://php.net/pcre\">PCRE</a> has not been compiled with UTF-8 support.";
         }
@@ -98,6 +98,19 @@ class Helper_Install {
         }
 
         return $error;
+    }
+
+    public static function checkSabUrl($url) {
+        try {
+            return Remote::get($url, array(
+                CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 6.1; nl; rv:1.9.2) Gecko/20100115 Firefox/3.6',
+                CURLOPT_SSL_VERIFYPEER => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_MAXREDIRS => 5,
+            ));
+        } catch (Exception $e) {
+            return 404;
+        }
     }
 
 }

@@ -31,7 +31,7 @@
             <form id="submitform" class="config-form" action="<?php echo URL::site('config/save')?>" method="get">
                 <p>
                     <label for="sab_url">Sabnzbd url</label>
-                    <input type="text" name="sab_url" id="sab_url" value="<?php if (isset($sab_url)) echo $sab_url; else echo 'http://localhost:8080'; ?>" size="35" />
+                    <input type="text" name="sab_url" id="sab_url" value="<?php if (isset($sab_url)) echo $sab_url; else echo 'http://localhost:8080'; ?>" size="35" <?php if (isset($correct_sab_url) && $correct_sab_url) echo 'readonly' ?> />
                 </p>
                 <p>
                     <label for="sab_api_key">Sabnzbd api key</label>
@@ -106,5 +106,14 @@ if ($('#sab_username').val() == "") {$('.sab_auth').hide();}
 $('#sab_auth').click(function () {
     $('.sab_auth').toggle();
     return false;
+});
+
+$('#sab_url').click(function () {
+    if ($('#sab_url').attr("readonly") == true) {
+        if(confirm("I have confirmed that this is the right url.\n" + "Do you want to change it anyway?")) {
+            $('#sab_url').val('');
+            $('#readonly').removeAttr("readonly");
+        }
+    }
 });
 </script>
