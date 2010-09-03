@@ -22,6 +22,17 @@ class Model_Series extends ORM {
         $count = $this->where('series_name', '=', $name)->count_all();
         return ($count > 0) ? true : false;
     }
+    
+    public function isIdAdded($id) {
+        $query = $this->where('tvdb_id', '=', $id);
+
+        if ($query->count_all() > 0) {
+            $result = $this->where('tvdb_id', '=', $id)->find();
+            return $result->series_name;
+        }
+
+        return false;
+    }
 
     public function removeAllRelationships() {
         $alias = key($this->_has_many);

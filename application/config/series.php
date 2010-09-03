@@ -109,6 +109,19 @@ return array(
                 'Dollhouse',
                 'Coronation Street',
                 'Emmerdale',
+                'Warehouse 13',
+                'Trailer Park Boys',
+                'Murder One',
+                'Happy Town',
+                'Weeds',
+                'Oz',
+                'Will & Grace',
+                'Wonderfalls',
+                'Pushing Daisies',
+                'The Flintstones',
+                'Being Human',
+                'Underbelly',
+                'Dead Set',
         )
 );
 

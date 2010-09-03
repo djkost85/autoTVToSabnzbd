@@ -95,6 +95,8 @@ return array(
     'Search' => 'Sök',
     'Queue' => 'Kö',
 
+    'TheTVDB.com ID' => 'TheTVDB.com ID',
+
 
     /*Pagination*/
     'First' => 'Första',

@@ -11,7 +11,7 @@ class TheTvDB extends Tv_Info {
     protected $seriealInfo;
     protected $xmlLanguages = array();
 
-    public function  __construct($apiKey, $tvShow, $language = 'en') {
+    public function  __construct($apiKey, $tvShow = null, $language = 'en') {
         $this->apiKey = $apiKey;
         $this->setMirror();
         $this->language = $language;
@@ -57,6 +57,21 @@ class TheTvDB extends Tv_Info {
                 'http://www.thetvdb.com/api/%s/series/%s/%s%s.xml',
                 $this->apiKey,
                 (string)$this->seriealInfo->Series->seriesid,
+                ($showEp) ? 'all/' : '',
+                $this->language
+                );
+
+        return $this->getXml($url);
+    }
+
+    public function getSeriesById($id, $showEp = true) {
+        if (!is_numeric($id)) {
+            throw new InvalidArgumentException('No id');
+        }
+        $url = sprintf(
+                'http://www.thetvdb.com/api/%s/series/%s/%s%s.xml',
+                $this->apiKey,
+                $id,
                 ($showEp) ? 'all/' : '',
                 $this->language
                 );

@@ -29,6 +29,10 @@
             <label for="name"><?php echo __('Serie name')?>:</label>
             <input type="text" name="name" id="name" size="30" />
         </p>
+        <p>
+            <label for="is_tvdb_id"><?php echo __('TheTVDB.com ID')?>:</label>
+            <input type="checkbox" name="is_tvdb_id" id="is_tvdb_id" value="true" class="radio-button" />
+        </p>
         <p id="search-result" style="display: none"></p>
         <p>
             <label for="cat"><?php echo __('Download catagory')?>:</label>

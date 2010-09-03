@@ -62,16 +62,26 @@ class Controller_Series extends Controller_Page {
         $lang = ORM::factory('language')->find($_GET['language']);
 
         try {
-            $tv = new TheTvDB($this->TheTvDB_api_key, $_GET['name'], $lang->abbreviation);
+            if (isset($_GET['is_tvdb_id']) && is_numeric($_GET['name'])) {
+                $tv = new TheTvDB($this->TheTvDB_api_key, null, $lang->abbreviation);
+                $series = ORM::factory('series');
+                $isAdded = $series->isIdAdded($_GET['name']);
+                if ($isAdded) {
+                    MsgFlash::set($isAdded . ' ' . __('alredy exists'));
+                    $this->request->redirect('series/add');
+                }
+                $info = $tv->getSeriesById($_GET['name']);
+            } else {
+                $tv = new TheTvDB($this->TheTvDB_api_key, $_GET['name'], $lang->abbreviation);
+                $series = ORM::factory('series');
+                $arr = $tv->toArray();
+                if ($series->isAdded($arr['seriesName'])) {
+                    MsgFlash::set($_GET['name'] . ' ' . __('alredy exists'));
+                    $this->request->redirect('series/add');
+                }
 
-            $series = ORM::factory('series');
-            $arr = $tv->toArray();
-            if ($series->isAdded($arr['seriesName'])) {
-                MsgFlash::set($_GET['name'] . ' ' . __('alredy exists'));
-                $this->request->redirect('series/add');
+                $info = $tv->getSeriesInfo();
             }
-
-            $info = $tv->getSeriesInfo();
         } catch (InvalidArgumentException $e) {
             MsgFlash::set($e->getMessage());
             $this->request->redirect('');
@@ -149,7 +159,7 @@ class Controller_Series extends Controller_Page {
 
         Helper::backgroundExec(URL::site('episodes/downloadAllImages/' . $lastId, true));
 
-        MsgFlash::set($_GET['name'] . ' ' . __('is saved'));
+        MsgFlash::set($info->Series->SeriesName . ' ' . __('is saved'));
         $this->request->redirect('series/add/');
     }
 
@@ -489,7 +499,8 @@ class Controller_Series extends Controller_Page {
                 'rating'         => (string) $info->Series->Rating,
                 'runtime'        => (string) $info->Series->Runtime,
                 'series_id'      => (int) $info->Series->SeriesID,
-                'series_name'    => (empty($info->Series->SeriesName) && isset($_GET['name'])) ? $_GET['name'] : (string) $info->Series->SeriesName,
+                //'series_name'    => (empty($info->Series->SeriesName) && isset($_GET['name'])) ? $_GET['name'] : (string) $info->Series->SeriesName,
+                'series_name'    => (string) $info->Series->SeriesName,
                 'status'         => (string) $info->Series->Status,
                 'added'          => (string) $info->Series->added,
                 'added_by'       => (string) $info->Series->addedBy,

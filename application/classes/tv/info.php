@@ -43,12 +43,6 @@ abstract class Tv_Info {
         }
 
         $data = simplexml_load_string($str);
-//        $data = @simplexml_load_file($url);
-//
-//        if (!$data or count($data) <= 0) {
-//            $this->_httpCode = 500;
-//            throw new InvalidArgumentException('No data');
-//        }
         return $data;
     }
 
