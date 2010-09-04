@@ -90,6 +90,18 @@ class TheTvDB extends Tv_Info {
         return $this->getXml($url);
     }
 
+    function rating($item, $rating) {
+        $url = "http://www.thetvdb.com/api/User_Rating.php?";
+        $url .= http_build_query(array(
+            'accountid' => $this->apiKey,
+            'itemtype' => 'series',
+            'itemid' => $item,
+            'rating' => $rating,
+        ));
+
+        return $this->getXml($url);
+    }
+
     function getBanners() {
         $url = sprintf('http://www.thetvdb.com/api/%s/series/%s/banners.xml', $this->apiKey, (string)$this->seriealInfo->Series->seriesid);
         return $this->getXml($url);
@@ -168,20 +180,4 @@ class TheTvDB extends Tv_Info {
 
 }
 
-/*
-if self.config['search_all_languages']:
-            self.config['url_getSeries'] = u"%(base_url)s/api/GetSeries.php?seriesname=%%s&language=all" % self.config
-        else:
-            self.config['url_getSeries'] = u"%(base_url)s/api/GetSeries.php?seriesname=%%s&language=%(language)s" % self.config
-
-        self.config['url_epInfo'] = u"%(base_url)s/api/%(apikey)s/series/%%s/all/%%s.xml" % self.config
-
-        self.config['url_seriesInfo'] = u"%(base_url)s/api/%(apikey)s/series/%%s/%%s.xml" % self.config
-        self.config['url_actorsInfo'] = u"%(base_url)s/api/%(apikey)s/series/%%s/actors.xml" % self.config
-
-        self.config['url_seriesBanner'] = u"%(base_url)s/api/%(apikey)s/series/%%s/banners.xml" % self.config
-        self.config['url_artworkPrefix'] = u"%(base_url)s/banners/%%s" % self.config
-
-
- */
 ?>

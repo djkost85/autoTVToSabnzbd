@@ -79,7 +79,7 @@ class Controller_Page extends Controller_Template {
             $footer->set('showSidebar', $showSidebar);
 
             if ($showSidebar) {
-                $footer->set('endedSeries', ORM::factory('series')->searchEnded(15));
+                $footer->set('endedSeries', ORM::factory('series')->findEnded(15));
                 $ep = ORM::factory('episode');
 
                 $footer->set('episodes', $ep->where('season', '>', '0')->order_by('first_aired', 'desc')->limit(10)->find_all());

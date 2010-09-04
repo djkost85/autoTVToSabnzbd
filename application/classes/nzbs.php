@@ -23,9 +23,6 @@ class Nzbs extends Tv_Info {
 
         $url = $this->searchUrl . '?' . http_build_query($query) . $this->_queryString;
 
-//        $data = file_get_contents($url);
-//        echo $data;
-//        $xml = simplexml_load_string($data);
         try {
             $xml = $this->getXml($url);
         } catch (InvalidArgumentException $e) {

@@ -3,14 +3,6 @@
 class Controller_Welcome extends Controller_Page {
 
     public function action_index() {
-//        $series = Cache::instance('default')->get('series');
-//
-//        if (is_null($series)) {
-//            $series = Model_SortFirstAired::getSeries();
-//            Cache::instance('default')->set('series', $series);
-//        }
-//
-//        $seriesNum = $series->count();
         try {
             $count = ORM::factory('series')->count_all();
         } catch (ErrorException $e) {
@@ -32,27 +24,8 @@ class Controller_Welcome extends Controller_Page {
             'items_per_page' => 12 // default 10
         ));
 
-//        $cacheName = (isset($_GET['page'])) ? "series_{$_GET['page']}" : "series";
-//        $series = Cache::instance('default')->get($cacheName);
-//
-//        if (is_null($series)) {
-//            $series = Model_SortFirstAired::getWelcomeSeries($pagination->items_per_page, $pagination->offset);
-//            Cache::instance('default')->set($cacheName, $series);
-//        }
 
         $series = Model_SortFirstAired::getWelcomeSeries($pagination->items_per_page, $pagination->offset);
-
-
-//        if (MsgFlash::has()) {
-//            echo MsgFlash::get();
-//        }
-//
-//        MsgFlash::set('testter');
-
-        //var_dump(Helper::backgroundExec(URL::site('rss/update', true)));
-
-//        $matrix = new NzbMatrix(Kohana::config('default.default'));
-//        var_dump($matrix->search('Top Gear s15e04', 41));
         
         $this->template->title = __('Show all series');
 
@@ -67,7 +40,6 @@ class Controller_Welcome extends Controller_Page {
             ->set('listAllSpecials', __('List all specials'))
             ->set('banner', Model_Series::getRandBanner())
             ->set('rss', ORM::factory('rss'))
-//            ->set('series', ($seriesNum > 0) ? new LimitIterator($series, $pagination->offset, $pagination->items_per_page) : array());
             ->set('series', $series);
 
         $this->template->content = $xhtml;

@@ -1,4 +1,5 @@
-<?php defined('SYSPATH') or die('No direct script access.'); ?>
+<?php defined('SYSPATH') or die('No direct script access.');
+?>
 <div id="wrap">
 <!-- content-wrap starts -->
 <div id="content-wrap">
@@ -46,6 +47,7 @@ div.list-all-downloads {
             <form action="<?php echo URL::site('download/multiEp'); ?>" method="get" id="download-form">
                 <dl class="download-list">
                     <?php foreach ($downloads as $season => $value) { ?>
+
                     <dt><a href="#"><?php echo __('Season') . ': ' . $season?></a></dt>
                     <dd>
                         <ul>

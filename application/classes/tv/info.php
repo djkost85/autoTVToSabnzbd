@@ -39,7 +39,7 @@ abstract class Tv_Info {
 
         if (is_numeric($str)) {
             $this->_httpCode = $str;
-            throw new RuntimeException(Helper::getHttpCodeMessage($xml), $str);
+            throw new RuntimeException(Helper::getHttpCodeMessage($str), $str);
         }
 
         $data = simplexml_load_string($str);

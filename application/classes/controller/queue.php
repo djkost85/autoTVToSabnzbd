@@ -62,10 +62,15 @@ class Controller_Queue extends Controller_Page {
 
         $this->auto_render = false;
 
+        $totalPercent = 0;
+        if ((int)$queue->mbleft > 0 && (int)$queue->mb > 0) {
+            $totalPercent = round(((int)$queue->mbleft / (int)$queue->mb) * 100);
+        }
+
         $this->request->headers['Content-Type'] = 'text/json';
         $this->request->response = json_encode(
                 array(
-                    'total_percent' => round(((int)$queue->mbleft / (int)$queue->mb) * 100),
+                    'total_percent' => $totalPercent,
                     'total_text' => $queue->sizeleft . '/' . $queue->size,
                     'speed' => $queue->speed,
                     'temp_disk' => $queue->diskspace1 . ' GB/' . $queue->diskspacetotal1 . ' GB',
@@ -75,21 +80,6 @@ class Controller_Queue extends Controller_Page {
                     ));
         
     }
-
-    /*public function action_ajax_getSpeed() {
-        $sab = new Sabnzbd_Queue(Kohana::config('default.Sabnzbd'));
-        $queue = $sab->getQueue(false);
-        $this->auto_render = false;
-
-        $this->request->headers['Content-Type'] = 'text/json';
-        $this->request->response = json_encode(
-                array(
-                    'label' => 'Speed',
-                    'data' => array(
-                        array($queue->speed, $queue->kbpersec)
-                    )
-                ));
-    }*/
 
 }
 

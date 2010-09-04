@@ -87,6 +87,12 @@ foreach ($series as $ser) {
 jQuery(document).ready(function($) {
     $('.ajaxTooltip').tooltip({rounded: true});
 
+    $('.matrix-cat').hover(function() {
+        $(this).css('cursor','pointer');
+    }, function() {
+        $(this).css('cursor','auto');
+    });
+
 
     $('<img src="' + baseUrl + '/images/move-spinner.gif" id="spinner" />').css('position','absolute').hide().appendTo('body');
     $('.matrix-cat').click(function (event) {
