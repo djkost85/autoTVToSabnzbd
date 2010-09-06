@@ -56,6 +56,31 @@ class Controller_Nzbs extends Controller {
         $this->request->response = __('Updated');
     }
 
+    public function action_oneResult($id) {
+        set_time_limit(0);
+        $config = Kohana::config('default');
+        $rss = ORM::factory('rss');
+        
+        $ep = ORM::factory('episode', array('id' => $id));
+        $series = $ep->getSeriesInfo();
+        $search = sprintf('%s S%02dE%02d', $series->series_name, $ep->season, $ep->episode);
+
+        $nzbs = new Nzbs($config->nzbs);
+        $xml = $nzbs->search($search);
+
+        $std = new stdClass();
+        $std->season = $ep->season;
+        $std->episode = $ep->episode;
+        $std->series_name = $series->series_name;
+        $std->matrix_cat = $series->matrix_cat;
+        if ($this->handleResults($search, $xml, $std)) {
+            $this->request->response = 'true';
+        } else {
+            $this->request->response = 'false';
+        }
+        sleep(3);
+    }
+
     protected function handleResults($search, $xml, $ep) {
         foreach($xml->channel->item as $item) {
             $rss = ORM::factory('rss');
@@ -84,9 +109,10 @@ class Controller_Nzbs extends Controller {
                     ));
 
                 $rss->save();
-                return;
+                return true;
             }
         }
+        return false;
     }
     
 }

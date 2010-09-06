@@ -2,7 +2,7 @@
 
 class Controller_Welcome extends Controller_Page {
 
-    public function action_index() {
+    public function action_index() {        
         try {
             $count = ORM::factory('series')->count_all();
         } catch (ErrorException $e) {

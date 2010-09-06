@@ -43,7 +43,7 @@ class Controller_Nzbindex extends Controller {
         $config = Kohana::config('default');
         $rss = ORM::factory('rss');
 
-        $rss->truncate();
+        //$rss->truncate();
 
         $series = Model_SortFirstAired::getSeries();
         
@@ -63,7 +63,6 @@ class Controller_Nzbindex extends Controller {
 //                    var_dump($search);
 
                     $this->handleResults($search, $xml, $ep);
-                    sleep(10);
                 }
             }
         }

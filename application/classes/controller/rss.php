@@ -26,31 +26,14 @@ class Controller_Rss extends Controller {
             $items[] = $item;
         }
 
-//        var_dump($info);
-//        var_dump($items);
-//        echo '<pre>';
-//        $this->request->response = Rss::create($info, $items)->__toString();
-
         $this->request->headers['Content-Type'] = 'application/xml; charset=UTF-8';
         $this->request->response = Rss::create($info, $items)->__toString();
     }
 
     public function action_update() {
         $config = Kohana::config('default');
-
         $rss = ORM::factory('rss');
-//        if ($this->request != Request::instance()) {
-//            $expr = 'DATE_SUB(NOW(),INTERVAL ' . Inflector::singular(ltrim($config->rss['howOld'], '-')) . ')';
-//
-//            $result = $rss->where(DB::expr($expr), '>=', DB::expr('updated'));
-//
-//            if ($result->count_all() <= 0) {
-//                if ($rss->count_all() == $config->rss['numberOfResults']) {
-//                    $this->request->response = __('Already updated');
-//                    return;
-//                }
-//            }
-//        }
+
         ignore_user_abort(true);
         set_time_limit(0);
 
@@ -59,121 +42,212 @@ class Controller_Rss extends Controller {
             return;
         }
 
-//        if ($config->default['useNzbSite'] == 'nzbMatrix') {
-            $rss->truncate();
-//        }
+        $rss->truncate();
 
         $matrix = new NzbMatrix_Rss($config->default);
         $series = Model_SortFirstAired::getSeries();
 
-//        echo '<pre>';
-
         $i = 0;
-        $secToSleep = 10;
         foreach ($series as $ep) {
-//            if (strtotime($ep->first_aired) < strtotime($config->rss['howOld']) && $ep->season > 0) {
+            if ($rss->count_all() >= $config->rss['numberOfResults']) {
+                break;
+            }
             if ($ep->season > 0) {
                 $search = sprintf('%s S%02dE%02d', $ep->series_name, $ep->season, $ep->episode);
-//                var_dump($rss->alreadySaved($search));
-//                return;
+
                 if (!$rss->alreadySaved($search)) {
+                    if ($config->default['useNzbSite'] == 'both') {
+                        $response = trim(Request::factory('nzbs/oneResult/'.$ep->episode_id)->execute()->response);
+
+                        if ($response == 'true') {
+                            continue;
+                        }
+                    }
+
                     $result = $matrix->search($search, $ep->matrix_cat);
 
-                    # If NzbMatrix is not alive use NzbIndex instead
-                    if (is_numeric($result)) {
-                        if ($config->default['useNzbSite'] == 'both' && !empty($config->nzbs['queryString'])) {
-                            $this->request->response = Request::factory('nzbs/fillRss')->execute()->response;
-                            return;
-                            //$this->request->redirect('nzbs/fillRss');
-                        } else if ($config->default['useNzbSite'] == 'nzbMatrix') {
-                            $this->request->response = Request::factory('nzbindex/fillRss')->execute()->response;
-                            return;
-                            //$this->request->redirect('nzbindex/fillRss');
-                        } else {
-                            $this->request->response = Request::factory('nzbindex/fillRss')->execute()->response;
-                            return;
-                            //$this->request->redirect('nzbindex/fillRss');
-                        }
-
-
-                        break;
-                    }
-
-                    $time = time();
-                    
-//                    echo("/******** New Search *********/ \n");
-//                    var_dump($search);
-
-//                    var_dump($result);
-//                    var_dump($ep);
-//                    break;
-
-                    if (isset($result[0]['error'])) {
-
-//                        echo("/******** ERROR *********/ \n");
-//                        var_dump($result[0]['error']);
-//                        echo("/******** END ERROR *********/ \n");
-                        
-                        if (preg_match('#^(.*)_(?P<num>\d{1,2})$#', $result[0]['error'], $matches)) {
-                            $secToSleep = $matches['num'];                            
-                        } else {
-                            $search = sprintf('%s %02dx%02d', $ep->series_name, $ep->season, $ep->episode);
-                        }
-
-                        sleep($secToSleep + 3);
-                        $result = $matrix->search($search, $ep->matrix_cat);
-                        $time = time();
-
-//                        echo("/******** New Search *********/ \n");
-//                        var_dump($search);
-
-                        if (isset($result[0]['error'])) {
-
-//                            echo("/******** ERROR *********/ \n");
-//                            var_dump($result[0]['error']);
-//                            echo("/******** END ERROR Continue!!!! *********/ \n");
-                            if ('nothing_found' == $result[0]['error']) {
-                                continue;
-                            } else {
-                                break;
+                    if (isset($result[0]['error']) or is_numeric($result)) {
+                        if (is_numeric($result)) {
+                            $msg = Helper::getHttpCodeMessage($result);
+                            if ($config->default['useNzbSite'] == 'nzbMatrix') {
+                                $this->request->response = $msg;
+                                return;
                             }
+                        } else if (preg_match('#^(.*)_(?P<num>\d{1,2})$#', $result[0]['error'], $matches)) {
+                            $msg = sprintf(__('please_wait_x'), $matches['num']);
+                            sleep($matches['num']);
+                        } else if ('nothing_found' == $result[0]['error']) {
+                            $search = sprintf('%s %02dx%02d', $ep->series_name, $ep->season, $ep->episode);
+                            $result = $matrix->search($search, $ep->matrix_cat);
+                            if (isset($result[0]['error']) && 'nothing_found' == $result[0]['error']) {
+                                continue;
+                            }
+                        } else {
+                            $this->request->response .= __($result[0]['error']);
+                            continue;
                         }
+
+                        if (isset($msg)) {
+                            $this->request->response .= $msg;
+                            unset($msg);
+                        }
+
                     }
-                    
+
                     $this->handleResult($search, $result, $ep, $i);
-                    if ($i >= $config->rss['numberOfResults']) {
-//                    if ($rss->count_all() >= $config->rss['numberOfResults']) {
-                        break;
-                    }
-
-                    //$seconds = $secToSleep - (time() - $time);
-                    $seconds = $secToSleep;
-                    sleep($seconds);
-
-//                    echo("/******** Search END *********/ \n");
+                    sleep(3);
                 }
             }
         }
-        
-//        Cache::instance('default')->delete('series');
-//        Cache::instance('default')->delete_all();
-
-//        if ($rss->count_all() <= $config->rss['numberOfResults']) {
-//            $this->request->redirect('nzbindex/fillRss');
-//            exit;
-//        }
 
         $rssCount = $rss->count_all();
-        if ($rssCount < $config->rss['numberOfResults'] && $config->default['useNzbSite'] == 'both' && !empty($config->nzbs['queryString'])) {
-            $this->request->response = Request::factory('nzbs/fillRss')->execute()->response;
-            return;
-        } else if ($rssCount < $config->rss['numberOfResults']) {
-            $this->request->response = Request::factory('nzbindex/fillRss')->execute()->response;
+        if ($rssCount < $config->rss['numberOfResults']) {
+            $this->request->response .= Request::factory('nzbindex/fillRss')->execute()->response;
             return;
         }
 
-        $this->request->response = __('Updated');
+        $this->request->response .= __('Updated');
     }
+
+//    public function action_update() {
+//        $config = Kohana::config('default');
+//
+//        $rss = ORM::factory('rss');
+////        if ($this->request != Request::instance()) {
+////            $expr = 'DATE_SUB(NOW(),INTERVAL ' . Inflector::singular(ltrim($config->rss['howOld'], '-')) . ')';
+////
+////            $result = $rss->where(DB::expr($expr), '>=', DB::expr('updated'));
+////
+////            if ($result->count_all() <= 0) {
+////                if ($rss->count_all() == $config->rss['numberOfResults']) {
+////                    $this->request->response = __('Already updated');
+////                    return;
+////                }
+////            }
+////        }
+//        ignore_user_abort(true);
+//        set_time_limit(0);
+//
+//        if ($config->default['useNzbSite'] == 'nzbs' && !empty($config->nzbs['queryString'])) {
+//            $this->request->response = Request::factory('nzbs/fillRss')->execute()->response;
+//            return;
+//        }
+//
+////        if ($config->default['useNzbSite'] == 'nzbMatrix') {
+//            $rss->truncate();
+////        }
+//
+//        $matrix = new NzbMatrix_Rss($config->default);
+//        $series = Model_SortFirstAired::getSeries();
+//
+////        echo '<pre>';
+//
+//        $i = 0;
+//        $secToSleep = 10;
+//        foreach ($series as $ep) {
+////            if (strtotime($ep->first_aired) < strtotime($config->rss['howOld']) && $ep->season > 0) {
+//            if ($ep->season > 0) {
+//                $search = sprintf('%s S%02dE%02d', $ep->series_name, $ep->season, $ep->episode);
+////                var_dump($rss->alreadySaved($search));
+////                return;
+//                if (!$rss->alreadySaved($search)) {
+//                    $result = $matrix->search($search, $ep->matrix_cat);
+//
+//                    # If NzbMatrix is not alive use NzbIndex instead
+//                    if (is_numeric($result)) {
+//                        if ($config->default['useNzbSite'] == 'both' && !empty($config->nzbs['queryString'])) {
+//                            $this->request->response = Request::factory('nzbs/fillRss')->execute()->response;
+//                            return;
+//                            //$this->request->redirect('nzbs/fillRss');
+//                        } else if ($config->default['useNzbSite'] == 'nzbMatrix') {
+//                            $this->request->response = Request::factory('nzbindex/fillRss')->execute()->response;
+//                            return;
+//                            //$this->request->redirect('nzbindex/fillRss');
+//                        } else {
+//                            $this->request->response = Request::factory('nzbindex/fillRss')->execute()->response;
+//                            return;
+//                            //$this->request->redirect('nzbindex/fillRss');
+//                        }
+//
+//
+//                        break;
+//                    }
+//
+//                    $time = time();
+//
+////                    echo("/******** New Search *********/ \n");
+////                    var_dump($search);
+//
+////                    var_dump($result);
+////                    var_dump($ep);
+////                    break;
+//
+//                    if (isset($result[0]['error'])) {
+//
+////                        echo("/******** ERROR *********/ \n");
+////                        var_dump($result[0]['error']);
+////                        echo("/******** END ERROR *********/ \n");
+//
+//                        if (preg_match('#^(.*)_(?P<num>\d{1,2})$#', $result[0]['error'], $matches)) {
+//                            $secToSleep = $matches['num'];
+//                        } else {
+//                            $search = sprintf('%s %02dx%02d', $ep->series_name, $ep->season, $ep->episode);
+//                        }
+//
+//                        sleep($secToSleep + 3);
+//                        $result = $matrix->search($search, $ep->matrix_cat);
+//                        $time = time();
+//
+////                        echo("/******** New Search *********/ \n");
+////                        var_dump($search);
+//
+//                        if (isset($result[0]['error'])) {
+//
+////                            echo("/******** ERROR *********/ \n");
+////                            var_dump($result[0]['error']);
+////                            echo("/******** END ERROR Continue!!!! *********/ \n");
+//                            if ('nothing_found' == $result[0]['error']) {
+//                                continue;
+//                            } else {
+//                                break;
+//                            }
+//                        }
+//                    }
+//
+//                    $this->handleResult($search, $result, $ep, $i);
+//                    if ($i >= $config->rss['numberOfResults']) {
+////                    if ($rss->count_all() >= $config->rss['numberOfResults']) {
+//                        break;
+//                    }
+//
+//                    //$seconds = $secToSleep - (time() - $time);
+//                    $seconds = $secToSleep;
+//                    sleep($seconds);
+//
+////                    echo("/******** Search END *********/ \n");
+//                }
+//            }
+//        }
+//
+////        Cache::instance('default')->delete('series');
+////        Cache::instance('default')->delete_all();
+//
+////        if ($rss->count_all() <= $config->rss['numberOfResults']) {
+////            $this->request->redirect('nzbindex/fillRss');
+////            exit;
+////        }
+//
+//        $rssCount = $rss->count_all();
+//        if ($rssCount < $config->rss['numberOfResults'] && $config->default['useNzbSite'] == 'both' && !empty($config->nzbs['queryString'])) {
+//            $this->request->response = Request::factory('nzbs/fillRss')->execute()->response;
+//            return;
+//        } else if ($rssCount < $config->rss['numberOfResults']) {
+//            $this->request->response = Request::factory('nzbindex/fillRss')->execute()->response;
+//            return;
+//        }
+//
+//        $this->request->response = __('Updated');
+//    }
     
     protected function handleResult($search, $result, $ep, &$i) {
         foreach ($result as $res) {
@@ -182,24 +256,12 @@ class Controller_Rss extends Controller {
             $parse = new NameParser($res['nzbname']);
             $parsed = $parse->parse();
 
-//            echo("/******** In Result Loop *********/ \n");
-//            var_dump($res);
-////            var_dump(strtolower(sprintf('%s S%02dE%02d', $parsed['name'], $parsed['season'], $parsed['episode'])) == strtolower($search));
-////            var_dump(strtolower(sprintf('%s S%02dE%02d', $parsed['name'], $parsed['season'], $parsed['episode'])));
-//            var_dump(sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
-//                    sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode));
-//            var_dump(strtolower($parsed['name']) == strtolower($ep->series_name));
-//
-//            var_dump(strtolower($search));
-//            echo("/******** Loop END *********/ \n");
-
-//            if (strtolower(sprintf('%s S%02dE%02d', $parsed['name'], $parsed['season'], $parsed['episode'])) == strtolower($search) &&
             if (sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
                 sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
                 strtolower($parsed['name']) == strtolower($ep->series_name) &&
                 $ep->matrix_cat == NzbMatrix::catStr2num($res['category'])) {
                 if (!$rss->alreadySaved($search)) {
-                    $rss->title = $res['nzbname'];
+                    $rss->title = $search;
                     $rss->guid = 'http://nzbmatrix.com/' . $res['link'];
                     $rss->link = 'http://nzbmatrix.com/' . $res['link'];
                     $rss->description = $this->description($res['nzbid'], $res['nzbname'], $res['category'], $res['size'], $res['index_date'], $res['group']);
@@ -249,81 +311,6 @@ class Controller_Rss extends Controller {
         $html .= "<b>NFO:</b> <a href=\"http://nzbmatrix.com/viewnfo.php?id=$id\">View NFO</a>";
         return $html;
     }
-
-    /*
-     *
-     public function action_update() {
-        $config = Kohana::config('default');
-
-        $matrix = new NzbMatrix_Rss($config->default);
-
-        $series = Model_SortFirstAired::getSeries();
-        $rss = ORM::factory('rss');
-
-
-        $expr = 'DATE_SUB(NOW(),INTERVAL ' . Inflector::singular(ltrim($config->rss['howOld'], '-')) . ')';
-
-        $result = $rss->where(DB::expr($expr), '>=', DB::expr('updated'));
-
-        if ($result->count_all() <= 0) {
-            if ($rss->count_all() == $config->rss['numberOfResults']) {
-                $this->request->response = __('Already updated');
-                return;
-            }
-        }
-
-        set_time_limit(0);
-
-        $rss->truncate();
-        $i = 0;
-
-        foreach ($series as $ep) {
-            if (strtotime($ep->first_aired) < strtotime($config->rss['howOld']) && $ep->season > 0) {
-                $search = sprintf('%s S%02dE%02d', $ep->series_name, $ep->season, $ep->episode);
-
-                $rss = ORM::factory('rss');
-                if (!$rss->alreadySaved($search)) {
-                    $result = $matrix->search($search);
-                    foreach ($result->item as $res) {
-                        $parse = new NameParser((string) $res->title);
-                        $parsed = $parse->parse();
-                        if (sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
-                            sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
-                            strtolower($parsed['name']) == strtolower($ep->series_name) &&
-                            $ep->matrix_cat == $res->categoryid) {
-
-                            if (!$rss->alreadySaved($search)) {
-                                $rss->title = (string) $res->title;
-                                $rss->guid = (string) $res->guid;
-                                $rss->link = (string) $res->link;
-                                $rss->description = (string) $res->description;
-                                $rss->category = (string) $res->category;
-                                $rss->pubDate = date(DATE_RSS, strtotime($ep->first_aired));
-                                $rss->enclosure = serialize(array(
-                                            'url' => (string) $res->enclosure['url'],
-                                            'length' => (string) $res->enclosure['length'],
-                                            'type' => (string) $res->enclosure['type']));
-
-                                $rss->save();
-                                $i++;
-
-                                sleep(2);
-                            }
-                        }
-                    }
-                    if ($i >= $config->rss['numberOfResults']) {
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        Cache::instance('default')->delete('series');
-
-        $this->request->response = __('Updated');
-    }
-     */
 
 }
 ?>

@@ -2,49 +2,39 @@
 
 <?php if ($showSidebar) { ?>
 <!-- sidebar starts -->
-                <div id="sidebar">
-                    <div  class="new-episodes">
-                        <div class="inner">
-                            <h3><?php echo __('New Episodes')?></h3>
-                            <ol>
-                                <?php foreach ($episodes as $ep) { ?>
-                                    <?php
-                                    $series = $ep->getSeriesInfo();
-
-                                    if (empty($series)) continue;
-                                    ?>
-                                    <li>
-                                        <?php echo HTML::anchor('episodes/'.$series->id, $series->series_name)?>
-                                        <div><?php echo sprintf("S%02dE%02d", $ep->season, $ep->episode)?> 
-                                            <?php echo __('Airs') ?>
-                                            <?php echo $ep->first_aired?>
-                                        </div>
-                                    </li>
-                                <?php } ?>
-                            </ol>
-                        </div>
-                    </div>
-
-
-
-
-                    <div class="ended-series">
-                        <div class="inner">
-                            <h3><?php echo __('Ended Series')?></h3>
-                            <ul class="sidemenu">
-                                <?php foreach ($endedSeries as $ser) { ?>
-                                <li><?php echo HTML::anchor("episodes/$ser->id", $ser->series_name)?></li>
-                                <?php } ?>
-                            </ul>
-                            </div>
-                    </div>
+        <div id="sidebar">
+            <div  class="new-episodes">
+                <div class="inner">
+                    <h3>New Movies</h3>
+                    <ol>
+                        <li>Hej</li>
+                        <li>Hej</li>
+                        <li>Hej</li>
+                    </ol>
                 </div>
-                <!-- sidebar ends -->
             </div>
-            <?php } ?>
-            <!-- content-wrap ends-->
-            <div class="clearer"></div>
+
+
+
+
+            <div class="ended-series">
+                <div class="inner">
+                    <h3>Popular Movies</h3>
+                    <ul class="sidemenu">
+                        <li><a href="#">Clash of the Titans</a></li>
+                        <li><a href="#">The Last Exorcism</a></li>
+                        <li><a href="#">Robin Hood</a></li>
+                        <li><a href="#">Takers</a></li>
+                    </ul>
+                    </div>
+            </div>
         </div>
+        <!-- sidebar ends -->
+    </div>
+    <?php } ?>
+    <!-- content-wrap ends-->
+    <div class="clearer"></div>
+</div>
         <!-- footer starts here -->
 
 <div id="footer-wrap">

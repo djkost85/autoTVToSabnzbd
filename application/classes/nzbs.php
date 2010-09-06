@@ -45,6 +45,12 @@ class Nzbs extends Tv_Info {
             8 => '/(tv)[\s><\-]+(other|swe)/i',
             41 => '/(tv)[\s><\-]+([x|h]264)/i',
             'tv-all' => '/(tv)[\s><\-]+(all)/i',
+
+            1 => '/(movies)[\s><\-]+(dvd)/i',
+            48 => '/(movies)[\s><\-]+(wmv)[\s><\-]+(hd)/i',
+            42 => '/(movies)[\s><\-]+(x264)/i',
+            2 => '/(movies)[\s><\-]+(xvid)/i',
+            'movies-all' => '/(movies)/i',
             );
 
         foreach ($regexp as $key => $pattern) {
@@ -53,7 +59,7 @@ class Nzbs extends Tv_Info {
             }
         }
 
-        return 'tv-all';
+        return (stripos($str, 'movies') !== false) ? 'movies-all' : 'tv-all';
     }
 
     public static function matrixNum2Nzbs($num) {
@@ -64,11 +70,22 @@ class Nzbs extends Tv_Info {
             case 7: $return = null; break;
             case 8: $return = null; break;
             case 41: $return = 14; break;
-            case 'tv-all': $return = null; break;
+            case 'tv-all': $return = 't1'; break;
+
+            case 'movies-all': $return = 't2'; break;
+            case 1: $return = 9; break;
+            case 48: $return = 12; break;
+            case 42: $return = 4; break;
+            case 2: $return = 2; break;
+            case 54: $return = null; break;
+            case 50: $return = null; break;
+            case 3: $return = null; break;
+            case 4: $return = null; break;
         }
 
         return $return;
     }
+    
 }
 
 ?>

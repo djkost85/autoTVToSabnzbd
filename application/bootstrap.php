@@ -175,21 +175,22 @@ Route::set('error', 'error(/<action>(/<id>))', array('id' => '.+'))
 ));
 
 
-/*Route::set('static2', 'page/<page>', array('page' => '.*'))
-  	->defaults(array(
-  		'controller' => 'page',
-  		'action' => 'static',
-  	));*/
+Route::set('movie_default', 'movie/<controller>(/<action>(/<id>))')
+->defaults(array(
+    'directory'  => 'movie',
+    'controller' => 'index',
+    'action'     => 'index',
+));
 
 
 Route::set('default', '(<controller>(/<action>(/<id>)))')
-	->defaults(array(
-		'controller' => 'welcome',
-		'action'     => 'index',
-	));
+->defaults(array(
+    'controller' => 'welcome',
+    'action'     => 'index',
+));
 
 /* The URI to test */
-//$uri = 'search';
+//$uri = 'movie/index';
 ///**
 // * This will loop trough all the defined routes and
 // * tries to match them with the URI defined above
@@ -210,14 +211,14 @@ Route::set('default', '(<controller>(/<action>(/<id>)))')
 
 $request = Request::instance();
 try {
-	$request->execute();
-} catch( ReflectionException $e ) {
+    $request->execute();
+} catch (ReflectionException $e) {
     // URL for new route
-    $new_request = Request::factory('error/404/'.$request->uri());
+    $new_request = Request::factory('error/404/' . $request->uri());
     $new_request->execute();
     $new_request->status = 404;
-    if ( $new_request->send_headers() ) {
-            die( $new_request->response );
+    if ($new_request->send_headers()) {
+        die($new_request->response);
     }
 }
 

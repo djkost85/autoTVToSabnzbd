@@ -280,6 +280,8 @@ class Controller_Download extends Controller_Page {
 
         if (is_array($downloadSeriesArr)) {
             $config = Kohana::config('default');
+
+            $downloadError = array();
             foreach ($downloadSeriesArr as $id) {
                 $ep = ORM::factory('episode', array('id' => $id));
                 $series = $ep->getSeriesInfo();
@@ -289,10 +291,10 @@ class Controller_Download extends Controller_Page {
                     $nzbs = new Nzbs($config->nzbs);
                     $xml = $nzbs->search($search);
                     if (!$this->handleNZBsResults($xml, $search, $ep, $series)) {
-                        $search = 'Found no ' . $search;
+                        $downloadError[] = 'Found no ' . $search . ' on Nzbs.org';
+                        continue;
                     }
                 } else {
-
                     if ($config->default['useNzbSite'] == 'both') {
                         $nzbs = new Nzbs($config->nzbs);
                         $xml = $nzbs->search($search);
@@ -312,7 +314,8 @@ class Controller_Download extends Controller_Page {
                         } else {
                             $msg = __($results[0]['error']);
                         }
-                        $search = $msg . ' ' . $search;
+                        $downloadError[] = 'NzbMatrix error :' . $msg . '. [' . $search . ']';
+                        continue;
                     } else {
                         try {
                             $sab = new Sabnzbd(Kohana::config('default.Sabnzbd'));
@@ -324,13 +327,13 @@ class Controller_Download extends Controller_Page {
                         foreach ($results as $result) {
                             $parse = new NameParser($result['nzbname']);
                             $parsed = $parse->parse();
-                            $isDownload = $sab->isDownloaded($result['nzbname']);
+                            //$isDownload = $sab->isDownloaded($result['nzbname']);
                             if (
                                     sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
                                     sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
                                     strtolower($parsed['name']) == strtolower($series->series_name) &&
-                                    NzbMatrix::catStr2num($result['category']) == $series->matrix_cat &&
-                                    !$isDownload
+                                    NzbMatrix::catStr2num($result['category']) == $series->matrix_cat //&&
+                                    //!$isDownload
                             ) {
 
                                 $sab->sendNzb($matrix->buildDownloadUrl($result['nzbid']), $search);
@@ -345,10 +348,94 @@ class Controller_Download extends Controller_Page {
                         }
                     }
                 }
-                sleep(10);
             }
         }
     }
+
+//    public function action_doMultiEpBackground() {
+//        ignore_user_abort(true);
+//        set_time_limit(0);
+//        $this->auto_render = false;
+//        $this->_auto_update = false;
+//
+//        $serFile = 'application/cache/episodes.ep';
+//        $downloadSeriesArr = null;
+//        if (is_readable($serFile)) {
+//            $downloadSeriesArr = unserialize(file_get_contents($serFile));
+//            unlink($serFile);
+//        }
+//
+//        if (is_array($downloadSeriesArr)) {
+//            $config = Kohana::config('default');
+//            foreach ($downloadSeriesArr as $id) {
+//                $ep = ORM::factory('episode', array('id' => $id));
+//                $series = $ep->getSeriesInfo();
+//                $search = sprintf('%s S%02dE%02d', $series->series_name, $ep->season, $ep->episode);
+//
+//                if ($config->default['useNzbSite'] == 'nzbs') {
+//                    $nzbs = new Nzbs($config->nzbs);
+//                    $xml = $nzbs->search($search);
+//                    if (!$this->handleNZBsResults($xml, $search, $ep, $series)) {
+//                        $search = 'Found no ' . $search;
+//                    }
+//                } else {
+//
+//                    if ($config->default['useNzbSite'] == 'both') {
+//                        $nzbs = new Nzbs($config->nzbs);
+//                        $xml = $nzbs->search($search);
+//                        if ($this->handleNZBsResults($xml, $search, $ep, $series)) {
+//                            continue;
+//                        }
+//                    }
+//
+//                    $matrix = new NzbMatrix(Kohana::config('default.default'));
+//                    $results = $matrix->search($search, $series->matrix_cat);
+//
+//                    if (isset($results[0]['error']) or is_numeric($results)) {
+//                        if (is_numeric($results)) {
+//                            $msg = Helper::getHttpCodeMessage($results);
+//                        } else if (preg_match('#^(.*)_(?P<num>\d{1,2})$#', $results[0]['error'], $matches)) {
+//                            $msg = sprintf(__('please_wait_x'), $matches['num']);
+//                        } else {
+//                            $msg = __($results[0]['error']);
+//                        }
+//                        $search = $msg . ' ' . $search;
+//                    } else {
+//                        try {
+//                            $sab = new Sabnzbd(Kohana::config('default.Sabnzbd'));
+//                        } catch (RuntimeException $e) {
+//                            Kohana::exception_handler($e);
+//                            return;
+//                        }
+//
+//                        foreach ($results as $result) {
+//                            $parse = new NameParser($result['nzbname']);
+//                            $parsed = $parse->parse();
+//                            $isDownload = $sab->isDownloaded($result['nzbname']);
+//                            if (
+//                                    sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
+//                                    sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
+//                                    strtolower($parsed['name']) == strtolower($series->series_name) &&
+//                                    NzbMatrix::catStr2num($result['category']) == $series->matrix_cat &&
+//                                    !$isDownload
+//                            ) {
+//
+//                                $sab->sendNzb($matrix->buildDownloadUrl($result['nzbid']), $search);
+//
+//                                $d = ORM::factory('download');
+//                                $d->episode_id = $ep->id;
+//                                $d->search = $search;
+//                                $d->found = $result['nzbname'];
+//                                $d->save();
+//                                break;
+//                            }
+//                        }
+//                    }
+//                }
+//                sleep(10);
+//            }
+//        }
+//    }
 
 }
 ?>

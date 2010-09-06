@@ -13,8 +13,17 @@ abstract class Tv_Info {
 
     private $_ch;
     protected $_httpCode = 200;
+    private $_content;
 
 
+    /**
+     *
+     * Uses CURL to get answers from an external site
+     * 
+     * @param string $url
+     * @param array $options
+     * @return string if http code is 200 otherwise it returns the http code
+     */
     protected function send($url, array $options = array()) {
         $this->_ch = curl_init();
         curl_setopt_array($this->_ch, $options + array(
@@ -27,11 +36,11 @@ abstract class Tv_Info {
                 CURLOPT_MAXREDIRS => 5,
         ));
 
-        $content = curl_exec($this->_ch);
+        $this->_content = curl_exec($this->_ch);
 
         $this->_httpCode = curl_getinfo($this->_ch, CURLINFO_HTTP_CODE);
         
-        return ($this->_httpCode == 200) ? $content : $this->_httpCode;
+        return ($this->_httpCode == 200) ? $this->_content : $this->_httpCode;
     }
 
     protected function getXml($url, array $options = array()) {
@@ -46,12 +55,30 @@ abstract class Tv_Info {
         return $data;
     }
 
+
+    protected function getJson($url) {
+        $res = $this->send($url, array(CURLOPT_HEADER => false));
+        if (is_numeric($res)) {
+            $this->_httpCode = $res;
+            throw new RuntimeException(Helper::getHttpCodeMessage($res), $res);
+        }
+
+        return json_decode($res);
+    }
+
     public function error() {
         return curl_error($this->_ch);
     }
 
     public function getHttpCode() {
         return $this->_httpCode;
+    }
+
+    public function getContent() {
+        if (!is_null($this->_content)) {
+            return $this->_content;
+        }
+        return false;
     }
 }
 ?>
