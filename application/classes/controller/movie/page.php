@@ -45,6 +45,7 @@ class Controller_Movie_Page extends Controller_Template {
             $styles = array(
 //                'screen' => 'css/style.css',
                 'css/black.css' => 'screen',
+                'css/movie.css' => 'screen',
             );
 
             $scripts = array(
@@ -75,10 +76,19 @@ class Controller_Movie_Page extends Controller_Template {
             $footer->set('showSidebar', $showSidebar);
 
             if ($showSidebar) {
-//                $footer->set('endedSeries', ORM::factory('series')->findEnded(15));
-//                $ep = ORM::factory('episode');
-//
-//                $footer->set('episodes', $ep->where('season', '>', '0')->order_by('first_aired', 'desc')->limit(10)->find_all());
+                $top10Arr = array();
+                $filename = APPPATH . 'cache/' . md5('top10') . '.movie';
+                if (is_readable($filename)) {
+                    $top10Arr = unserialize(file_get_contents($filename));
+                }
+                $new10Arr = array();
+                $filename = APPPATH . 'cache/' . md5('new10') . '.movie';
+                if (is_readable($filename)) {
+                    $new10Arr = unserialize(file_get_contents($filename));
+                }
+
+                $footer->set('top10Arr', $top10Arr);
+                $footer->set('new10Arr', $new10Arr);
             }
 
             $this->template->footer = $footer->__toString();
@@ -88,7 +98,14 @@ class Controller_Movie_Page extends Controller_Template {
 
 
         if ($this->_auto_update) {
+            $session = Session::instance();
 
+            $movieUpdate = $session->get('movie_update', null);
+
+            if (time() >= strtotime('2 hours', $movieUpdate)) {
+                $session->set('movie_update', time());
+                Helper::backgroundExec(URL::site('movie/update/all', true));
+            }
         }
 
     }

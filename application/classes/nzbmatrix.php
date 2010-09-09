@@ -5,10 +5,10 @@ class NzbMatrix extends Tv_Info {
     protected $searchResult = array();
     protected $downloadUrl = "http://api.nzbmatrix.com/v1.1/download.php";
     protected $detailsUrl = "http://api.nzbmatrix.com/v1.1/details.php";
-    private $_apiKey = '';
-    private $_apiUser = '';
+    private $_apiKey = null;
+    private $_apiUser = null;
 
-    public function  __construct($options) {
+    public function  __construct(array $options) {
         $this->_apiKey = $options['NzbMatrix_api_key'];
         $this->_apiUser = $options['NzbMatrix_api_user'];
     }
@@ -98,6 +98,15 @@ class NzbMatrix extends Tv_Info {
             8 => 'TV > Other',
             41 => 'TV > HD',
             'tv-all' => 'TV > All',
+            'movies-all' => 'Movies > ALL',
+            1 => 'Movies > DVD',
+            2 => 'Movies > Divx/Xvid',
+            54 => 'Movies > BRRip',
+            42 => 'Movies > HD (x264)',
+            50 => 'Movies > HD (Image)',
+            48 => 'Movies > WMV-HD',
+            3 => 'Movies > SVCD/VCD',
+            4 => 'Movies > Other',
         );
 
         if (isset($return[$num])) {
@@ -114,6 +123,16 @@ class NzbMatrix extends Tv_Info {
             8 => '/(tv)[\s><\-]+(other)/i',
             41 => '/(tv)[\s><\-]+(hd)/i',
             'tv-all' => '/(tv)[\s><\-]+(all)/i',
+
+            'movies-all' => '/movies[\s><\-]+(all)/i',
+            1 => '/movies[\s><\-]+(dvd)/i',
+            2 => '/movies[\s><\-]+(divx\/xvid)/i',
+            54 => '/movies[\s><\-]+(brrip)/i',
+            42 => '/movies[\s><\-]+(hd \(x264\))/i',
+            50 => '/movies[\s><\-]+(hd \(Image\))/i',
+            48 => '/movies[\s><\-]+(wmv\-hd)/i',
+            3 => '/movies[\s><\-]+(svcd\/vcd)/i',
+            4 => '/movies[\s><\-]+(other)/i',
             );
 
         foreach ($regexp as $key => $pattern) {

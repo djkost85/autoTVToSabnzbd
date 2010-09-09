@@ -5,11 +5,14 @@
         <div id="sidebar">
             <div  class="new-episodes">
                 <div class="inner">
-                    <h3>New Movies</h3>
+                    <h3>Top 10 most rated (rating/votes)</h3>
                     <ol>
-                        <li>Hej</li>
-                        <li>Hej</li>
-                        <li>Hej</li>
+                        <?php foreach ($top10Arr as $top10) { ?>
+                            <li>
+                                <a href="<?php echo $top10->url?>">
+                                <?php echo $top10->name?></a> (<?php echo $top10->rating . '/' . $top10->votes?>)
+                            </li>
+                        <?php } ?>
                     </ol>
                 </div>
             </div>
@@ -19,12 +22,11 @@
 
             <div class="ended-series">
                 <div class="inner">
-                    <h3>Popular Movies</h3>
+                    <h3>New Movies</h3>
                     <ul class="sidemenu">
-                        <li><a href="#">Clash of the Titans</a></li>
-                        <li><a href="#">The Last Exorcism</a></li>
-                        <li><a href="#">Robin Hood</a></li>
-                        <li><a href="#">Takers</a></li>
+                        <?php foreach ($new10Arr as $new10) { ?>
+                            <li><a href="<?php echo $new10->url?>"><?php echo $new10->name?></a></li>
+                        <?php } ?>
                     </ul>
                     </div>
             </div>

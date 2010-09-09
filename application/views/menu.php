@@ -12,6 +12,7 @@
             <li id="queue_li"><?php echo HTML::anchor('queue/index', __('Queue'), array('id' => 'queue_link'))?></li>
             <li id="update_li"><?php echo HTML::anchor('update/all', __('Update'), array('id' => 'update_link'))?></li>
             <li id="config_li"><?php echo HTML::anchor('config/index', __('Config'), array('id' => 'config_link'))?></li>
+            <li id="movie_li"><?php echo HTML::anchor('movie/list/index', __('Movie'), array('id' => 'movie_link'))?></li>
             <li id="last"><?php echo HTML::anchor('rss/index', __('RSS'), array('id' => 'rss_link'))?></li>
         </ul>
     </div>

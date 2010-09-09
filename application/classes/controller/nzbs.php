@@ -45,7 +45,7 @@ class Controller_Nzbs extends Controller {
                 $search = sprintf('%s S%02dE%02d', $ep->series_name, $ep->season, $ep->episode);
 
                 if (!$rss->alreadySaved($search)) {
-                    $xml = $nzbs->search($search);
+                    $xml = $nzbs->search($search, Nzbs::matrixNum2Nzbs($series->matrix_cat));
 
                     $this->handleResults($search, $xml, $ep);
                     sleep(10);
@@ -66,7 +66,7 @@ class Controller_Nzbs extends Controller {
         $search = sprintf('%s S%02dE%02d', $series->series_name, $ep->season, $ep->episode);
 
         $nzbs = new Nzbs($config->nzbs);
-        $xml = $nzbs->search($search);
+        $xml = $nzbs->search($search, Nzbs::matrixNum2Nzbs($series->matrix_cat));
 
         $std = new stdClass();
         $std->season = $ep->season;

@@ -27,96 +27,74 @@ class Controller_Episodes extends Controller_Page {
             $this->request->redirect('');
         }
 
-        $cacheName = "series_ep_id_$id";
+        $series = ORM::factory('series', $id);
 
-        $series = Cache::instance('default')->get($cacheName);
+        $total = $series->episodes->where('season', '>', 0)->count_all(); // Pagination
 
-        if (is_null($series)) {
-            $series = ORM::factory('series', $id);
-            Cache::instance('default')->set($cacheName, $series);
-        }
+        $pagination = Pagination::factory(array(
+                    'base_url' => 'episodes/listAll/' . $id,
+                    'total_items' => $total,
+                    'items_per_page' => 15 // default 10
+                ));
 
-        $cacheName = "episodes_id_$id";
+        $episodes = $series->episodes
+                        ->where('season', '>', 0)
+                        ->order_by('first_aired', 'desc')
+                        ->limit($pagination->items_per_page)
+                        ->offset($pagination->offset)
+                        ->find_all();
 
-        if (isset($_GET['page'])) {
-            $cacheName .= '_page_' . $_GET['page'];
-        }
+        $epRes = array();
+        foreach ($episodes as $ep) {
+            $poster = new Posters();
 
-        $epRes = Cache::instance('default')->get($cacheName);
+            $posterMsg = "";
+            if (preg_match('#^http:\/\/#', $ep->filename)) {
+                $path = "images/episode/";
+                $image = $posterFile = $ep->filename;
+                $newPosterName = $poster->ifFileExist(basename($image), $path);
+                if ($newPosterName) {
+                    $posterFile = $path . $newPosterName;
+                    $poster->saveImage($image, $posterFile);
 
-        if (is_null($epRes)) {
+                    $epORM = ORM::factory('episode', array('id' => $ep->id));
+                    $epORM->filename = $posterFile;
 
-            $total = $series->episodes->where('season', '>', 0)->count_all(); // Pagination
-
-            $pagination = Pagination::factory(array(
-                        'base_url' => 'episodes/listAll/' . $id,
-                        'total_items' => $total,
-                        'items_per_page' => 15 // default 10
-                    ));
-
-            $episodes = $series->episodes
-                            ->where('season', '>', 0)
-                            ->order_by('first_aired', 'desc')
-                            ->limit($pagination->items_per_page)
-                            ->offset($pagination->offset)
-                            ->find_all();
-
-            $epRes = array();
-            foreach ($episodes as $ep) {
-                $poster = new Posters();
-
-                $posterMsg = "";
-                if (preg_match('#^http:\/\/#', $ep->filename)) {
-                    $path = "images/episode/";
-                    $image = $posterFile = $ep->filename;
-                    $newPosterName = $poster->ifFileExist(basename($image), $path);
-                    if ($newPosterName) {
-                        $posterFile = $path . $newPosterName;
-                        $poster->saveImage($image, $posterFile);
-
-                        $epORM = ORM::factory('episode', array('id' => $ep->id));
-                        $epORM->filename = $posterFile;
-
-                        if (!$epORM->save()) {
-                            $posterMsg = '<div class="errorMsg">Ett fel med uppdaterningen av filnamnet har inträffat</div>';
-                        } else {
-                            $posterMsg = '<div class="successMsg">' . __('The image is downloaded') . '</div>';
-                        }
+                    if (!$epORM->save()) {
+                        $posterMsg = '<div class="errorMsg">Ett fel med uppdaterningen av filnamnet har inträffat</div>';
+                    } else {
+                        $posterMsg = '<div class="successMsg">' . __('The image is downloaded') . '</div>';
                     }
-                } else if (is_readable($ep->filename)) {
-                    $posterFile = $ep->filename;
-                } else {
-                    $posterFile = "images/poster.png";
                 }
-
-                $res = new stdClass;
-                $res->id = $ep->id;
-                $res->ep_id = $ep->ep_id;
-                $res->filename = $ep->filename;
-                $res->season = $ep->season;
-                $res->episode = $ep->episode;
-                $res->episode_name = $ep->episode_name;
-                $res->first_aired = (is_null($ep->first_aired)) ? 'N/A' : $ep->first_aired;
-                $res->overview = Text::limit_chars(HTML::entities($ep->overview), 280);
-                $res->isDownloaded = ($ep->isDownloaded($ep->id)) ? ' <em>' . __('is downloaded') . '</em>' : '';
-                $res->posterFile = $posterFile;
-                $res->posterMsg = $posterMsg;
-                $epRes['ep'][] = $res;
+            } else if (is_readable($ep->filename)) {
+                $posterFile = $ep->filename;
+            } else {
+                $posterFile = "images/poster.png";
             }
 
-            $epRes = array_merge($epRes, array('downloads' => array()));
-            foreach ($series->episodes->where('season', '>', 0)->find_all() as $ep) {
-                $res = new stdClass;
-                $res->id = $ep->id;
-                $res->episode = sprintf('S%02dE%02d', $ep->season, $ep->episode);
-                $epRes['downloads'][$ep->season][] = $res;
-            }
-
-            if ($posterMsg == "") {
-//                Cache::instance('default')->set($cacheName, $epRes);
-            }
-            Cache::instance('default')->set($cacheName . '_pagination', $pagination->render());
+            $res = new stdClass;
+            $res->id = $ep->id;
+            $res->ep_id = $ep->ep_id;
+            $res->filename = $ep->filename;
+            $res->season = $ep->season;
+            $res->episode = $ep->episode;
+            $res->episode_name = $ep->episode_name;
+            $res->first_aired = (is_null($ep->first_aired)) ? 'N/A' : $ep->first_aired;
+            $res->overview = Text::limit_chars(HTML::entities($ep->overview), 280);
+            $res->isDownloaded = ($ep->isDownloaded($ep->id)) ? ' <em>' . __('is downloaded') . '</em>' : '';
+            $res->posterFile = $posterFile;
+            $res->posterMsg = $posterMsg;
+            $epRes['ep'][] = $res;
         }
+
+        $downloads = array();
+        foreach ($series->episodes->where('season', '>', 0)->find_all() as $ep) {
+            $res = new stdClass;
+            $res->id = $ep->id;
+            $res->episode = sprintf('S%02dE%02d', $ep->season, $ep->episode);
+            $downloads[$ep->season][] = $res;
+        }
+
 
         $name = $series->series_name;
         $this->template->title = $name;
@@ -124,10 +102,10 @@ class Controller_Episodes extends Controller_Page {
         $xhtml->set('title', $name)
                 ->set('seriesName', $name)
                 ->set('id', $series->id)
-                ->set('pagination', Cache::instance('default')->get($cacheName . '_pagination'))
+                ->set('pagination', $pagination->render())
                 ->set('banner', $series->banner)
                 ->set('episodes', $epRes['ep'])
-                ->set('downloads', $epRes['downloads'])
+                ->set('downloads', $downloads)
                 ->set('matrix_cat', NzbMatrix::cat2string($series->matrix_cat));
 
         $this->template->content = $xhtml;

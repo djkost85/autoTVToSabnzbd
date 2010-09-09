@@ -23,7 +23,7 @@ class Controller_Download extends Controller_Page {
         $config = Kohana::config('default');
         if ($config->default['useNzbSite'] == 'nzbs') {
             $nzbs = new Nzbs($config->nzbs);
-            $xml = $nzbs->search($search);
+            $xml = $nzbs->search($search, Nzbs::matrixNum2Nzbs($series->matrix_cat));
             if (!$this->handleNZBsResults($xml, $search, $ep, $series)) {
                 MsgFlash::set("Nothing found \"$search\"");
 //                $this->request->redirect("episodes/$series->id/" . URL::query(array('msg' => "Nothing found \"$search\"")));
@@ -32,19 +32,34 @@ class Controller_Download extends Controller_Page {
             } else {
                 MsgFlash::set("Download: " . $search);
                 $this->request->redirect('');
+                return;
             }
             
-        } else {
-            $matrix = new NzbMatrix(Kohana::config('default.default'));
-            $results = $matrix->search($search, $series->matrix_cat);
         }
+
+
+        if ($config->default['useNzbSite'] == 'both') {
+            $nzbs = new Nzbs($config->nzbs);
+            $xml = $nzbs->search($search, Nzbs::matrixNum2Nzbs($series->matrix_cat));
+            if ($this->handleNZBsResults($xml, $search, $ep, $series)) {
+                MsgFlash::set("Download: " . $search);
+                $this->request->redirect('');
+                return;
+            }
+        }
+
+        $matrix = new NzbMatrix(Kohana::config('default.default'));
+        $results = $matrix->search($search, $series->matrix_cat);
+        
 
         if (isset($results[0]['error']) or is_numeric($results)) {
             if (is_numeric($results)) {
                 if ($results == 404) {
                     if ($config->default['useNzbSite'] == 'both') {
                         $nzbs = new Nzbs($config->nzbs);
-                        $xml = $nzbs->search($search);
+
+                        $searchAlt = sprintf('%s %02dx%02d', $series->series_name, $ep->season, $ep->episode);
+                        $xml = $nzbs->search($searchAlt, Nzbs::matrixNum2Nzbs($series->matrix_cat));
                         if (!$this->handleNZBsResults($xml, $search, $ep, $series)) {
                             MsgFlash::set("Nothing found \"$search\"");
 //                            $this->request->redirect("episodes/$series->id/" . URL::query(array('msg' => "nothing found [$search]")));

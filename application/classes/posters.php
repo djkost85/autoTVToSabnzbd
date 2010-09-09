@@ -76,6 +76,11 @@ class Posters {
         fclose($out);
     }
 
+    public static function save($inPath, $outPath) {
+        $p = new Posters();
+        $p->saveImage($inPath, $outPath);
+    }
+
 
 //    function saveImage($img, $savePath) {
 //        if (!file_exists($img)) {

@@ -18,11 +18,11 @@ class Sabnzbd {
         }
     }
 
-    function sendNzb($url, $name) {
+    function sendNzb($url, $name, $cat = 'tv') {
         $query = array(
             'mode' => 'addurl',
             'name' => $url,
-            'cat' => 'tv',
+            'cat' => $cat,
             'nzbname' => $name,
             'apikey' => $this->_apiKey,
 //            'script' => 'tvDeleteUnnecessaryFiles.py',

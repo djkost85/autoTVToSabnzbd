@@ -6,9 +6,10 @@
     <div id="nav">
         <ul>
             <li><?php echo HTML::anchor('', __('Series'))?></li>
-            <li id="movie_li"><?php echo HTML::anchor('movie/index', __('Movie'), array('id' => 'movie_link'))?></li>
+            <li id="movie_li"><?php echo HTML::anchor('movie/list', __('Movie'), array('id' => 'movie_link'))?></li>
             <li id="add_movie_li"><?php echo HTML::anchor('movie/add', __('New'), array('id' => 'add_movie_link'))?></li>
-            <li id="last"><?php echo HTML::anchor('movie/rss', __('RSS'), array('id' => 'rss_link'))?></li>
+            <li id="config_movie_li"><?php echo HTML::anchor('movie/config', __('Config'), array('id' => 'config_movie_link'))?></li>
+            <!--<li id="last"><?php echo HTML::anchor('movie/rss', __('RSS'), array('id' => 'rss_link'))?></li>-->
         </ul>
     </div>
     <!--header ends-->

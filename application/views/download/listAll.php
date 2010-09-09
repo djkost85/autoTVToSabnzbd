@@ -34,6 +34,7 @@ table tr:hover {
             <th><?php echo __('Name')?></th>
             <th><?php echo __('Size')?></th>
             <th><?php echo __('Status')?></th>
+            <!--<th><?php echo __('Watch')?></th>-->
         </tr>
     </thead>
     <tbody>
@@ -44,6 +45,7 @@ table tr:hover {
             <td><?php echo $slot->name . ' ' . strip_tags($slot->fail_message)?></td>
             <td><?php echo $slot->size?></td>
             <td><?php echo __($slot->status)?></td>
+            <!--<td><?php echo $slot->storage?></td>-->
         </tr>
     <?php } ?>
     </tbody>

@@ -178,7 +178,7 @@ Route::set('error', 'error(/<action>(/<id>))', array('id' => '.+'))
 Route::set('movie_default', 'movie/<controller>(/<action>(/<id>))')
 ->defaults(array(
     'directory'  => 'movie',
-    'controller' => 'index',
+    'controller' => 'list',
     'action'     => 'index',
 ));
 
@@ -190,7 +190,7 @@ Route::set('default', '(<controller>(/<action>(/<id>)))')
 ));
 
 /* The URI to test */
-//$uri = 'movie/index';
+//$uri = 'movie';
 ///**
 // * This will loop trough all the defined routes and
 // * tries to match them with the URI defined above

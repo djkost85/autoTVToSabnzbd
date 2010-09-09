@@ -1,0 +1,12 @@
+
+
+
+.icon.download {
+	padding-right: 10px;
+	padding-top: 3px;
+	background-image: url(../images/black/down.gif);
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 24px;
+}
+

@@ -3,6 +3,10 @@
 class Helper_Path {
 
     public static function mkdir_recursive($path, $filemode = 0777) {
+        if (is_dir($path)) {
+            return;
+        }
+        
         $return = mkdir($path, $filemode, true);
         if (!$return) {
             throw new RuntimeException('Failed to create folders...');
@@ -34,6 +38,42 @@ class Helper_Path {
             return TRUE;
         } else {
             return FALSE;
+        }
+    }
+
+    public static function delete_dir_recursive($directory, $empty = false) {
+        if (substr($directory, -1) == "/") {
+            $directory = substr($directory, 0, -1);
+        }
+
+        if (!file_exists($directory) || !is_dir($directory)) {
+            return false;
+        } elseif (!is_readable($directory)) {
+            return false;
+        } else {
+            $directoryHandle = opendir($directory);
+
+            while ($contents = readdir($directoryHandle)) {
+                if ($contents != '.' && $contents != '..') {
+                    $path = $directory . "/" . $contents;
+
+                    if (is_dir($path)) {
+                        self::delete_dir_recursive($path);
+                    } else {
+                        unlink($path);
+                    }
+                }
+            }
+
+            closedir($directoryHandle);
+
+            if ($empty == false) {
+                if (!rmdir($directory)) {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 

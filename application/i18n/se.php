@@ -34,8 +34,11 @@ return array(
     'Restart' => 'Starta om',
     'Shutdown' => 'Stäng av',
     'New' => 'Ny',
+    'Rating/Votes' => 'Betyg/Röster',
+    'Released' => 'Släppt',
     
     'None' => 'Ingen',
+    'All' => 'Alla',
     'unknown' => 'okänd',
     'Skip' => 'Hoppa över',
     'Repair' => 'Reparera',
@@ -73,6 +76,11 @@ return array(
     'Last warning' => 'Senaste varningen',
     'Return Home' => 'Återvänd Hem',
 
+    'Nothing Found' => 'Hittade Inget',
+    'Config movies' => 'Konfigurera filmer',
+    'Top 10 list genre' => 'Top 10 lista genre',
+    'New list genre' => 'Nya film listan genre',
+
     'slow-page' => 'Ja ja sida <b>är</b> slö jag vet!!! Men lungn bara, den är bara det när den laddar ner bilder. <br />Vilket den bara gör första gången du besöker just den här sidan',
     'add-slow-page' => 'Jag laddar ner bilder just nu, därför är jag lite seg',
 
@@ -100,6 +108,7 @@ return array(
     'New series' => 'Ny serie',
     'Download list' => 'Lista nedladdade',
     'Downloads' => 'Nedladdade',
+    'Download' => 'Ladda ner',
     'Search' => 'Sök',
     'Queue' => 'Kö',
 

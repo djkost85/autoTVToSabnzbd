@@ -69,7 +69,7 @@ foreach ($episodes as $ep) {
     ?>
 
         <li>
-                <?php echo HTML::anchor("download/episode/$ep->id", $ep->episode_name)?> <br />
+                <?php echo HTML::anchor((strtotime($ep->first_aired) < time()) ? "download/episode/$ep->id" : '#', $ep->episode_name)?> <br />
                 <?php if (is_file($ep->posterFile)) echo HTML::anchor(
                     $ep->posterFile,
                     HTML::image('index.php/' . $ep->posterFile . '/142', array('alt' => 'Episode poster for ' . $seriesName . ' ' . sprintf('S%02dE%02d', $ep->season, $ep->episode)))

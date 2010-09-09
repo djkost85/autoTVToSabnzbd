@@ -4,6 +4,7 @@
         <title><?php echo $title; ?></title>
         <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
         <link rel="alternate" type="application/rss+xml" title="AutoTvToSab RSS Feed for SABnzbd" href="<?php echo URL::site('rss/index', true)?>" />
+        <link rel="alternate" type="application/rss+xml" title="AutoTvToSab Movie RSS Feed for SABnzbd" href="<?php echo URL::site('movie/rss/index', true)?>" />
             <?php
             foreach ($styles as $file => $type) {
                 echo HTML::style($file, array('media' => $type)), "\n" ;
