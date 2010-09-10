@@ -85,14 +85,23 @@ class Controller_Movie_List extends Controller_Movie_Page {
         $movie = ORM::factory('movie');
         $movie = $movie->find($id);
 
+        $view = View::factory('movie/list/info');
+
         if ($movie->name === null) {
             $movie->name = __('No movie');
             $movie->id = 0;
             $movie->posters = serialize(array());
             $movie->overview = "";
         }
+//        else {
+//            $tmdb = new TmdbApi(Kohana::config('movie.tmdb'));
+//            $view->set('movieInfo', $tmdb->getInfo($movie->tmdb_id));
+//        }
 
-        $view = View::factory('movie/list/info');
+        $this->template->scripts['jquery.swfobject.1-1-1.min'] = 'js/jquery.swfobject.1-1-1.min.js';
+        $this->template->scripts['youTubeEmbed'] = 'js/youTubeEmbed.js';
+        $this->template->styles['css/youTubeEmbed.css'] = 'screen';
+
         $this->template->title = $movie->name;
         $view->set('title', $movie->name)
                 ->set('movie', $movie);

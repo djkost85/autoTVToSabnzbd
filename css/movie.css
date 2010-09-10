@@ -2,11 +2,31 @@
 
 
 .icon.download {
-	padding-right: 10px;
-	padding-top: 3px;
-	background-image: url(../images/black/down.gif);
-	background-position: left center;
-	background-repeat: no-repeat;
-	padding-left: 24px;
+    padding-right: 10px;
+    padding-top: 3px;
+    background-image: url(../images/black/down.gif);
+    background-position: left center;
+    background-repeat: no-repeat;
+    padding-left: 24px;
+}
+
+
+div.info-box {
+    padding: 10px;
+    margin-top: 15px;
+}
+div.info-box span {
+    font-size: 10px;
+    font-style: italic;
+}
+
+div.info-box img.floatright {
+    float: right;
+    margin: 0 0 10px 10px;
+    width: 350px;
+}
+
+div.info-box a.imbd-link img {
+    width: auto;
 }
 

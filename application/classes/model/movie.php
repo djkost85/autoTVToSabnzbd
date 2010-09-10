@@ -27,6 +27,12 @@ CREATE TABLE `movies` (
 `matrix_cat` VARCHAR( 10 ) NOT NULL
 ) ENGINE = MYISAM ;
 
+
+ALTER TABLE `movies` ADD `trailer` VARCHAR( 150 ) NOT NULL AFTER `url` ,
+ADD `budget` INT( 11 ) NOT NULL AFTER `trailer` ,
+ADD `runtime` INT( 11 ) NOT NULL AFTER `budget` ,
+ADD `tagline` VARCHAR( 150 ) NOT NULL AFTER `runtime`
+
  */
 
 class Model_Movie extends ORM {
@@ -69,6 +75,18 @@ class Model_Movie extends ORM {
         return false;
     }
 
+    public function isImdbAdded($imdb) {
+        return ($this->where('imdb_id', '=', $imdb)->count_all() > 0);
+    }
+
+    public static function alterTable() {
+        $sql = "ALTER TABLE `movies` ADD `trailer` VARCHAR( 150 ) NULL AFTER `url` ,
+ADD `budget` INT( 11 ) NULL AFTER `trailer` ,
+ADD `runtime` INT( 11 ) NULL AFTER `budget` ,
+ADD `tagline` VARCHAR( 150 ) NULL AFTER `runtime`";
+        DB::query(Database::INSERT, $sql)->execute(Database::instance());
+    }
+
     public static function installTable() {
         $sql = "CREATE TABLE `movies` (
 `id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -84,6 +102,10 @@ class Model_Movie extends ORM {
 `tmdb_id` INT( 11 ) NOT NULL ,
 `imdb_id` VARCHAR( 10 ) NOT NULL ,
 `url` VARCHAR( 100 ) NOT NULL ,
+`trailer` VARCHAR( 150 ) NULL ,
+`budget` INT( 11 ) NULL ,
+`runtime` INT( 11 ) NULL ,
+`tagline` VARCHAR( 150 ) NULL ,
 `votes` INT( 11 ) NOT NULL ,
 `rating` FLOAT( 2 ) NOT NULL ,
 `certification` VARCHAR( 10 ) NOT NULL ,

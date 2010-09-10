@@ -44,8 +44,8 @@ class Controller_Movie_Page extends Controller_Template {
         if ($this->auto_render) {
             $styles = array(
 //                'screen' => 'css/style.css',
-                'css/black.css' => 'screen',
-                'css/movie.css' => 'screen',
+                'css/black.css?bar=' . time() => 'screen',
+                'css/movie.css?foo=' . time() => 'screen',
             );
 
             $scripts = array(

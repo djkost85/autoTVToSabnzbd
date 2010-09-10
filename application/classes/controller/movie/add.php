@@ -31,7 +31,17 @@ class Controller_Movie_Add extends Controller_Movie_Page {
         }
 
         $movie = ORM::factory('movie');
-        if ($movie->isAdded($_GET['name'])){
+
+        $imdbId = false;
+        if (preg_match("/^tt[\d]+/", trim($_GET['name']), $match)) {
+            $imdbId = $match[0];
+            if ($movie->isImdbAdded($imdbId)) {
+                MsgFlash::set($imdbId . ' ' . __('alredy exists'));
+                $this->request->redirect('movie/add/index');
+            }
+        }
+
+        if (!$imdbId && $movie->isAdded($_GET['name'])){
             MsgFlash::set($_GET['name'] . ' ' . __('alredy exists'));
             $this->request->redirect('movie/add/index');
         }
@@ -41,9 +51,30 @@ class Controller_Movie_Add extends Controller_Movie_Page {
         $this->auto_render = false;
 
         $tmdb = new TmdbApi(Kohana::config('movie.tmdb'));
-        $results = $tmdb->search($_GET['name']);
 
-        if ($results[0] != 'Nothing found.') {
+        $results = array();
+        if ($imdbId) {
+            $results = $tmdb->search($imdbId);
+            
+            $result = $results[0];
+
+            if (is_string($result)) {
+                MsgFlash::set(__('Nothing Found'));
+                $this->request->redirect('movie/add/index');
+            }
+
+            $result->matrix_cat = $_GET['cat'];
+            file_put_contents($this->_movieToSavePath, serialize($result));
+
+            Helper::backgroundExec(URL::site('movie/add/saveMovieBack/', true));
+            MsgFlash::set('Saving... ' . $_GET['name']);
+            $this->request->redirect('movie/add/index');
+            return;
+        } else {
+            $results = $tmdb->search($_GET['name']);
+        }
+
+        if (!is_string($results[0])) {
             foreach ($results as $result) {
                 if (strtolower($result->name) == strtolower($_GET['name']) || strtolower($result->original_name) == strtolower($_GET['name']) || strtolower($result->alternative_name) == strtolower($_GET['name'])) {
                     $isAdded = $movie->isIdAdded($result->id);
@@ -54,10 +85,10 @@ class Controller_Movie_Add extends Controller_Movie_Page {
                     $result->matrix_cat = $_GET['cat'];
                     file_put_contents($this->_movieToSavePath, serialize($result));
 
-                    Helper::backgroundExec(URL::site('movie/add/saveMovieBack', true));
+                    Helper::backgroundExec(URL::site('movie/add/saveMovieBack/', true));
                     MsgFlash::set('Saving... ' . $_GET['name']);
                     $this->request->redirect('movie/add/index');
-                    break;
+                    return;
                 }
             }
         }
@@ -75,11 +106,22 @@ class Controller_Movie_Add extends Controller_Movie_Page {
         if (is_readable($filename)) {
             $result = unserialize(file_get_contents($filename));
             unlink($filename);
+
+            $matrix = $result->matrix_cat;
         }
+
+        $tmdb = new TmdbApi(Kohana::config('movie.tmdb'));
+        $results = $tmdb->getInfo($result->id);
+        $result = $results[0];
+
 
         try {
             $movie = ORM::factory('movie');
-            $movie->score = $result->score;
+            if (!isset($movie->find()->trailer)) {
+                Model_Movie::alterTable();
+            }
+            $movie->clear();
+
             $movie->popularity = $result->popularity;
             $movie->translated = $result->translated;
             $movie->adult = $result->adult;
@@ -91,6 +133,10 @@ class Controller_Movie_Add extends Controller_Movie_Page {
             $movie->tmdb_id = $result->id;
             $movie->imdb_id = $result->imdb_id;
             $movie->url = $result->url;
+            $movie->trailer = $result->trailer;
+            $movie->budget = $result->budget;
+            $movie->runtime = $result->runtime;
+            $movie->tagline = $result->tagline;
             $movie->votes = $result->votes;
             $movie->rating = $result->rating;
             $movie->certification = $result->certification;
@@ -100,7 +146,8 @@ class Controller_Movie_Add extends Controller_Movie_Page {
             $movie->backdrops = serialize($result->backdrops);
             $movie->version = $result->version;
             $movie->last_modified_at = $result->last_modified_at;
-            $movie->matrix_cat = $result->matrix_cat;
+            
+            $movie->matrix_cat = $matrix;
 
             $movie->save();
         } catch (Database_Exception $e) {
