@@ -139,7 +139,7 @@ class Controller_Movie_Add extends Controller_Movie_Page {
             $movie->tagline = $result->tagline;
             $movie->votes = $result->votes;
             $movie->rating = $result->rating;
-            $movie->certification = $result->certification;
+            $movie->certification = (is_null($result->certification)) ? '' : $result->certification;
             $movie->overview = $result->overview;
             $movie->released = $result->released;
             $movie->posters = serialize($result->posters);

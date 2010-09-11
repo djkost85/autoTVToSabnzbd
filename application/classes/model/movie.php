@@ -80,11 +80,23 @@ class Model_Movie extends ORM {
     }
 
     public static function alterTable() {
-        $sql = "ALTER TABLE `movies` ADD `trailer` VARCHAR( 150 ) NULL AFTER `url` ,
+        $sql = "SHOW FULL COLUMNS FROM `movies`";
+        $results = DB::query(Database::SELECT, $sql)->execute(Database::instance());
+
+        $alter = true;
+        foreach ($results as $result) {
+            if ($result['Field'] == 'trailer') {
+                $alter = false;
+            }
+        }
+
+        if ($alter) {
+            $sql = "ALTER TABLE `movies` ADD `trailer` VARCHAR( 150 ) NULL AFTER `url` ,
 ADD `budget` INT( 11 ) NULL AFTER `trailer` ,
 ADD `runtime` INT( 11 ) NULL AFTER `budget` ,
 ADD `tagline` VARCHAR( 150 ) NULL AFTER `runtime`";
-        DB::query(Database::INSERT, $sql)->execute(Database::instance());
+            DB::query(Database::INSERT, $sql)->execute(Database::instance());
+        }
     }
 
     public static function installTable() {
