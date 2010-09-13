@@ -36,6 +36,9 @@ return array(
     'New' => 'Ny',
     'Rating/Votes' => 'Betyg/Röster',
     'Released' => 'Släppt',
+    'Add to list' => 'Lägg till i listan',
+    'Remove from List' => 'Ta bort från listan',
+
     
     'None' => 'Ingen',
     'All' => 'Alla',

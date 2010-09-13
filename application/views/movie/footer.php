@@ -17,7 +17,18 @@
                 </div>
             </div>
 
-
+            <?php if (!empty($downloadList)) { ?>
+                <div class="ended-series">
+                    <div class="inner">
+                        <h3>Queued for download</h3>
+                        <ul class="sidemenu">
+                            <?php foreach ($downloadList as $movie) { ?>
+                                <li><a href="<?php echo URL::site("movie/list/info/$movie->id")?>"><?php echo $movie->name?></a></li>
+                            <?php } ?>
+                        </ul>
+                        </div>
+                </div>
+            <?php } ?>
 
 
             <div class="ended-series">
@@ -30,6 +41,7 @@
                     </ul>
                     </div>
             </div>
+
         </div>
         <!-- sidebar ends -->
     </div>

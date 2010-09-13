@@ -35,6 +35,10 @@ class Controller_Movie_Update extends Controller {
 
         $this->request->response = __('Updated');
     }
+
+    public function action_downloadList() {
+
+    }
 }
 
 ?>

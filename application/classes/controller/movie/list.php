@@ -4,6 +4,10 @@
 class Controller_Movie_List extends Controller_Movie_Page {
 
     public function action_index() {
+//        $filename = APPPATH . 'cache/' . md5('download_list') . '.list';
+//        $data = unserialize(file_get_contents($filename));
+//        var_dump($data);
+
         try {
             $movie = ORM::factory('movie');
         } catch (Database_Exception $e) {
@@ -75,10 +79,48 @@ class Controller_Movie_List extends Controller_Movie_Page {
 
         $path = "images/movies/" . $name;
         Helper_Path::delete_dir_recursive($path);
+
+        $filename = APPPATH . 'cache/' . md5('download_list') . '.list';
+        if (is_readable($filename)) {
+            $data = unserialize(file_get_contents($filename));
+            if (isset($data[$movie->id])) {
+                unset ($data[$movie->id]);
+                file_put_contents($filename, serialize($data));
+            }
+        }
+
         $movie->delete();
 
         MsgFlash::set($name . ' ' . __('is deleted'));
         $this->request->redirect('movie/list');
+    }
+
+    
+    public function action_rmDlList($id) {
+        $this->auto_render = FALSE;
+        $movie = ORM::factory('movie', $id);
+
+        if (!$movie->loaded()) {
+            throw new RuntimeException('No movie with that id', 404);
+        }
+
+        Request::factory('movie/download/rmFromList/' . $id)->execute()->response;
+        MsgFlash::set("$movie->name is removed from list");
+        $this->request->redirect("movie/list/info/$id");
+
+    }
+    public function action_addDlList($id) {
+        $this->auto_render = FALSE;
+        $movie = ORM::factory('movie', $id);
+
+        if (!$movie->loaded()) {
+            throw new RuntimeException('No movie with that id', 404);
+        }
+
+        Request::factory('movie/download/setToList/' . $id)->execute()->response;
+//        Helper::backgroundExec(URL::site('movie/download/movie/' . $id, true));
+        MsgFlash::set("$movie->name added to list");
+        $this->request->redirect("movie/list/info/$id");
     }
 
     public function action_info($id) {
@@ -102,8 +144,21 @@ class Controller_Movie_List extends Controller_Movie_Page {
         $this->template->scripts['youTubeEmbed'] = 'js/youTubeEmbed.js';
         $this->template->styles['css/youTubeEmbed.css'] = 'screen';
 
+
+        $filename = APPPATH . 'cache/' . md5('download_list') . '.list';
+        $inList = false;
+        if (is_readable($filename)) {
+            $newList = unserialize(file_get_contents($filename));
+            foreach($newList as $id => $time) {
+                if ($movie->id == $id) {
+                    $inList = true;
+                }
+            }
+        }
+
         $this->template->title = $movie->name;
         $view->set('title', $movie->name)
+                ->set('inDlList', $inList)
                 ->set('movie', $movie);
 
         $this->template->content = $view;

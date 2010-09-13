@@ -19,6 +19,9 @@ foreach (unserialize($movie->posters) as $image) {
         <?php echo HTML::anchor('movie/list/delete/' . $movie->id, __('Delete')); ?> |
         <?php echo HTML::anchor('http://www.imdb.com/title/' . $movie->imdb_id, 'IMDb'); ?> |
         <?php echo HTML::anchor($movie->url, 'themoviedb.org'); ?> |
+        <?php echo ($inDlList) ? HTML::anchor('movie/list/rmDlList/' . $movie->id, __('Remove from List')) :
+                HTML::anchor('movie/list/addDlList/' . $movie->id, __('Add to list'));?>
+        <br />
         (<?php echo $movie->rating . '/' . $movie->votes?>)
 </div>
 <div id="player" class="info-box"></div>

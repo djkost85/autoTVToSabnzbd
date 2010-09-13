@@ -114,7 +114,9 @@ class Controller_Movie_Add extends Controller_Movie_Page {
         $results = $tmdb->getInfo($result->id);
         $result = $results[0];
 
-
+//        var_dump($result);
+//        return;
+//
         try {
             $movie = ORM::factory('movie');
             if (!isset($movie->find()->trailer)) {
@@ -135,7 +137,7 @@ class Controller_Movie_Add extends Controller_Movie_Page {
             $movie->url = $result->url;
             $movie->trailer = $result->trailer;
             $movie->budget = $result->budget;
-            $movie->runtime = $result->runtime;
+            $movie->runtime = (is_null($result->runtime)) ? '' : $result->runtime;
             $movie->tagline = $result->tagline;
             $movie->votes = $result->votes;
             $movie->rating = $result->rating;
@@ -146,12 +148,13 @@ class Controller_Movie_Add extends Controller_Movie_Page {
             $movie->backdrops = serialize($result->backdrops);
             $movie->version = $result->version;
             $movie->last_modified_at = $result->last_modified_at;
-            
+
             $movie->matrix_cat = $matrix;
 
             $movie->save();
         } catch (Database_Exception $e) {
             MsgFlash::set($result->name . ' saving error: ' . $e->getMessage(), true);
+            return;
         }
 
         $postersDL = array();
@@ -160,7 +163,10 @@ class Controller_Movie_Add extends Controller_Movie_Page {
                 $path = "images/movies/" . $result->name . "/" . $poster->image->type . "/" . $poster->image->size;
                 if (!is_dir($path)) {
                     mkdir($path, 0777, true);
+                } else {
+                    continue;
                 }
+                
                 chmod($path, 0777);
 
                 $newFilename = $path . '/' . basename($poster->image->url);
@@ -170,8 +176,10 @@ class Controller_Movie_Add extends Controller_Movie_Page {
             }
         }
 
-        $movie->posters = serialize($postersDL);
-        $movie->save();
+        if (!empty ($postersDL)) {
+            $movie->posters = serialize($postersDL);
+            $movie->save();
+        }
         
     }
 

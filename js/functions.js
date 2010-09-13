@@ -153,46 +153,77 @@ jQuery(document).ready(function($) {
     
 });
 
-//$(document).ready(function() {
-//    var position = $('#updateResult').offset();
-//    $('#spinner').css({ top: position.top , left: position.left + $('#updateResult').width() + 30 }).fadeIn();
-//    $.post(basUrl + '/update', { sabUpdate: "sab", time: "2pm" }, function (date) {
-//        $('#spinner').fadeOut();
-//        //$('#updateResult').text('Uppdaterade senast: ' + date);
-//        $('#updateResult').html('Uppdaterade senast: ' + date);
-//    });
-//});
 
-/*$(function() {
-    var $headline = $('h1:first');
-    $(document).ajaxSend(function() {
-        $headline
-            .removeClass('activity')
-            .addClass('activity');
-    });
-    $(document).ajaxStop(function() {
-        $headline.removeClass('activity')
-    });
-});
 
-$(document).ready(function() {
-	//create image
-	$('<img src="move-spinner.gif" id="spinner" />').css('position','absolute').hide().appendTo('body');
-	//for every field change
-	$('.ajax').change(function() {
-		//get element position
-		var position = $(this).offset();
-		//position image
-		$('#spinner').css({ top: position.top , left: position.left + $(this).width() + 30 }).fadeIn();
-		//ajax
-		$.post('',{
-			ajax:1,
-			value: $(this).val()
-		},function() {
-			$('#spinner').fadeOut();
-		});
-	});
-});*/
+/**
+  *
+  * timer() provides a cleaner way to handle intervals
+  *
+  *     @usage
+  * $.timer(interval, callback);
+  *
+  *
+  * @example
+  * $.timer(1000, function (timer) {
+  *     alert("hello");
+  *     timer.stop();
+  * });
+  * @desc Show an alert box after 1 second and stop
+  *
+  * @example
+  * var second = false;
+  *     $.timer(1000, function (timer) {
+  *             if (!second) {
+  *                     alert('First time!');
+  *                     second = true;
+  *                     timer.reset(3000);
+  *             }
+  *             else {
+  *                     alert('Second time');
+  *                     timer.stop();
+  *             }
+  *     });
+  * @desc Show an alert box after 1 second and show another after 3 seconds
+  *
+  *
+  */
+jQuery.timer = function (interval, callback)
+ {
+
+        var interval = interval || 100;
+
+        interval = interval * 1000;
+
+        if (!callback)
+                return false;
+
+        _timer = function (interval, callback) {
+                this.stop = function () {
+                        clearInterval(self.id);
+                };
+
+                this.internalCallback = function () {
+                        callback(self);
+                };
+
+                this.reset = function (val) {
+                        if (self.id)
+                                clearInterval(self.id);
+
+                        var value = val || 100;
+                        value = value * 1000
+                        this.id = setInterval(this.internalCallback, value);
+                };
+
+                this.interval = interval;
+                this.id = setInterval(this.internalCallback, this.interval);
+
+                var self = this;
+        };
+
+        return new _timer(interval, callback);
+ };
+
 
 
 

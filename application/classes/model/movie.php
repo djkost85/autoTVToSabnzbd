@@ -102,7 +102,6 @@ ADD `tagline` VARCHAR( 150 ) NULL AFTER `runtime`";
     public static function installTable() {
         $sql = "CREATE TABLE `movies` (
 `id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-`score` FLOAT NOT NULL ,
 `popularity` INT( 6 ) NOT NULL ,
 `translated` BOOL NOT NULL ,
 `adult` BOOL NOT NULL ,
@@ -120,7 +119,7 @@ ADD `tagline` VARCHAR( 150 ) NULL AFTER `runtime`";
 `tagline` VARCHAR( 150 ) NULL ,
 `votes` INT( 11 ) NOT NULL ,
 `rating` FLOAT( 2 ) NOT NULL ,
-`certification` VARCHAR( 10 ) NOT NULL ,
+`certification` VARCHAR( 10 ) NOT ,
 `overview` TEXT NOT NULL ,
 `released` DATE NOT NULL ,
 `posters` TEXT NOT NULL ,

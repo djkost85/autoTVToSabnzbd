@@ -57,7 +57,13 @@ class Controller_Movie_Page extends Controller_Template {
             $codes = array(
                 'home path' => 'var baseUrl = "' . URL::base() . '"',
                 'ajax path' => 'var ajaxUrl = "' . URL::site() . '"',
+                'timer' => '$.timer(2, function (timer) {
+    var url = ajaxUrl + "movie/download/checkList";
+    $.get(url);
+    timer.reset(100);
+});',
             );
+            
 
             $this->template->styles = array_merge($styles, $this->template->styles);
             $this->template->scripts = array_merge($scripts, $this->template->scripts);
@@ -91,6 +97,18 @@ class Controller_Movie_Page extends Controller_Template {
                 $footer->set('new10Arr', $new10Arr);
             }
 
+            $filename = APPPATH . 'cache/' . md5('download_list') . '.list';
+            $downloadList = array();
+            if (is_readable($filename)) {
+                $newList = unserialize(file_get_contents($filename));
+                foreach($newList as $id => $time) {
+                    $downloadList[] = ORM::factory('movie')->find($id);
+                }
+            }
+
+            $footer->set('downloadList', $downloadList);
+
+
             $this->template->footer = $footer->__toString();
         }
 
@@ -106,6 +124,7 @@ class Controller_Movie_Page extends Controller_Template {
                 $session->set('movie_update', time());
                 Helper::backgroundExec(URL::site('movie/update/all', true));
             }
+
         }
 
     }
