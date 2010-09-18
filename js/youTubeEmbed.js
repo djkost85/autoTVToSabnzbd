@@ -1,5 +1,7 @@
+
+
 (function($){
-	
+
 	$.fn.youTubeEmbed = function(settings){
 		
 		// Settings can be either a URL string,
