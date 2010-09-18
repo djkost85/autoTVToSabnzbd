@@ -94,6 +94,19 @@
                 </p>
             </form>
 
+             <form id="submitform" class="config-form" action="<?php echo URL::site('config/renamer')?>" method="get">
+                <p>
+                    <label for="renamer_pathString">Renamer path srting</label>
+                    <input type="text" name="renamer[pathString]" id="renamer_pathString" <?php if (isset($renamer)) echo 'value="'.$renamer['pathString'].'"'?> />
+                    <br />
+                    <em>Example:":name/Season :season/:name - :ep_string - :ep_name.:ext" -></em><br />
+                    <em>Result:"Chuck/Season 1/Chuck - S01E03 - Chuck vs. the Tango.avi"</em>
+                </p>
+                 <p>
+                    <input class="button"  type="submit" value="<?php echo __('Save')?>" />
+                </p>
+             </form>
+
             <?php echo HTML::anchor('#', HTML::image("images/black/banner/star-wars.jpg", array('alt' => 'Bottom Banner', 'class' => 'banner')));?>
             <div class="clearer"></div>
         </div>

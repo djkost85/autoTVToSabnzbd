@@ -49,7 +49,7 @@ class Controller_Page extends Controller_Template {
             );
 
             $scripts = array(
-                'jQuery' => 'js/jQuery.js',
+                'jQuery' => 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js',
                 'functions' => 'js/functions.js',
                 'tooltip' => 'js/tooltip.js',
             );

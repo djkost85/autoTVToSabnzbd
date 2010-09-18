@@ -103,5 +103,11 @@ class Helper {
         }
     }
 
+    public static function min2h($minutes) {
+        $h = floor($minutes / 60);
+        $m = $minutes - ($h * 60);
+        return "$h:$m";
+    }
+
 }
 ?>

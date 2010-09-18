@@ -1,6 +1,6 @@
 <?php
 defined('SYSPATH') or die('No direct script access.');
-$file = "";
+$file = "images/black/noPoster.gif";
 foreach (unserialize($movie->posters) as $image) {
     if ($image->image->size == 'mid') {
         $file = $image->image->url;
@@ -22,15 +22,22 @@ foreach (unserialize($movie->posters) as $image) {
         <?php echo ($inDlList) ? HTML::anchor('movie/list/rmDlList/' . $movie->id, __('Remove from List')) :
                 HTML::anchor('movie/list/addDlList/' . $movie->id, __('Add to list'));?>
         <br />
+        <?php echo HTML::anchor('movie/add/update/' . $movie->id, __('Update'))?>
+        <br />
+        <?php echo __('Budget') . ': $' . number_format($movie->budget, 2, ',', ' '); ?>
+        <br />
+        <?php echo __('Runtime')  . ': ' . Helper::min2h($movie->runtime) . 'h'?>
+        <br />
         (<?php echo $movie->rating . '/' . $movie->votes?>)
 </div>
 <div id="player" class="info-box"></div>
 
 <script type="text/javascript">
+
 $('#player').youTubeEmbed({
     video	: '<?php echo $movie->trailer?>',
-    width	: 660//, 		// Height is calculated automatically
-    //progressBar : false		// Hide the progress bar
+    width	: 660, 		// Height is calculated automatically
+    progressBar : false		// Hide the progress bar
 });
 
 </script>

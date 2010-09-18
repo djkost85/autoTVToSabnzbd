@@ -16,11 +16,9 @@
 
     <div id="main">
         <div class="inner">
-            <!-- BuySellAds.com Zone Code -->
                     <div class="top-banner">
                         <?php echo HTML::anchor('#', HTML::image("images/black/banner/fringe.jpg", array('alt' => 'Top Banner')), array('title' => 'Top Banner', 'class' => 'adhere'));?>
                     </div>
-                    <!-- END BuySellAds.com Zone Code -->
     <h1><?php echo $title?></h1>
     <?php if (MsgFlash::has()) { ?><p class="success"><?php echo HTML::entities(MsgFlash::get())?></p> <?php } ?>
     <?php if (MsgFlash::hasError()) { ?><p class="error"><?php echo HTML::entities(MsgFlash::get(true))?></p> <?php } ?>
@@ -59,10 +57,10 @@
             <input class="button" type="submit" value="<?php echo __('Save')?>" />
         </p>
     </form>
-<div class="clearer"></div>
-                    </div>
-                    <!-- main ends -->
-                </div>
+            <div class="clearer"></div>
+        </div>
+        <!-- main ends -->
+    </div>
 <script type="text/javascript">
 $('<img src="' + baseUrl + 'images/move-spinner.gif" id="spinner" />').css('position','absolute').hide().appendTo('body');
 

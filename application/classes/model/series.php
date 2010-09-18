@@ -58,7 +58,7 @@ class Model_Series extends ORM {
             LEFT JOIN
                 episodes e ON e.series_id = s.id
             WHERE
-                e.first_aired < CURDATE()
+                e.first_aired <= CURDATE()
             GROUP BY
                 s.id
             ORDER BY

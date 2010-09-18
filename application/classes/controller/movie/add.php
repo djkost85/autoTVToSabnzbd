@@ -137,14 +137,14 @@ class Controller_Movie_Add extends Controller_Movie_Page {
             $movie->url = $result->url;
             $movie->trailer = $result->trailer;
             $movie->budget = $result->budget;
-            $movie->runtime = (is_null($result->runtime)) ? '' : $result->runtime;
+            $movie->runtime = $result->runtime;
             $movie->tagline = $result->tagline;
             $movie->votes = $result->votes;
             $movie->rating = $result->rating;
             $movie->certification = (is_null($result->certification)) ? '' : $result->certification;
             $movie->overview = $result->overview;
             $movie->released = $result->released;
-            $movie->posters = serialize($result->posters);
+            $movie->posters = $this->dlPosters($result->name, $result->posters);
             $movie->backdrops = serialize($result->backdrops);
             $movie->version = $result->version;
             $movie->last_modified_at = $result->last_modified_at;
@@ -153,34 +153,60 @@ class Controller_Movie_Add extends Controller_Movie_Page {
 
             $movie->save();
         } catch (Database_Exception $e) {
-            MsgFlash::set($result->name . ' saving error: ' . $e->getMessage(), true);
+            Kohana::$log->add(Kohana::ERROR, $result->name . ' saving error: ' . $e->getMessage());
             return;
         }
 
+//        $postersDL = array();
+//        foreach ($result->posters as $poster) {
+//            if (preg_match('#^http:\/\/#', $poster->image->url)) {
+//                $path = "images/movies/" . $result->name . "/" . $poster->image->type . "/" . $poster->image->size;
+//                if (!is_dir($path)) {
+//                    mkdir($path, 0777, true);
+//                } else {
+//                    continue;
+//                }
+//
+//                chmod($path, 0777);
+//
+//                $newFilename = $path . '/' . basename($poster->image->url);
+//                Posters::save($poster->image->url, $newFilename);
+//                $poster->image->url = $newFilename;
+//                $postersDL[] = $poster;
+//            }
+//        }
+//
+//        if (!empty ($postersDL)) {
+//            $movie->posters = serialize($postersDL);
+//            $movie->save();
+//        }
+        
+    }
+
+    protected function dlPosters($name, $posters) {
+        $invalidChar = array( '"', "'", '!', '#', '$', '%', '?', '|', '*', '<', '>', ':', ';' );
+        $name = str_replace($invalidChar, '', $name);
         $postersDL = array();
-        foreach ($result->posters as $poster) {
+        foreach ($posters as $poster) {
             if (preg_match('#^http:\/\/#', $poster->image->url)) {
-                $path = "images/movies/" . $result->name . "/" . $poster->image->type . "/" . $poster->image->size;
+                $path = "images/movies/" . $name . "/" . $poster->image->type . "/" . $poster->image->size;
                 if (!is_dir($path)) {
                     mkdir($path, 0777, true);
-                } else {
-                    continue;
                 }
-                
+//                else {
+//                    continue;
+//                }
+
                 chmod($path, 0777);
 
-                $newFilename = $path . '/' . basename($poster->image->url);
+                $newFilename = $path . '/' . $poster->image->id . '.' . pathinfo($poster->image->url, PATHINFO_EXTENSION);
                 Posters::save($poster->image->url, $newFilename);
                 $poster->image->url = $newFilename;
                 $postersDL[] = $poster;
             }
         }
 
-        if (!empty ($postersDL)) {
-            $movie->posters = serialize($postersDL);
-            $movie->save();
-        }
-        
+        return serialize($postersDL);
     }
 
     public function action_edit($id) {
@@ -203,6 +229,60 @@ class Controller_Movie_Add extends Controller_Movie_Page {
 
         MsgFlash::set($movie->name . ' ' . __('is saved'));
         $this->request->redirect('movie/add/edit/' . $movie->id);
+    }
+
+    public function action_update($id) {
+        ignore_user_abort(true);
+        set_time_limit(0);
+
+        $this->auto_render = false;
+
+        $movie = ORM::factory('movie');
+        $movie->find($id);
+
+        $tmdb = new TmdbApi(Kohana::config('movie.tmdb'));
+        $results = $tmdb->getInfo($movie->tmdb_id);
+        $result = $results[0];
+
+        try {
+            $movie->popularity = $result->popularity;
+            $movie->translated = $result->translated;
+            $movie->adult = $result->adult;
+            $movie->language = $result->language;
+            $movie->original_name = $result->original_name;
+            $movie->name = $result->name;
+            $movie->alternative_name = $result->alternative_name;
+            $movie->movie_type = $result->movie_type;
+            $movie->tmdb_id = $result->id;
+            $movie->imdb_id = $result->imdb_id;
+            $movie->url = $result->url;
+            $movie->trailer = $result->trailer;
+            $movie->budget = $result->budget;
+            $movie->runtime = $result->runtime;
+            $movie->tagline = $result->tagline;
+            $movie->votes = $result->votes;
+            $movie->rating = $result->rating;
+            $movie->certification = (is_null($result->certification)) ? '' : $result->certification;
+            $movie->overview = $result->overview;
+            $movie->released = $result->released;
+            $movie->version = $result->version;
+            $movie->last_modified_at = $result->last_modified_at;
+
+            $movie->posters = $this->dlPosters($result->name, $result->posters);
+
+//            var_dump($result->name);
+//            var_dump(unserialize($movie->posters));
+//            var_dump($movie);
+//            exit;
+
+            $movie->save();
+        } catch (Database_Exception $e) {
+            Kohana::$log->add(Kohana::ERROR, $result->name . ' saving error: ' . $e->getMessage());
+            MsgFlash::set($result->name . ' saving error: ' . $e->getMessage(), true);
+        }
+
+        MsgFlash::set($movie->name . ' ' . __('is updated'));
+        $this->request->redirect('movie/list/info/' . $movie->id);
     }
 
     public function action_ajax_setMatrix($id) {

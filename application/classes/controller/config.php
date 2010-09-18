@@ -7,6 +7,7 @@ class Controller_Config extends Controller_Page {
         $view = View::factory('config/index');
 
         $default = Kohana::config('default');
+        $renamer = Kohana::config('series.renamer');
 
 //        file_put_contents('application/config/default.data', serialize($default->as_array()));
 //        var_dump(unserialize(file_get_contents('application/config/default.data')));
@@ -27,7 +28,8 @@ class Controller_Config extends Controller_Page {
                 ->set('nzbs_query_string', $default->nzbs['queryString'])
                 ->set('series_update_every', $default->update['seriesUpdateEvery'])
                 ->set('install_error', Helper_Install::checkEnv())
-                ->set('install_warnings', Helper_Install::getWarnings());
+                ->set('install_warnings', Helper_Install::getWarnings())
+                ->set('renamer', $renamer);
         } else if (isset($default->default) && !isset($default->default['useNzbSite'])) {
             $view->set('use_nzb_site', 'nzbMatrix');
             if (!isset($default->Sabnzbd)) {
@@ -160,6 +162,16 @@ return array
             $this->request->redirect('config/database');
         }
 
+        MsgFlash::set(__('Configuration saved'));
+        $this->request->redirect('config/index');
+    }
+
+    public function action_renamer() {
+        $config = array(
+            'renamer' => $_GET['renamer'],
+        );
+
+        file_put_contents('application/config/series.data', serialize($config));
         MsgFlash::set(__('Configuration saved'));
         $this->request->redirect('config/index');
     }

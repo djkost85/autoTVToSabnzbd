@@ -1,6 +1,8 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+$filename = 'application/config/series.data';
+
+return array_merge_recursive(array(
         'autocomplete' => array(
                 'Lost',
                 'Heroes',
@@ -122,7 +124,10 @@ return array(
                 'Being Human',
                 'Underbelly',
                 'Dead Set',
-        )
+        ),
+    'renamer' => array('deleteSmallFiles' => false),
+    ),
+        (is_readable($filename)) ? unserialize(file_get_contents($filename)) : array()
 );
 
 ?>

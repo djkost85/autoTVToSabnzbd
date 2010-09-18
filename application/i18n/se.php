@@ -38,6 +38,11 @@ return array(
     'Released' => 'Släppt',
     'Add to list' => 'Lägg till i listan',
     'Remove from List' => 'Ta bort från listan',
+    'Budget' => 'Budget',
+    'Runtime' => 'Längd',
+    'Path' => 'Sökväg',
+    'Rename' => 'Byt namn',
+    'Select' => 'Välj',
 
     
     'None' => 'Ingen',

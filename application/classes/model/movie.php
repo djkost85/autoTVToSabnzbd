@@ -28,10 +28,10 @@ CREATE TABLE `movies` (
 ) ENGINE = MYISAM ;
 
 
-ALTER TABLE `movies` ADD `trailer` VARCHAR( 150 ) NOT NULL AFTER `url` ,
-ADD `budget` INT( 11 ) NOT NULL AFTER `trailer` ,
-ADD `runtime` INT( 11 ) NOT NULL AFTER `budget` ,
-ADD `tagline` VARCHAR( 150 ) NOT NULL AFTER `runtime`
+ALTER TABLE `movies` ADD `trailer` VARCHAR( 150 ) NULL AFTER `url` ,
+ADD `budget` INT( 11 ) NULL AFTER `trailer` ,
+ADD `runtime` INT( 11 ) NULL AFTER `budget` ,
+ADD `tagline` VARCHAR( 150 ) NULL AFTER `runtime`
 
  */
 

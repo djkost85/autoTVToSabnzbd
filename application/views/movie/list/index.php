@@ -19,7 +19,8 @@ defined('SYSPATH') or die('No direct script access.');
         <?php echo HTML::anchor('movie/list/index/?' . http_build_query(array('orderby_released' => (isset($_GET['orderby_released']) && $_GET['orderby_released'] == 'desc') ? 'asc':'desc')), __('Order by release date')) ?>
     </p>
     <ul class="thumbnail">
-        <?php foreach ($movies as $movie) { 
+        <?php foreach ($movies as $movie) {
+            $file = "images/black/noPoster.gif";
             foreach (unserialize($movie->posters) as $poster) {
 //                var_dump($poster->image);
                 //original, mid, cover, thumb

@@ -55,6 +55,8 @@ class Controller_Rss extends Controller {
             if ($ep->season > 0) {
                 $search = sprintf('%s S%02dE%02d', $ep->series_name, $ep->season, $ep->episode);
 
+                $search = str_replace(array(':', ' -'), '', $search);
+
                 if (!$rss->alreadySaved($search)) {
                     if ($config->default['useNzbSite'] == 'both') {
                         $response = trim(Request::factory('nzbs/oneResult/'.$ep->episode_id)->execute()->response);
