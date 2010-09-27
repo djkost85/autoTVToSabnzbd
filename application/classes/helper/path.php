@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 class Helper_Path {
 
@@ -75,6 +75,12 @@ class Helper_Path {
 
             return true;
         }
+    }
+
+    public static function safeFilename($filename) {
+        $search = array("#", "'", '"', "&", "?", "!");
+        $replace = array("", "", "", "and", "", "");
+        return str_replace($search, $replace, $filename);;
     }
 
 }

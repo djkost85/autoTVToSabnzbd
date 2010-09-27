@@ -42,9 +42,12 @@ class Renamer {
             $newFilename = $this->setFilename($name, $obj);
 
             if ($newFilename === null) {
-                var_dump($name);
+//                var_dump(basename($name));
                 continue;
             }
+
+//            var_dump($newFilename);
+//            exit;
 
             $directory = dirname($newFilename);
             if (!is_dir($directory) && !mkdir($directory, 0777, TRUE)) {
@@ -54,11 +57,13 @@ class Renamer {
 
             if (!rename($name, $newFilename)) {
                 throw new RuntimeException("FAILED, Could not rename $name to  $newFilename. Check Permissions");
-            } else {
-                
             }
+
         }
-        if (!rmdir($objects->getPath())) {
+//        if (!rmdir($objects->getPath())) {
+//            throw new RuntimeException("Failed to remove directory : " . dirname($objects->getPath()));
+//        }
+        if (!Helper_Path::delete_dir_recursive($objects->getPath())) {
             throw new RuntimeException("Failed to remove directory : " . dirname($objects->getPath()));
         }
     }
@@ -74,8 +79,8 @@ class Renamer {
 
         $pre = $p;
 
-        var_dump($p);
-        exit;
+//        var_dump($p);
+//        exit;
 
         $pre['season'] = intval($p['season']);
         $pre['episode'] = intval($p['episode']);
@@ -91,7 +96,7 @@ class Renamer {
         $filename .= '/' . str_replace($search, array_values($pre), $this->_pathString);
         $filename = str_replace(array('//', '\/'), array('/', '\\'), $filename);
 
-        return $filename;
+        return Helper_Path::safeFilename($filename);
     }
 
     protected function getEpName(array $p) {

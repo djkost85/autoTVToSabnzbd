@@ -44,6 +44,8 @@ class Controller_Nzbs extends Controller {
             if ($ep->season > 0) {
                 $search = sprintf('%s S%02dE%02d', $ep->series_name, $ep->season, $ep->episode);
 
+                $search = Helper_Search::escapeSeriesName($search);
+
                 if (!$rss->alreadySaved($search)) {
                     $xml = $nzbs->search($search, Nzbs::matrixNum2Nzbs($series->matrix_cat));
 
@@ -63,7 +65,10 @@ class Controller_Nzbs extends Controller {
         
         $ep = ORM::factory('episode', array('id' => $id));
         $series = $ep->getSeriesInfo();
+
         $search = sprintf('%s S%02dE%02d', $series->series_name, $ep->season, $ep->episode);
+
+        $search = Helper_Search::escapeSeriesName($search);
 
         $nzbs = new Nzbs($config->nzbs);
         $xml = $nzbs->search($search, Nzbs::matrixNum2Nzbs($series->matrix_cat));
@@ -89,9 +94,11 @@ class Controller_Nzbs extends Controller {
 
             $parsed['name'] = str_replace('.', ' ', $parsed['name']);
 
+            $seriesName = Helper_Search::escapeSeriesName($search);
+
             if (sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
                 sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
-                strtolower($parsed['name']) == strtolower($ep->series_name) &&
+                strtolower($parsed['name']) == strtolower($seriesName) &&
                 $ep->matrix_cat == Nzbs::cat2MatrixNum((string) $item->category) &&
                 !$rss->alreadySaved((string) $item->title)) {
                 

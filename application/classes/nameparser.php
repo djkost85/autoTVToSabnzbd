@@ -6,7 +6,7 @@ class NameParser {
         # foo.s0101, foo.0201
         '/^(?P<name>.+?)[ \._\-][Ss](?P<season>[0-9]{2})[\.\- ]?(?P<episode>[0-9]{2})[^0-9]*$/',
         # foo.1x09*
-        '/^((?P<name>.+?)[ \._\-])?\[?(?P<season>[0-9]+)[xX](?P<episode>[0-9]+) \]?[^\\/]*$/',
+        '/^((?P<name>.+?)[ \._\-])?(?P<season>[0-9]+)[xX](?P<episode>[0-9]+)[^\\/]*$/',
         # foo.s01.e01, foo.s01_e01
         '/^((?P<name>.+?)[ \._\-])?[Ss](?P<season>[0-9]+)[\._\- ]?[Ee]?(?P<episode>[0-9]+)[^\\/]*$/',
         # Foo - S2 E 02 - etc
