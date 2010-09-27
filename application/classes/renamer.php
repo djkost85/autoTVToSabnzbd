@@ -6,16 +6,21 @@ class Renamer {
     protected $_movieExt = array('mkv', 'wmv', 'avi', 'mpg', 'mpeg', 'mp4', 'm2ts', 'iso');
     protected $_nfoExt = array('*.nfo');
     protected $_videoCodecs = array('x264', 'DivX', 'XViD');
-    protected $_subExt = array('*.sub', '*.srt', '*.idx', '*.ssa', '*.ass');
+    protected $_deleteExt = array('sub', 'srt', 'idx', 'ssa', 'ass');
 
     protected $_minimalFileSize = 31457280; # 1024 * 1024 * 30 = 30MB
 
     protected $_pathString;
     protected $_deleteSmallFiles = false;
+    protected $_deleteUnnecessaryFiles = false;
 
-    public function  __construct(array $options) {
+    public function __construct(array $options) {
         $this->setPathString($options['pathString']);
         $this->_deleteSmallFiles = $options['deleteSmallFiles'];
+
+        if (isset($options['deleteUnnecessaryFiles'])) {
+            $this->_deleteUnnecessaryFiles = $options['deleteUnnecessaryFiles'];
+        }
     }
 
     public function setPathString($str) {
@@ -39,6 +44,12 @@ class Renamer {
                 unlink($name);
                 continue;
             }
+
+            if ($this->_deleteUnnecessaryFiles && in_array($ext, $this->_deleteExt)) {
+                unlink($name);
+                continue;
+            }
+
             $newFilename = $this->setFilename($name, $obj);
 
             if ($newFilename === null) {
@@ -77,6 +88,7 @@ class Renamer {
             return null;
         }
 
+        $p['name'] = str_replace('.', ' ', $p['name']);
         $pre = $p;
 
 //        var_dump($p);

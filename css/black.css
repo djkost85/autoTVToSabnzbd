@@ -167,18 +167,7 @@ blockquote {
     padding: 12px 0 5px 0;
     margin: 0;
 }
-#submitform label {
-    font-weight: bold;
-    color: #FFFFFF;
-    line-height: 2.8;
-    font-size: 14px;
-    float: left;
-    width: 10em;
-    margin-right: 1em;
-}
-#submitform.config-form label {
-    width: 15em;
-}
+
 #submitform .button {
     background-color: #B1D918;
     color: #1A2022;
@@ -192,6 +181,20 @@ blockquote {
     font-size: 14px;
     width: auto;
 }
+
+#submitform label {
+    font-weight: bold;
+    color: #FFFFFF;
+    line-height: 2.8;
+    font-size: 14px;
+    float: left;
+    width: 10em;
+    margin-right: 1em;
+}
+#submitform.config-form label {
+    width: 15em;
+}
+
 #submitform input, #submitform select {
     background-color: #1A2022;
     border: 1px solid #101415;
@@ -201,6 +204,17 @@ blockquote {
     font-size: 14px;
     clear: both;
 }
+#submitform.config-form-renamer label {
+    width: 13em;
+}
+#submitform.config-form-renamer input {
+    width: 410px;
+}
+#submitform.config-form-renamer input.button {
+    width: auto;
+}
+
+
 #submitform input.radio-button {
     width: 20px;
     margin: 5px 0 5px 0;

@@ -1,0 +1,1 @@
+a:1:{s:7:"renamer";a:3:{s:10:"pathString";s:55:":name/Season :season/:name - :ep_string - :ep_name.:ext";s:16:"deleteSmallFiles";b:0;s:22:"deleteUnnecessaryFiles";b:0;}}

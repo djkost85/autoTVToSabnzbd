@@ -45,7 +45,7 @@ class Controller_Config extends Controller_Page {
         $this->auto_render = false;
 //        $default = Kohana::config('default');
 //        $default = $default->as_array();
-
+        
         $_GET = Validate::factory($_GET)->filter(true, 'trim');
         $default = array();
         if (empty($_GET['use_nzb_site'])) {
@@ -167,12 +167,14 @@ return array
     }
 
     public function action_renamer() {
+        $_GET['renamer']['deleteUnnecessaryFiles'] = $_GET['renamer']['deleteUnnecessaryFiles'] == TRUE;
+        $_GET['renamer']['deleteSmallFiles'] = $_GET['renamer']['deleteSmallFiles'] == TRUE;
         $config = array(
             'renamer' => $_GET['renamer'],
         );
 
         file_put_contents('application/config/series.data', serialize($config));
-        MsgFlash::set(__('Configuration saved'));
+        MsgFlash::set(__('Renamer Configuration saved'));
         $this->request->redirect('config/index');
     }
 

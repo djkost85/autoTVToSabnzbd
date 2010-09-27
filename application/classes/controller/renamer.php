@@ -2,6 +2,7 @@
 
 
 class Controller_Renamer extends Controller_Page {
+    
     public function action_index() {
         $view = View::factory('renamer/index');
         $view->set('title', 'Rename Series');

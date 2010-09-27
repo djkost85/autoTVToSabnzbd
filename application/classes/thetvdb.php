@@ -27,6 +27,9 @@ class TheTvDB extends Tv_Info {
             $this->xmlLanguages[] = (string)$series->language;
         }
 
+        var_dump($url);
+            exit;
+
         if (!in_array($this->language, $this->xmlLanguages)) {
             $this->language = $this->xmlLanguages[0];
         }

@@ -125,7 +125,10 @@ return array_merge_recursive(array(
                 'Underbelly',
                 'Dead Set',
         ),
-    'renamer' => array('deleteSmallFiles' => false),
+//    'renamer' => array(
+//        'deleteSmallFiles' => TRUE,
+//        'deleteUnnecessaryFiles' => FALSE
+//        ),
     ),
         (is_readable($filename)) ? unserialize(file_get_contents($filename)) : array()
 );

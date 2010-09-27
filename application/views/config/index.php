@@ -93,15 +93,36 @@
                     <input class="button"  type="submit" value="<?php echo __('Save')?>" />
                 </p>
             </form>
-
-             <form id="submitform" class="config-form" action="<?php echo URL::site('config/renamer')?>" method="get">
-                <p>
+            <style type="text/css">
+                .border-under-me {
+                    border-bottom: #ffffff 1px solid;
+                }
+            </style>
+             <form id="submitform" class="config-form-renamer" action="<?php echo URL::site('config/renamer')?>" method="get">
+                 <div class="border-under-me">
                     <label for="renamer_pathString">Renamer path srting</label>
                     <input type="text" name="renamer[pathString]" id="renamer_pathString" <?php if (isset($renamer)) echo 'value="'.$renamer['pathString'].'"'?> />
                     <br />
-                    <em>Example:":name/Season :season/:name - :ep_string - :ep_name.:ext" -></em><br />
-                    <em>Result:"Chuck/Season 1/Chuck - S01E03 - Chuck vs. the Tango.avi"</em>
-                </p>
+                    <br />
+                    <span>Example: ":name/Season :season/:name - :ep_string - :ep_name.:ext" -></span><br />
+                    <em>Result: "Chuck/Season 1/Chuck - S01E03 - Chuck vs. the Tango.avi"</em>
+                    <br />
+                    <p>:name = series name</p>
+                    <p>:season = season number</p>
+                    <p>:ep_name = episode name</p>
+                    <p>:ep_string = S01E03 or S12E04</p>
+                    <p>:ext = file extantion (optional)</p>
+                </div>
+                 <p>
+                    <label for="delete_small_files">Delete Small Files</label>
+                    Yes: <input class="radio-button" type="radio" <?php if (isset($renamer) && $renamer['deleteSmallFiles']) echo 'checked'?> name="renamer[deleteSmallFiles]" value="1" />
+                    No: <input class="radio-button" type="radio" <?php if (isset($renamer) && !$renamer['deleteSmallFiles']) echo 'checked'?> name="renamer[deleteSmallFiles]" value="0" />
+                 </p>
+                 <p>
+                    <label for="delete_unnecessary_files">Delete Unnecessary Files</label>
+                    Yes: <input class="radio-button" type="radio" <?php if (isset($renamer) && $renamer['deleteUnnecessaryFiles']) echo 'checked'?> name="renamer[deleteUnnecessaryFiles]" value="1" />
+                    No: <input class="radio-button" type="radio" <?php if (isset($renamer) && !$renamer['deleteUnnecessaryFiles']) echo 'checked'?> name="renamer[deleteUnnecessaryFiles]" value="0" />
+                 </p>
                  <p>
                     <input class="button"  type="submit" value="<?php echo __('Save')?>" />
                 </p>
