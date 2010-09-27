@@ -20,7 +20,8 @@ class Nzbs extends Tv_Info {
 
         if (is_null($cat)) $query['type'] = 1;
         else $query['catid'] = $cat;
-        var_dump($query);
+
+//        var_dump($query);
 
         $url = $this->searchUrl . '?' . http_build_query($query) . $this->_queryString;
 

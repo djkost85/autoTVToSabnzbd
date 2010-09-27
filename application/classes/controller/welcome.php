@@ -5,7 +5,7 @@ class Controller_Welcome extends Controller_Page {
     public function action_index() {
 //        $config = Kohana::config('default');
 //        $matrix = new NzbMatrix_Rss($config->default);
-//        $result = $matrix->search('Star Wars The Clone Wars S03E03', 6);
+//        $result = $matrix->search('The Ultimate Fighter S12E02', 6);
 //
 //        var_dump($result);
         try {

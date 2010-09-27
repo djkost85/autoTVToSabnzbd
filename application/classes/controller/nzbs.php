@@ -94,7 +94,7 @@ class Controller_Nzbs extends Controller {
 
             $parsed['name'] = str_replace('.', ' ', $parsed['name']);
 
-            $seriesName = Helper_Search::escapeSeriesName($search);
+            $seriesName = Helper_Search::escapeSeriesName($ep->series_name);
 
             if (sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
                 sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
