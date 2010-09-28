@@ -5,9 +5,13 @@ class Controller_Welcome extends Controller_Page {
     public function action_index() {
 //        $config = Kohana::config('default');
 //        $matrix = new NzbMatrix_Rss($config->default);
-//        $result = $matrix->search('The Ultimate Fighter S12E02', 6);
+//        $result = $matrix->search(Helper_Search::escapeSeriesName(sprintf('%s S%02dE%02d', ORM::factory('series')->where('id', '=', 29)->find()->series_name, 3, 3)), 6);
 //
 //        var_dump($result);
+//
+//        $search = Helper_Search::escapeSeriesName(sprintf('%s S%02dE%02d', ORM::factory('series')->where('id', '=', 29)->find()->series_name, 3, 3));
+//        var_dump($search);
+
         try {
             $count = ORM::factory('series')->count_all();
         } catch (ErrorException $e) {

@@ -169,6 +169,13 @@ return array
     public function action_renamer() {
         $_GET['renamer']['deleteUnnecessaryFiles'] = $_GET['renamer']['deleteUnnecessaryFiles'] == TRUE;
         $_GET['renamer']['deleteSmallFiles'] = $_GET['renamer']['deleteSmallFiles'] == TRUE;
+
+        $_GET['renamer']['minimalFileSize'] = preg_replace('/[^0-9]/', '', $_GET['renamer']['minimalFileSize']);
+        if (!is_numeric($_GET['renamer']['minimalFileSize'])) {
+            MsgFlash::set('Minimum file size is not a number');
+            $this->request->redirect('config/index');
+        }
+        
         $config = array(
             'renamer' => $_GET['renamer'],
         );

@@ -21,6 +21,17 @@ class Renamer {
         if (isset($options['deleteUnnecessaryFiles'])) {
             $this->_deleteUnnecessaryFiles = $options['deleteUnnecessaryFiles'];
         }
+        
+        if (isset($options['deleteUnnecessaryFiles'])) {
+            $this->setMinSize($options['deleteUnnecessaryFiles']);
+        }
+    }
+
+    public function setMinSize($int) {
+        if (!is_numeric($int)) {
+            throw new InvalidArgumentException('Minimal file size is not a number');
+        }
+        $this->_minimalFileSize = (1024 * 1024 * $int);
     }
 
     public function setPathString($str) {

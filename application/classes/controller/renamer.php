@@ -30,10 +30,15 @@ class Controller_Renamer extends Controller_Page {
         set_time_limit(0);
 
         $config = Kohana::config('series.renamer');
-        
-        $r = new Renamer($config);
-        $r->rename($_GET['path']);
 
+        try {
+            $r = new Renamer($config);
+            $r->rename($_GET['path']);
+        } catch (RuntimeException $e) {
+            $text = Kohana::exception_text($e);
+            Kohana::$log->add(Kohana::ERROR, $text);
+            MsgFlash::set($text, true);
+        }
         $this->request->redirect('renamer/index');
     }
 }

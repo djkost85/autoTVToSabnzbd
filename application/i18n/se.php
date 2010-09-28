@@ -108,6 +108,9 @@ return array(
     'Show all special episodes from' => 'Visa alla special avsnitt från',
     'Show all downloads' => 'Visa alla nerladdningar',
     'Configuration saved' => 'Konfigurationen sparad',
+    'Renamer Configuration saved' => 'Döp om konfigurationen sparad',
+    'Renamer Config' => 'Döp om konfiguration',
+    'Renamer' => 'Döp om',
     
     'Updating the rss feed.' => 'Uppdaterar rss födet.',
     'Updating all series.' => 'Uppdaterar alla serier.',

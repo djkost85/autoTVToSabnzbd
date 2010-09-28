@@ -97,7 +97,15 @@
                 .border-under-me {
                     border-bottom: #ffffff 1px solid;
                 }
+                h2 {
+                    padding: 10px;
+                }
+                #submitform input#delete_small_size {
+                    width: 45px;
+                }
             </style>
+
+            <h2><?php echo __('Renamer Config');?></h2>
              <form id="submitform" class="config-form-renamer" action="<?php echo URL::site('config/renamer')?>" method="get">
                  <div class="border-under-me">
                     <label for="renamer_pathString">Renamer path srting</label>
@@ -117,6 +125,10 @@
                     <label for="delete_small_files">Delete Small Files</label>
                     Yes: <input class="radio-button" type="radio" <?php if (isset($renamer) && $renamer['deleteSmallFiles']) echo 'checked'?> name="renamer[deleteSmallFiles]" value="1" />
                     No: <input class="radio-button" type="radio" <?php if (isset($renamer) && !$renamer['deleteSmallFiles']) echo 'checked'?> name="renamer[deleteSmallFiles]" value="0" />
+                 </p>
+                 <p>
+                    <label for="delete_small_size">Minimum Files Size</label>
+                    <input id="delete_small_size" name="renamer[minimalFileSize]" type="text" <?php if (isset($renamer['minimalFileSize'])) echo 'value="'.$renamer['minimalFileSize'].'"'; else 'value="30"';?> /> MB
                  </p>
                  <p>
                     <label for="delete_unnecessary_files">Delete Unnecessary Files</label>
