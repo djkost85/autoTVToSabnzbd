@@ -141,7 +141,6 @@
              </form>
 
             <?php echo HTML::anchor('#', HTML::image("images/black/banner/star-wars.jpg", array('alt' => 'Bottom Banner', 'class' => 'banner')));?>
-            <div class="clearer"></div>
         </div>
     <!-- main ends -->
     </div>

@@ -65,7 +65,6 @@ div.update-wrapper ul {
         </form>
         <p>Some browsers attach .htm or the like as file extension. You must remove it to make this work</p>
     </div>
-        </div>
                     </div>
                     <!-- main ends -->
                 </div>

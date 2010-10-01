@@ -47,15 +47,12 @@ class Controller_Rss extends Controller {
         $matrix = new NzbMatrix_Rss($config->default);
         $series = Model_SortFirstAired::getSeries();
 
-        $i = 0;
         foreach ($series as $ep) {
             if ($rss->count_all() >= $config->rss['numberOfResults']) {
                 break;
             }
             if ($ep->season > 0) {
-                $search = sprintf('%s S%02dE%02d', $ep->series_name, $ep->season, $ep->episode);
-
-                $search = Helper_Search::escapeSeriesName($search);
+                $search = sprintf('%s S%02dE%02d', Helper_Search::escapeSeriesName($ep->series_name), $ep->season, $ep->episode);
 
 //                echo '****** NEW *******';
 //                var_dump($search);
@@ -80,11 +77,11 @@ class Controller_Rss extends Controller {
                                 $this->request->response = $msg;
                                 return;
                             }
-                        } else if (preg_match('#^(.*)_(?P<num>\d{1,2})$#', $result[0]['error'], $matches)) {
+                        } else if (preg_match('#^(.*)_(?P<num>\d{1,3})$#', $result[0]['error'], $matches)) {
                             $msg = sprintf(__('please_wait_x'), $matches['num']);
                             sleep($matches['num']);
                         } else if ('nothing_found' == $result[0]['error']) {
-                            $search = sprintf('%s %02dx%02d', $ep->series_name, $ep->season, $ep->episode);
+                            $search = sprintf('%s %02dx%02d', Helper_Search::escapeSeriesName($ep->series_name), $ep->season, $ep->episode);
                             $result = $matrix->search($search, $ep->matrix_cat);
                             if (isset($result[0]['error']) && 'nothing_found' == $result[0]['error']) {
                                 continue;
@@ -101,7 +98,7 @@ class Controller_Rss extends Controller {
 
                     }
 
-                    $this->handleResult($search, $result, $ep, $i);
+                    $this->handleResult($search, $result, $ep);
                     
 //                    echo '******* Result *******';
 //                    var_dump($result);
@@ -119,8 +116,79 @@ class Controller_Rss extends Controller {
 
         $this->request->response .= __('Updated');
     }
+    
+    protected function handleResult($search, $result, $ep) {
+        foreach ($result as $res) {
+            $rss = ORM::factory('rss');
 
-//    public function action_update() {
+            if (!isset($res['nzbname'])) {
+                Kohana::$log->add(Kohana::ERROR, "Undefined index 'nzbname' for search: $search \n Result array: " . var_export($res, true));
+                continue;
+            }
+
+            $parse = new NameParser($res['nzbname']);
+            $parsed = $parse->parse();
+
+            $seriesName = Helper_Search::escapeSeriesName($ep->series_name);
+
+            if (sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
+                sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
+                strtolower($parsed['name']) == strtolower($seriesName) &&
+                $ep->matrix_cat == NzbMatrix::catStr2num($res['category'])) {
+                if (!$rss->alreadySaved($search)) {
+                    $rss->title = $search;
+                    $rss->guid = 'http://nzbmatrix.com/' . $res['link'];
+                    $rss->link = 'http://nzbmatrix.com/' . $res['link'];
+                    $rss->description = $this->description($res['nzbid'], $res['nzbname'], $res['category'], $res['size'], $res['index_date'], $res['group']);
+                    $rss->category = $res['category'];
+                    $rss->pubDate = date(DATE_RSS, strtotime($res['usenet_date']));
+                    $rss->enclosure = serialize(array(
+                                'url' => 'http://nzbmatrix.com/' . $res['link'],
+                                'length' => round($res['size']),
+                                'type' => 'application/x-nzb')
+                            );
+
+                    if ($rss->save()) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     *
+     * @param integer $id
+     * @param string $name
+     * @param string $cat
+     * @param string $size
+     * @param string $added
+     * @param string $group
+     * @return string
+     * <b>Name:</b> Burn Notice S04E06 HDTV XviD XII<br />
+     * <b>Category:</b> TV: Divx/Xvid<br />
+     * <b>Size:</b> 395.72 MB<br />
+     * <b>Added:</b> 2010-07-16 05:37:24<br />
+     * <b>Group:</b> alt.binaries.multimedia <BR />
+     * <b>NFO:</b> <a href="http://nzbmatrix.com/viewnfo.php?id=691833">View NFO</a>
+     */
+    protected function description($id, $name, $cat, $size, $added, $group) {
+        $size = Text::bytes($size, 'MB');
+        $html = "";
+        $html .= "<b>Name:</b> $name <br />";
+        $html .= "<b>Category:</b> $cat <br />";
+        $html .= "<b>Size:</b> $size <br />";
+        $html .= "<b>Added:</b> $added <br />";
+        $html .= "<b>Group:</b> $group <br />";
+        $html .= "<b>NFO:</b> <a href=\"http://nzbmatrix.com/viewnfo.php?id=$id\">View NFO</a>";
+        return $html;
+    }
+
+
+    //    public function action_update() {
 //        $config = Kohana::config('default');
 //
 //        $rss = ORM::factory('rss');
@@ -259,71 +327,6 @@ class Controller_Rss extends Controller {
 //
 //        $this->request->response = __('Updated');
 //    }
-    
-    protected function handleResult($search, $result, $ep, &$i) {
-        foreach ($result as $res) {
-            $rss = ORM::factory('rss');
-
-            $parse = new NameParser($res['nzbname']);
-            $parsed = $parse->parse();
-
-            $seriesName = Helper_Search::escapeSeriesName($ep->series_name);
-
-            if (sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
-                sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
-                strtolower($parsed['name']) == strtolower($seriesName) &&
-                $ep->matrix_cat == NzbMatrix::catStr2num($res['category'])) {
-                if (!$rss->alreadySaved($search)) {
-                    $rss->title = $search;
-                    $rss->guid = 'http://nzbmatrix.com/' . $res['link'];
-                    $rss->link = 'http://nzbmatrix.com/' . $res['link'];
-                    $rss->description = $this->description($res['nzbid'], $res['nzbname'], $res['category'], $res['size'], $res['index_date'], $res['group']);
-                    $rss->category = $res['category'];
-                    $rss->pubDate = date(DATE_RSS, strtotime($res['usenet_date']));
-                    $rss->enclosure = serialize(array(
-                                'url' => 'http://nzbmatrix.com/' . $res['link'],
-                                'length' => round($res['size']),
-                                'type' => 'application/x-nzb')
-                            );
-
-                    if ($rss->save()) {
-                        $i++;
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-
-
-    /**
-     *
-     * @param integer $id
-     * @param string $name
-     * @param string $cat
-     * @param string $size
-     * @param string $added
-     * @param string $group
-     * @return string
-     * <b>Name:</b> Burn Notice S04E06 HDTV XviD XII<br />
-     * <b>Category:</b> TV: Divx/Xvid<br />
-     * <b>Size:</b> 395.72 MB<br />
-     * <b>Added:</b> 2010-07-16 05:37:24<br />
-     * <b>Group:</b> alt.binaries.multimedia <BR />
-     * <b>NFO:</b> <a href="http://nzbmatrix.com/viewnfo.php?id=691833">View NFO</a>
-     */
-    protected function description($id, $name, $cat, $size, $added, $group) {
-        $size = Text::bytes($size, 'MB');
-        $html = "";
-        $html .= "<b>Name:</b> $name <br />";
-        $html .= "<b>Category:</b> $cat <br />";
-        $html .= "<b>Size:</b> $size <br />";
-        $html .= "<b>Added:</b> $added <br />";
-        $html .= "<b>Group:</b> $group <br />";
-        $html .= "<b>NFO:</b> <a href=\"http://nzbmatrix.com/viewnfo.php?id=$id\">View NFO</a>";
-        return $html;
-    }
 
 }
 ?>

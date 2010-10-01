@@ -74,6 +74,11 @@ abstract class Tv_Info {
         return $this->_httpCode;
     }
 
+    public function getInfo() {
+        if (!is_null($this->_ch))
+        return curl_getinfo($this->_ch);
+    }
+
     public function getContent() {
         if (!is_null($this->_content)) {
             return $this->_content;
