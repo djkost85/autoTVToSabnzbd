@@ -40,9 +40,10 @@
             <li><?php echo HTML::anchor('renamer/folder/?path=' . urldecode($dir), $dir)?></li>
         <?php } ?>
         </ul>
+        <?php } else if (isset($folder)) { ?>
+
         <?php } ?>
     </p>
-            <div class="clearer"></div>
         </div>
         <!-- main ends -->
     </div>

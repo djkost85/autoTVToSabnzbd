@@ -88,6 +88,9 @@ return array(
     'Config movies' => 'Konfigurera filmer',
     'Top 10 list genre' => 'Top 10 lista genre',
     'New list genre' => 'Nya film listan genre',
+    'No youtube link' => 'Inte en youtube länk',
+    'Rename series folder' => 'Döp om serie katalåg',
+    'Rename series' => 'Döp om serier',
 
     'slow-page' => 'Ja ja sida <b>är</b> slö jag vet!!! Men lungn bara, den är bara det när den laddar ner bilder. <br />Vilket den bara gör första gången du besöker just den här sidan',
     'add-slow-page' => 'Jag laddar ner bilder just nu, därför är jag lite seg',

@@ -22,7 +22,9 @@
                 <?php echo HTML::anchor('', HTML::image("images/black/banner/fringe.jpg", array('alt' => 'Top Banner')), array('title' => 'Top Banner', 'class' => 'adhere'));?>
             </div>
 
-            <h1><?php echo $title; ?></h1>
+            <h1 class="float-left"><?php echo $title; ?></h1>
+            <div class="float-right center-box"><?php echo HTML::anchor('renamer', __('Renamer'))?></div>
+            <div class="clearer"></div>
             <?php if (empty($series)) { ?>
                 <h1 class="page-title"><?php echo $noSeries?></h1>
             <?php } ?>
@@ -78,7 +80,6 @@ foreach ($series as $ser) {
 <?php echo HTML::anchor('', HTML::image((isset($banner)) ? $banner : "images/black/banner/star-wars.jpg", array('alt' => 'Bottom Banner', 'class' => 'banner')));?>
 
 
-                    <div class="clearer"></div>
                 </div>
                 <!-- wrap ends -->
             </div>

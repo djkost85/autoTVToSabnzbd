@@ -31,7 +31,7 @@ defined('SYSPATH') or die('No direct script access.');
             ?>
 
         <li>
-            <?php echo HTML::anchor('movie/list/info/' . $movie->id, $movie->name)?>
+            <?php echo HTML::anchor('movie/list/info/' . $movie->id, $movie->name)?> <br />
             <?php echo HTML::image($file); ?>
             <span class="icon type matrix-cat" id="<?php echo $movie->id;?>" title="<?php echo NzbMatrix::cat2string($movie->matrix_cat)?>"></span>
             <span class="icon edit" title="<?php echo $edit?>"><?php echo HTML::anchor("movie/add/edit/$movie->id", $edit)?></span>

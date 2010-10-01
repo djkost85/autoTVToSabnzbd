@@ -15,7 +15,7 @@ class NzbMatrix extends Tv_Info {
 
     public function search($search, $catId = "6") {
         $query = array(
-                'search' => $search,
+                'search' => self::escapeSearch($search),
                 'catid' => $catId,
                 'num' => '15',
                 'age' => '',
@@ -35,6 +35,11 @@ class NzbMatrix extends Tv_Info {
 
         $this->searchResult = $this->parseResult($result);
         return $this->searchResult;
+    }
+
+    static public function escapeSearch($search) {
+        $search = preg_replace('#\s[a-z]\s#i', ' ', $search);
+        return $search;
     }
 
     protected function parseResult($result) {

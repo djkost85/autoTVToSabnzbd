@@ -45,7 +45,6 @@
                 <?php
                 echo $content;
                 ?>
-                <div class="clearer"></div>
             </div>
             <!-- wrap ends -->
         </div>

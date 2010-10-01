@@ -57,7 +57,6 @@
             <input class="button" type="submit" value="<?php echo __('Save')?>" />
         </p>
     </form>
-            <div class="clearer"></div>
         </div>
         <!-- main ends -->
     </div>

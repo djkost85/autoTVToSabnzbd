@@ -69,4 +69,7 @@ if (isset($result['downloaded'])) {
     </li>
 <?php } ?>
 </ul>
+            <div class="clearer"></div>
+        </div>
+    </div>
 

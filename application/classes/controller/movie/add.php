@@ -285,6 +285,29 @@ class Controller_Movie_Add extends Controller_Movie_Page {
         $this->request->redirect('movie/list/info/' . $movie->id);
     }
 
+    public function action_trailer($id) {
+        if (!is_numeric($id)) {
+            MsgFlash::set("Id is not a number!", true);
+            $this->request->redirect('movie/list');
+        }
+        
+        $this->auto_render = false;
+
+        $youtubeLink = trim($_GET['trailer']);
+
+        if (preg_match('#(http://www.youtube.com)?/(v/([-|~_0-9A-Za-z]+)|watch\?v\=([-|~_0-9A-Za-z]+)&?.*?)#i', $youtubeLink, $match)) {
+            $movie = ORM::factory('movie', $id);
+//            var_dump($movie);
+            $movie->trailer = $youtubeLink;
+            $movie->save();
+            MsgFlash::set($movie->name . ' ' . __('is updated'));
+            $this->request->redirect('movie/list/info/' . $id);
+        }
+        
+        MsgFlash::set(__('No youtube link'), TRUE);
+        $this->request->redirect('movie/list/info/' . $id);
+    }
+
     public function action_ajax_setMatrix($id) {
         $this->auto_render = false;
         $movie = ORM::factory('movie', $id);

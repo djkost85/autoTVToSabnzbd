@@ -65,7 +65,7 @@ div.update-wrapper ul {
         </form>
         <p>Vissa webläsare sätter .htm eller liknande som filändelse. Du måste ta bort det för att det ska fungera</p>
     </div>
-<div class="clearer"></div>
+        </div>
                     </div>
                     <!-- main ends -->
                 </div>

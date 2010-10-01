@@ -56,7 +56,7 @@
             <input class="button" type="submit" value="<?php echo __('update')?>" />
         </p>
     </form>
-        <div class="clearer"></div>
+                </div>
                     </div>
                     <!-- main ends -->
                 </div>

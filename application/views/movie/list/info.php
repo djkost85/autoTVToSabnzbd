@@ -30,6 +30,18 @@ foreach (unserialize($movie->posters) as $image) {
         <br />
         (<?php echo $movie->rating . '/' . $movie->votes?>)
 </div>
+
+<?php if (is_null($movie->trailer)) { ?>
+<form action="<?php echo URL::site('movie/add/trailer/' . $movie->id)?>" method="get">
+    <p>
+        <label for="trailer">Add a youtube trailer</label>
+        <input type="text" id="trailer" name="trailer" />
+    </p>
+    <p>
+        <input type="submit" value="<?php echo __('Save')?>" />
+    </p>
+</form>
+<?php } else { ?>
 <div id="player" class="info-box"></div>
 
 <script type="text/javascript">
@@ -41,3 +53,4 @@ $('#player').youTubeEmbed({
 });
 
 </script>
+<?php } ?>

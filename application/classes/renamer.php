@@ -22,8 +22,8 @@ class Renamer {
             $this->_deleteUnnecessaryFiles = $options['deleteUnnecessaryFiles'];
         }
         
-        if (isset($options['deleteUnnecessaryFiles'])) {
-            $this->setMinSize($options['deleteUnnecessaryFiles']);
+        if (isset($options['minimalFileSize'])) {
+            $this->setMinSize($options['minimalFileSize']);
         }
     }
 

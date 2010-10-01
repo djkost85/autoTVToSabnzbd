@@ -5,18 +5,24 @@ class Controller_Renamer extends Controller_Page {
     
     public function action_index() {
         $view = View::factory('renamer/index');
-        $view->set('title', 'Rename Series');
+        $this->template->title = __('Rename series folder');
+        $view->set('title', 'Rename series');
         if (is_dir(@$_GET['path'])) {
             $file = new ListFile($_GET['path']);
             $dirs = array();
             foreach ($file as $name => $obj) {
                 if ($obj->isDir()) {
                     $dirs[] = $obj->getPath().DIRECTORY_SEPARATOR.$obj->getFilename();
-                }
+                } 
+            }
+
+            if (empty($dirs)) {
+                $dirs[] = $_GET['path'];
             }
 
             $view->set('directorys', $dirs);
         }
+        
         $this->template->content = $view;
     }
 
