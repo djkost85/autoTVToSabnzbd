@@ -15,15 +15,18 @@ class Controller_Images extends Controller {
         $image = Image::factory("images/$dir/$name");
         if (!is_null($size)) {
             $image->resize(NULL, $size, Image::INVERSE);
+//            $image->reflection(50, 100, TRUE);
         }
 
-        //$this->request->headers['Content-Type'] = 'image/jpeg';
         $this->request->headers['Content-Type'] = $image->mime;
-        //$this->request->headers['Content-length'] = filesize($file);
 
-        //$this->request->send_headers();
+        $content = $image->render(null, 80);
+        $this->request->headers['Content-length'] = strlen($content);
 
-        echo $image->render(null, 80);
+        
+        $this->request->send_headers();
+
+        echo $content;
         exit;
     }
 
@@ -42,6 +45,9 @@ class Controller_Images extends Controller {
         if ( ! is_file($file)) {
             throw new Kohana_Exception('Image does not exist');
         }
+
+        $ext = pathinfo($file, PATHINFO_EXTENSION);
+        $this->request->headers['Content-Type'] = File::mime_by_ext($ext);
 
         $this->request->headers['Content-length'] = filesize($file);
 
