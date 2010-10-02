@@ -34,7 +34,7 @@
 <ul class="thumbnail">
 <?php
 
-$i = (isset($_GET['page']) && $_GET['page'] > 2) ? 100: 1;
+$i = (isset($_GET['page']) && $_GET['page'] > 2) ? 50: 1;
 $useNzbSite = Kohana::config('default.default.useNzbSite');
 foreach ($series as $ser) {
     if ($ser->poster == "") {
@@ -48,10 +48,11 @@ foreach ($series as $ser) {
     $searchName = Helper_Search::escapeSeriesName($ser->series_name);
 //    $searchName = sprintf("%s S%02dE%02d", $ser->series_name, $ser->season, $ser->episode);
 //    if ($useNzbSite == 'nzbs') $searchName = str_replace (' ', '.', $searchName);
-    if ($i <= 10 && $rss->inFeed($searchName)) {
+    if ($i <= 49 && $rss->inFeed($searchName)) {
         $i++;
         $paperClip = "<p></p><em>".__('In RSS')."</em>";
     }
+
     ?>
             <li>
                 <?php echo HTML::anchor("episodes/$ser->series_id", $ser->series_name)?><br />

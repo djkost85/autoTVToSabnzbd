@@ -86,7 +86,7 @@ class Renamer {
                 if (!is_dir($directory) && !mkdir($directory, 0777, TRUE)) {
                     throw new RuntimeException("Failed to create directory : $directory");
                 }
-                var_dump($directory);
+//                var_dump($directory);
                 chmod($directory, 0777);
             }
 

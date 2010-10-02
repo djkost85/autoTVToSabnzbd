@@ -18,7 +18,7 @@ class Controller_Download extends Controller_Page {
         
         $ep = ORM::factory('episode', array('id' => $id));
         $series = $ep->getSeriesInfo();
-        $search = sprintf('%s S%02dE%02d', $series->series_name, $ep->season, $ep->episode);
+        $search = sprintf('%s S%02dE%02d', Helper_Search::escapeSeriesName($series->series_name), $ep->season, $ep->episode);
 
         $config = Kohana::config('default');
         if ($config->default['useNzbSite'] == 'nzbs') {
@@ -58,7 +58,7 @@ class Controller_Download extends Controller_Page {
                     if ($config->default['useNzbSite'] == 'both') {
                         $nzbs = new Nzbs($config->nzbs);
 
-                        $searchAlt = sprintf('%s %02dx%02d', $series->series_name, $ep->season, $ep->episode);
+                        $searchAlt = sprintf('%s %02dx%02d', Helper_Search::escapeSeriesName($series->series_name), $ep->season, $ep->episode);
                         $xml = $nzbs->search($searchAlt, Nzbs::matrixNum2Nzbs($series->matrix_cat));
                         if (!$this->handleNZBsResults($xml, $search, $ep, $series)) {
                             MsgFlash::set("Nothing found \"$search\"");
@@ -99,7 +99,7 @@ class Controller_Download extends Controller_Page {
             if (
                     sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
                     sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
-                    strtolower($parsed['name']) == strtolower($series->series_name)
+                    strtolower(Helper_Search::escapeSeriesName($parsed['name'])) == strtolower(Helper_Search::escapeSeriesName($series->series_name))
             ) {
 
                 if (NzbMatrix::catStr2num($result['category']) != $series->matrix_cat) {
@@ -156,7 +156,7 @@ class Controller_Download extends Controller_Page {
 
                 if (sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
                     sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
-                    strtolower($parsed['name']) == strtolower($series->series_name) &&
+                    strtolower(Helper_Search::escapeSeriesName($parsed['name'])) == strtolower(Helper_Search::escapeSeriesName($series->series_name)) &&
                     $series->matrix_cat == Nzbs::cat2MatrixNum((string) $item->category)) {
 
                     $sab->sendNzb((string) $item->link, (string) $item->title);
@@ -300,7 +300,7 @@ class Controller_Download extends Controller_Page {
             foreach ($downloadSeriesArr as $id) {
                 $ep = ORM::factory('episode', array('id' => $id));
                 $series = $ep->getSeriesInfo();
-                $search = sprintf('%s S%02dE%02d', $series->series_name, $ep->season, $ep->episode);
+                $search = sprintf('%s S%02dE%02d', Helper_Search::escapeSeriesName($series->series_name), $ep->season, $ep->episode);
 
                 if ($config->default['useNzbSite'] == 'nzbs') {
                     $nzbs = new Nzbs($config->nzbs);
@@ -346,7 +346,7 @@ class Controller_Download extends Controller_Page {
                             if (
                                     sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
                                     sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
-                                    strtolower($parsed['name']) == strtolower($series->series_name) &&
+                                    strtolower(Helper_Search::escapeSeriesName($parsed['name'])) == strtolower(Helper_Search::escapeSeriesName($series->series_name)) &&
                                     NzbMatrix::catStr2num($result['category']) == $series->matrix_cat //&&
                                     //!$isDownload
                             ) {

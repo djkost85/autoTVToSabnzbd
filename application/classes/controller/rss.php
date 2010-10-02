@@ -54,8 +54,14 @@ class Controller_Rss extends Controller {
             if ($ep->season > 0) {
                 $search = sprintf('%s S%02dE%02d', Helper_Search::escapeSeriesName($ep->series_name), $ep->season, $ep->episode);
 
+
+
+
 //                echo '****** NEW *******';
 //                var_dump($search);
+
+
+
 
                 if (!$rss->alreadySaved($search)) {
                     if ($config->default['useNzbSite'] == 'both') {
@@ -69,8 +75,14 @@ class Controller_Rss extends Controller {
                     $result = $matrix->search($search, $ep->matrix_cat);
 
                     if (isset($result[0]['error']) or is_numeric($result)) {
+
+
+
 //                        echo '****** ERROR *******';
 //                        var_dump($result);
+
+
+
                         if (is_numeric($result)) {
                             $msg = Helper::getHttpCodeMessage($result);
                             if ($config->default['useNzbSite'] == 'nzbMatrix') {
@@ -99,10 +111,16 @@ class Controller_Rss extends Controller {
                     }
 
                     $this->handleResult($search, $result, $ep);
-                    
+
+
+
+
 //                    echo '******* Result *******';
 //                    var_dump($result);
-                    
+
+
+
+
                     sleep(3);
                 }
             }
@@ -133,7 +151,7 @@ class Controller_Rss extends Controller {
 
             if (sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
                 sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
-                strtolower($parsed['name']) == strtolower($seriesName) &&
+                Helper_Search::escapeSeriesName(strtolower($parsed['name'])) == strtolower($seriesName) &&
                 $ep->matrix_cat == NzbMatrix::catStr2num($res['category'])) {
                 if (!$rss->alreadySaved($search)) {
                     $rss->title = $search;

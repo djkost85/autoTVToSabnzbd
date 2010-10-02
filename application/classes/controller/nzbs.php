@@ -98,7 +98,7 @@ class Controller_Nzbs extends Controller {
 
             if (sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
                 sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
-                strtolower($parsed['name']) == strtolower($seriesName) &&
+                Helper_Search::escapeSeriesName(strtolower($parsed['name'])) == strtolower($seriesName) &&
                 $ep->matrix_cat == Nzbs::cat2MatrixNum((string) $item->category) &&
                 !$rss->alreadySaved((string) $item->title)) {
                 

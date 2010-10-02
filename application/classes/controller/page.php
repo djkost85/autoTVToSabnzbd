@@ -92,6 +92,10 @@ class Controller_Page extends Controller_Template {
 
 
         if ($this->_auto_update) {
+            if ($this->auto_render) {
+                header('Refresh: 300; url=' . URL::site(Request::instance()->uri()));
+            }
+
             $config = Kohana::config('default');
             $session = Session::instance();
 
