@@ -8,6 +8,12 @@ class Controller_Renamer extends Controller_Page {
         $this->template->title = __('Rename series folder');
         $view->set('title', 'Rename series');
         if (is_dir(@$_GET['path'])) {
+            if (isset($_GET['rename_files'])) {
+                //Request::factory('renamer/folder/filesOnly/' . URL::query())->execute()->response;
+                $this->action_folder('filesOnly');
+                return;
+            }
+
             $file = new ListFile($_GET['path']);
             $dirs = array();
             foreach ($file as $name => $obj) {
@@ -18,6 +24,8 @@ class Controller_Renamer extends Controller_Page {
 
             if (empty($dirs)) {
                 $dirs[] = $_GET['path'];
+                $this->request->redirect('renamer/folder/' . URL::query());
+                return;
             }
 
             $view->set('directorys', $dirs);
@@ -26,7 +34,7 @@ class Controller_Renamer extends Controller_Page {
         $this->template->content = $view;
     }
 
-    public function action_folder() {
+    public function action_folder($filesOnly = false) {
         $this->auto_render = false;
         if (!is_dir($_GET['path'])) {
             throw new RuntimeException('No directory', 404);
@@ -39,7 +47,9 @@ class Controller_Renamer extends Controller_Page {
 
         try {
             $r = new Renamer($config);
-            $r->rename($_GET['path']);
+            $r->rename($_GET['path'], $filesOnly);
+
+            MsgFlash::set('The path: ' . $_GET['path'] . ' is renamed');
         } catch (RuntimeException $e) {
             $text = Kohana::exception_text($e);
             Kohana::$log->add(Kohana::ERROR, $text);

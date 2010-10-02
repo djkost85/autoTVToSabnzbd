@@ -1,1 +1,1 @@
-a:1:{s:7:"renamer";a:4:{s:10:"pathString";s:55:":name/Season :season/:name - :ep_string - :ep_name.:ext";s:16:"deleteSmallFiles";b:0;s:15:"minimalFileSize";s:2:"30";s:22:"deleteUnnecessaryFiles";b:0;}}
+a:1:{s:7:"renamer";a:5:{s:10:"pathString";s:55:":name/Season :season/:name - :ep_string - :ep_name.:ext";s:16:"deleteSmallFiles";b:0;s:15:"minimalFileSize";s:2:"30";s:22:"deleteUnnecessaryFiles";b:0;s:9:"deleteExt";s:28:"sub, srt, idx, ssa, ass, nfo";}}

@@ -25,6 +25,14 @@ class Renamer {
         if (isset($options['minimalFileSize'])) {
             $this->setMinSize($options['minimalFileSize']);
         }
+
+        if (isset($options['deleteExt'])) {
+            $this->setDeleteExt($options['deleteExt']);
+        }
+    }
+
+    public function setDeleteExt($ext) {
+        $this->_deleteExt = preg_split("/[\s,\.]+/", $ext);
     }
 
     public function setMinSize($int) {
@@ -46,7 +54,7 @@ class Renamer {
         $this->_pathString = $str;
     }
 
-    public function rename($path) {
+    public function rename($path, $onlyFiles = false) {
         $objects = new ListFile($path);
         foreach($objects as $obj) {
             $name = $obj->getPath().DIRECTORY_SEPARATOR.$obj->getFilename();
@@ -71,11 +79,16 @@ class Renamer {
 //            var_dump($newFilename);
 //            exit;
 
-            $directory = dirname($newFilename);
-            if (!is_dir($directory) && !mkdir($directory, 0777, TRUE)) {
-                throw new RuntimeException("Failed to create directory : $directory");
+            if ($onlyFiles) {
+                $newFilename = dirname($name) . DIRECTORY_SEPARATOR . basename($newFilename);
+            } else {
+                $directory = dirname($newFilename);
+                if (!is_dir($directory) && !mkdir($directory, 0777, TRUE)) {
+                    throw new RuntimeException("Failed to create directory : $directory");
+                }
+                var_dump($directory);
+                chmod($directory, 0777);
             }
-            chmod($directory, 0777);
 
             if (!rename($name, $newFilename)) {
                 throw new RuntimeException("FAILED, Could not rename $name to  $newFilename. Check Permissions");
@@ -85,8 +98,10 @@ class Renamer {
 //        if (!rmdir($objects->getPath())) {
 //            throw new RuntimeException("Failed to remove directory : " . dirname($objects->getPath()));
 //        }
-        if (!Helper_Path::delete_dir_recursive($objects->getPath())) {
-            throw new RuntimeException("Failed to remove directory : " . dirname($objects->getPath()));
+        if (!$onlyFiles && dirname($newFilename) != $objects->getPath()) {
+            if (!Helper_Path::delete_dir_recursive($objects->getPath())) {
+                throw new RuntimeException("Failed to remove directory : " . dirname($objects->getPath()));
+            }
         }
     }
 
@@ -100,6 +115,7 @@ class Renamer {
         }
 
         $p['name'] = str_replace('.', ' ', $p['name']);
+        $p['name'] = rtrim($p['name'], '- ');
         $pre = $p;
 
 //        var_dump($p);

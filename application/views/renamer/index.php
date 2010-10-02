@@ -28,6 +28,12 @@
             <input type="text" name="path" id="path" />
         </p>
 
+        <p>
+            <label for="rename_movie_file"><?php echo __('Rename files only')?>:</label>
+            <input class="radio-button" id="rename_movie_file" type="checkbox" name="rename_files" />
+            <em>Tick if you do not want to move files</em>
+        </p>
+
         <p class="submit">
             <input class="button" type="submit" value="<?php echo __('Rename')?>" />
         </p>
