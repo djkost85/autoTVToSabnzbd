@@ -52,7 +52,7 @@ class Controller_Rss extends Controller {
                 break;
             }
             if ($ep->season > 0) {
-                $search = sprintf('%s S%02dE%02d', Helper_Search::escapeSeriesName($ep->series_name), $ep->season, $ep->episode);
+                $search = Helper_Search::searchName(Helper_Search::escapeSeriesName($ep->series_name), $ep->season, $ep->episode);
 
 
 
@@ -154,7 +154,7 @@ class Controller_Rss extends Controller {
                 Helper_Search::escapeSeriesName(strtolower($parsed['name'])) == strtolower($seriesName) &&
                 $ep->matrix_cat == NzbMatrix::catStr2num($res['category'])) {
                 if (!$rss->alreadySaved($search)) {
-                    $rss->title = $search;
+                    $rss->title = sprintf("%s S%02dE%02d", $ep->series_name, $ep->season, $ep->episode);
                     $rss->guid = 'http://nzbmatrix.com/' . $res['link'];
                     $rss->link = 'http://nzbmatrix.com/' . $res['link'];
                     $rss->description = $this->description($res['nzbid'], $res['nzbname'], $res['category'], $res['size'], $res['index_date'], $res['group']);

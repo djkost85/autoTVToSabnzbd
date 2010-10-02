@@ -103,7 +103,7 @@ class Controller_Nzbs extends Controller {
                 !$rss->alreadySaved((string) $item->title)) {
                 
                 //$rss->title = (string) $item->title;
-                $rss->title = $search;
+                $rss->title = sprintf("%s S%02dE%02d", $ep->series_name, $ep->season, $ep->episode);
                 $rss->guid = (string) $item->link;
                 $rss->link = (string) $item->link;
                 $rss->description = (string) $item->description;
