@@ -81,12 +81,29 @@ class Controller_Nzbs extends Controller {
         if ($this->handleResults($search, $xml, $std)) {
             $this->request->response = 'true';
         } else {
-            $this->request->response = 'false';
+//            $this->request->response = 'false';
+            sleep(2);
+            $search = sprintf('%s %02dx%02d', Helper_Search::escapeSeriesName($series->series_name), $ep->season, $ep->episode);
+            $xml = $nzbs->search($search, Nzbs::matrixNum2Nzbs($series->matrix_cat));
+            if ($this->handleResults($search, $xml, $std)) {
+                $this->request->response = 'true';
+            } else {
+                sleep(2);
+                $name = preg_replace('/[0-9]/', '', Helper_Search::escapeSeriesName($series->series_name));
+                $name = rtrim($name);
+                $search = sprintf('%s %dx%02d', $name, $ep->season, $ep->episode);
+                $xml = $nzbs->search($search, Nzbs::matrixNum2Nzbs($series->matrix_cat));
+                if ($this->handleResults($search, $xml, $std, true)) {
+                    $this->request->response = 'true';
+                } else {
+                    $this->request->response = 'false';
+                }
+            }
         }
         sleep(3);
     }
 
-    protected function handleResults($search, $xml, $ep) {
+    protected function handleResults($search, $xml, $ep, $escapeNum = false) {
         foreach($xml->channel->item as $item) {
             $rss = ORM::factory('rss');
             $parse = new NameParser((string) $item->title);
@@ -95,6 +112,11 @@ class Controller_Nzbs extends Controller {
             $parsed['name'] = str_replace('.', ' ', $parsed['name']);
 
             $seriesName = Helper_Search::escapeSeriesName($ep->series_name);
+
+            if ($escapeNum) {
+                $seriesName = preg_replace('/[0-9]/', '', $seriesName);
+                $seriesName = rtrim($seriesName);
+            }
 
             if (sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
                 sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
@@ -115,9 +137,9 @@ class Controller_Nzbs extends Controller {
                             'type' => (string) "text/xml"
                     ));
 
-                $rss->save();
+                if ($rss->save())
                 return true;
-            }
+            } 
         }
         return false;
     }

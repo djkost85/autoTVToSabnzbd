@@ -4,11 +4,13 @@
 class Renamer {
 
     protected $_movieExt = array('mkv', 'wmv', 'avi', 'mpg', 'mpeg', 'mp4', 'm2ts', 'iso');
-    protected $_nfoExt = array('*.nfo');
+    protected $_nfoExt = array('nfo');
     protected $_videoCodecs = array('x264', 'DivX', 'XViD');
     protected $_deleteExt = array('sub', 'srt', 'idx', 'ssa', 'ass');
 
     protected $_minimalFileSize = 31457280; # 1024 * 1024 * 30 = 30MB
+    
+    protected $_renameLargerFiles = 31457280; # 1024 * 1024 * 30 = 30MB
 
     protected $_pathString;
     protected $_deleteSmallFiles = false;
@@ -32,7 +34,9 @@ class Renamer {
     }
 
     public function setDeleteExt($ext) {
-        $this->_deleteExt = preg_split("/[\s,\.]+/", $ext);
+        if (!empty($ext)) {
+            $this->_deleteExt = preg_split("/[\s,\.]+/", $ext, -1, PREG_SPLIT_NO_EMPTY);
+        }
     }
 
     public function setMinSize($int) {
@@ -106,7 +110,6 @@ class Renamer {
     }
 
     protected function setFilename($name, SplFileInfo $obj) {
-        $filename = dirname($obj->getPath());
         $parser = new NameParser(basename($name));
         $p = $parser->parse();
 
@@ -134,6 +137,10 @@ class Renamer {
 
         $filename .= '/' . str_replace($search, array_values($pre), $this->_pathString);
         $filename = str_replace(array('//', '\/'), array('/', '\\'), $filename);
+
+        if (!in_array($pre['ext'], $this->_movieExt) || $this->_renameLargerFiles > $obj->getSize()) {
+            $filename = dirname($filename) . DIRECTORY_SEPARATOR . $obj->getFilename();
+        }
 
         return Helper_Path::safeFilename($filename);
     }

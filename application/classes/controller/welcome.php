@@ -8,9 +8,21 @@ class Controller_Welcome extends Controller_Page {
 //        $result = $matrix->search(Helper_Search::escapeSeriesName(sprintf('%s S%02dE%02d', ORM::factory('series')->where('id', '=', 29)->find()->series_name, 3, 3)), 6);
 //
 //        var_dump($result);
-//
-//        $search = Helper_Search::escapeSeriesName(sprintf('%s S%02dE%02d', ORM::factory('series')->where('id', '=', 29)->find()->series_name, 3, 3));
+
+
+//        $search = Helper_Search::escapeSeriesName(sprintf('%s %dx%02d', preg_replace('/[0-9]/', '', ORM::factory('series')->where('id', '=', 29)->find()->series_name), 3, 3));
+//        $search = str_replace('  ', ' ', $search);
 //        var_dump($search);
+//        $config = Kohana::config('default');
+//        $matrix = new NzbMatrix_Rss($config->default);
+//        $result = $matrix->search($search, 6);
+//        var_dump($result);
+//
+//        $nzbs = new Nzbs($config->nzbs);
+//        $xml = $nzbs->search($search, Nzbs::matrixNum2Nzbs(6));
+//        var_dump($xml);
+
+
 
         try {
             $count = ORM::factory('series')->count_all();

@@ -95,8 +95,28 @@ class Controller_Rss extends Controller {
                         } else if ('nothing_found' == $result[0]['error']) {
                             $search = sprintf('%s %02dx%02d', Helper_Search::escapeSeriesName($ep->series_name), $ep->season, $ep->episode);
                             $result = $matrix->search($search, $ep->matrix_cat);
+
+
+//                            var_dump($search);
+//                            var_dump($result);
+
+
                             if (isset($result[0]['error']) && 'nothing_found' == $result[0]['error']) {
-                                continue;
+                                $name = preg_replace('/[0-9]/', '', Helper_Search::escapeSeriesName($ep->series_name));
+                                $name = rtrim($name);
+                                $search = sprintf('%s %dx%02d', $name, $ep->season, $ep->episode);
+                                unset ($name);
+                                $result = $matrix->search($search, $ep->matrix_cat);
+
+//                                var_dump($search);
+//                                var_dump($result);
+//                                exit;
+                                if (isset($result[0]['error']) && 'nothing_found' == $result[0]['error']) {
+                                    continue;
+                                } else {
+                                    $this->handleResult($search, $result, $ep, true);
+                                    continue;
+                                }
                             }
                         } else {
                             $this->request->response .= __($result[0]['error']);
@@ -135,7 +155,7 @@ class Controller_Rss extends Controller {
         $this->request->response .= __('Updated');
     }
     
-    protected function handleResult($search, $result, $ep) {
+    protected function handleResult($search, $result, $ep, $escapeNum = false) {
         foreach ($result as $res) {
             $rss = ORM::factory('rss');
 
@@ -148,6 +168,11 @@ class Controller_Rss extends Controller {
             $parsed = $parse->parse();
 
             $seriesName = Helper_Search::escapeSeriesName($ep->series_name);
+
+            if ($escapeNum) {
+                $seriesName = preg_replace('/[0-9]/', '', $seriesName);
+                $seriesName = rtrim($seriesName);
+            }
 
             if (sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
                 sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
