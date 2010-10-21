@@ -93,6 +93,7 @@ class Controller_Rss extends Controller {
                             $msg = sprintf(__('please_wait_x'), $matches['num']);
                             sleep($matches['num']);
                         } else if ('nothing_found' == $result[0]['error']) {
+                            sleep(1);
                             $search = sprintf('%s %02dx%02d', Helper_Search::escapeSeriesName($ep->series_name), $ep->season, $ep->episode);
                             $result = $matrix->search($search, $ep->matrix_cat);
 
@@ -106,12 +107,17 @@ class Controller_Rss extends Controller {
                                 $name = rtrim($name);
                                 $search = sprintf('%s %dx%02d', $name, $ep->season, $ep->episode);
                                 unset ($name);
+
+                                sleep(1);
                                 $result = $matrix->search($search, $ep->matrix_cat);
 
 //                                var_dump($search);
 //                                var_dump($result);
 //                                exit;
+
+                                
                                 if (isset($result[0]['error']) && 'nothing_found' == $result[0]['error']) {
+                                    Request::factory('nzbindex/fillOneRss/' . $ep->episode_id)->execute()->response;
                                     continue;
                                 } else {
                                     $this->handleResult($search, $result, $ep, true);

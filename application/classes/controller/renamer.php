@@ -23,7 +23,7 @@ class Controller_Renamer extends Controller_Page {
             }
 
             if (empty($dirs)) {
-                $dirs[] = $_GET['path'];
+//                $dirs[] = $_GET['path'];
                 $this->request->redirect('renamer/folder/' . URL::query());
                 return;
             }

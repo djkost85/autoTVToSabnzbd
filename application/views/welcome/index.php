@@ -19,7 +19,8 @@
     <div id="main">
         <div class="inner">
             <div class="top-banner">
-                <?php echo HTML::anchor('', HTML::image("images/black/banner/fringe.jpg", array('alt' => 'Top Banner')), array('title' => 'Top Banner', 'class' => 'adhere'));?>
+                <a href="<?php echo URL::site()?>"><div></div></a>
+                <?php //echo HTML::anchor('', HTML::image("images/black/banner/fringe.jpg", array('alt' => 'Top Banner')), array('title' => 'Top Banner', 'class' => 'adhere')); ?>
             </div>
 
             <h1 class="float-left"><?php echo $title; ?></h1>

@@ -70,6 +70,29 @@ class Controller_Nzbindex extends Controller {
         $this->request->response = __('Updated');
     }
 
+    public function action_fillOneRss($id) {
+        set_time_limit(0);
+        $rss = ORM::factory('rss');
+
+        $ep = ORM::factory('episode', array('id' => $id));
+        $series = $ep->getSeriesInfo();
+
+        $search = Helper_Search::searchName(Helper_Search::escapeSeriesName($series->series_name), $ep->season, $ep->episode);
+
+        $nzb = new Nzbindex();
+        if (!$rss->alreadySaved($search)) {
+            $xml = $nzb->search($search);
+
+            $std = new stdClass();
+            $std->season = $ep->season;
+            $std->episode = $ep->episode;
+            $std->series_name = $series->series_name;
+            $std->matrix_cat = $series->matrix_cat;
+
+            $this->handleResults($search, $xml, $std);
+        }
+    }
+
     protected function handleResults($search, $xml, $ep) {
         foreach($xml->channel->item as $item) {
             $rss = ORM::factory('rss');
@@ -79,8 +102,7 @@ class Controller_Nzbindex extends Controller {
             if (sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
                 sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
                 strtolower($parsed['name']) == strtolower($ep->series_name) &&
-                $ep->matrix_cat == NzbMatrix::determinCat((string) $item->title) &&
-                !$rss->alreadySaved($search)) {
+                $ep->matrix_cat == NzbMatrix::determinCat((string) $item->title)) {
 
                 $category = NzbMatrix::cat2string(NzbMatrix::determinCat((string) $item->title));
                 $rss->title = $search;
@@ -95,47 +117,49 @@ class Controller_Nzbindex extends Controller {
                             'type' => (string) $item->enclosure['type'])
                         );
 
-                $rss->save();
-                return;
+                if ($rss->save())
+                    return true;
             }
         }
 
-        foreach ($xml->channel->item as $item) {
-            $rss = ORM::factory('rss');
-            $parse = new NameParser_Nzbindex((string) $item->title);
-            $parsed = $parse->parse();
+        return false;
 
-//            echo "******* Parsd name ******** <br />";
-//            var_dump($parsed);
-//            echo "******* Title ********* <br />";
-//            var_dump((string) $item->title);
-
-            if (sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
-                sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
-                strtolower($parsed['name']) == strtolower($ep->series_name)) {
-                if (!$rss->alreadySaved($search)) {
-                    $category = (string) $item->category;
-
-//                    echo "******* Saving Result ******** <br />";
-//                    var_dump($item);
-
-                    $rss->title = $search;
-                    $rss->guid = (string) $item->link;
-                    $rss->link = (string) $item->link;
-                    $rss->description = (string) $item->description;
-                    $rss->category = $category;
-                    $rss->pubDate = (string) $item->pubDate;
-                    $rss->enclosure = serialize(array(
-                                'url' => (string) $item->enclosure['url'],
-                                'length' => round((int) $item->enclosure['length']),
-                                'type' => (string) $item->enclosure['type'])
-                            );
-
-                    $rss->save();
-                    return;
-                }
-            }
-        }
+//        foreach ($xml->channel->item as $item) {
+//            $rss = ORM::factory('rss');
+//            $parse = new NameParser_Nzbindex((string) $item->title);
+//            $parsed = $parse->parse();
+//
+////            echo "******* Parsd name ******** <br />";
+////            var_dump($parsed);
+////            echo "******* Title ********* <br />";
+////            var_dump((string) $item->title);
+//
+//            if (sprintf('%02d', $parsed['season']) == sprintf('%02d', $ep->season) &&
+//                sprintf('%02d', $parsed['episode']) == sprintf('%02d', $ep->episode) &&
+//                strtolower($parsed['name']) == strtolower($ep->series_name)) {
+//                if (!$rss->alreadySaved($search)) {
+//                    $category = (string) $item->category;
+//
+////                    echo "******* Saving Result ******** <br />";
+////                    var_dump($item);
+//
+//                    $rss->title = $search;
+//                    $rss->guid = (string) $item->link;
+//                    $rss->link = (string) $item->link;
+//                    $rss->description = (string) $item->description;
+//                    $rss->category = $category;
+//                    $rss->pubDate = (string) $item->pubDate;
+//                    $rss->enclosure = serialize(array(
+//                                'url' => (string) $item->enclosure['url'],
+//                                'length' => round((int) $item->enclosure['length']),
+//                                'type' => (string) $item->enclosure['type'])
+//                            );
+//
+//                    $rss->save();
+//                    return;
+//                }
+//            }
+//        }
     }
 
 }

@@ -3,7 +3,7 @@
 class Helper_Search {
 
     public static function escapeSeriesName($search) {
-        $search = str_replace(array(':', ' -', '(', ')'), '', $search);
+        $search = str_replace(array(':', ' -', '(', ')', ' 2008'), '', $search);
         return preg_replace('#\s[a-z]\s#i', ' ', $search);
     }
 
