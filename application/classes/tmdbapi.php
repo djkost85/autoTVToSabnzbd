@@ -27,7 +27,7 @@ class TmdbApi extends Tv_Info {
         return $this->getJson($url);
     }
 
-    public function getInfo($id) {
+    public function getMovieInfo($id) {
         if (!is_numeric($id)) {
             throw new InvalidArgumentException('No id');
         }

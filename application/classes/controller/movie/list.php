@@ -137,7 +137,7 @@ class Controller_Movie_List extends Controller_Movie_Page {
         }
 //        else {
 //            $tmdb = new TmdbApi(Kohana::config('movie.tmdb'));
-//            $view->set('movieInfo', $tmdb->getInfo($movie->tmdb_id));
+//            $view->set('movieInfo', $tmdb->getMovieInfo($movie->tmdb_id));
 //        }
 
         $this->template->scripts['jquery.swfobject.1-1-1.min'] = 'js/jquery.swfobject.1-1-1.min.js';

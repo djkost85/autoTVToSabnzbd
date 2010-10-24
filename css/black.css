@@ -315,6 +315,8 @@ blockquote {
     list-style: none;
     margin: 0;
     padding: 0;
+    overflow: hidden;
+    _height: 1%;
 }
 
 .thumbnail img {
@@ -731,6 +733,10 @@ body#Controller_Config a#config_link {
 	float: right;
 }
 
+.float-right.center-box {
+    margin-right: 14px;
+}
+
 /* classes */
 .no-border { border: none; }
 .clearer { clear: both; }
@@ -902,6 +908,14 @@ div.top-banner a.adhere:hover{border:1px solid #999;background:#ddd;color:#333;}
 div.top-banner a.adhere{width:660px;height:80px;line-height:640%;}
 html>body div.top-banner a.adhere{width:658px;height:78px;}
 div.top-banner img.s{height:0;width:0;}
+
+div.top-banner div {
+    background: url(../images/black/banner/the-big-bang.jpg) no-repeat;
+    /*width: 758px;*/
+    width: 660px;
+    height: 140px;
+    margin: 10px 0 0 10px;
+}
 
 
 img.select-img, img.select-poster, img.select-fanart, img.select-banner {

@@ -111,7 +111,7 @@ class Controller_Movie_Add extends Controller_Movie_Page {
         }
 
         $tmdb = new TmdbApi(Kohana::config('movie.tmdb'));
-        $results = $tmdb->getInfo($result->id);
+        $results = $tmdb->getMovieInfo($result->id);
         $result = $results[0];
 
 //        var_dump($result);
@@ -241,7 +241,7 @@ class Controller_Movie_Add extends Controller_Movie_Page {
         $movie->find($id);
 
         $tmdb = new TmdbApi(Kohana::config('movie.tmdb'));
-        $results = $tmdb->getInfo($movie->tmdb_id);
+        $results = $tmdb->getMovieInfo($movie->tmdb_id);
         $result = $results[0];
 
         try {
