@@ -78,6 +78,7 @@ foreach ($episodes as $ep) {
                 <span class="icon update" title="<?php echo __('Update')?>"><?php echo HTML::anchor("episodes/update/$ep->ep_id" . URL::query(array('series_id' => $id)), __('Update'))?></span>
                 <span class="icon del" title="<?php echo __('Delete') ?>"><?php echo HTML::anchor("episodes/delete/$id/$ep->id", __('Delete'))?></span>
                 <span class="icon special"><?php echo HTML::anchor("download/episode/$ep->id", sprintf('S%02dE%02d', $ep->season, $ep->episode)); echo '<br />' . $ep->isDownloaded;?></span>
+                <div><?php echo HTML::anchor('download/subMatch/' . $ep->id, __('Subtitles')) ?></div>
                 <?php
                 if ($ep->posterMsg != "") {
                     echo $ep->posterMsg;

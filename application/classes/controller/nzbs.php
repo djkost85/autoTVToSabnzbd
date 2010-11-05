@@ -126,7 +126,8 @@ class Controller_Nzbs extends Controller {
                 
                 //$rss->title = (string) $item->title;
                 $rss->title = sprintf("%s S%02dE%02d", $ep->series_name, $ep->season, $ep->episode);
-                $rss->guid = (string) $item->link;
+//                $rss->guid = (string) $item->link;
+                $rss->guid = (string) $item->title;
                 $rss->link = (string) $item->link;
                 $rss->description = (string) $item->description;
                 $rss->category = $item->category;

@@ -42,7 +42,7 @@ class NzbFile {
         curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
         $rawdata = curl_exec($ch);
         if ($rawdata === false) {
-            throw new InvalidArgumentException('Error: No NZB File at: ' . $url . '. Msg: ' . curl_error($ch));
+            throw new InvalidArgumentException('Error: No file at: ' . $url . '. Msg: ' . curl_error($ch));
         }
         curl_close ($ch);
 

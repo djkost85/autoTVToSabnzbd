@@ -37,6 +37,7 @@
 
 $i = (isset($_GET['page']) && $_GET['page'] > 2) ? 50: 1;
 $useNzbSite = Kohana::config('default.default.useNzbSite');
+//var_dump($series);
 foreach ($series as $ser) {
     if ($ser->poster == "") {
         $poster = "images/black/noPoster.gif";
@@ -51,6 +52,13 @@ foreach ($series as $ser) {
     if ($i <= 49 && $rss->inFeed($searchName)) {
         $i++;
         $paperClip = "<p></p><em>".__('In RSS')."</em>";
+    }
+
+    $subText = "";
+//    var_dump(isset($subtitles[$ser->episode_id]));
+    if (isset($subtitles[$ser->episode_id])) {
+        $subText = '| ' . HTML::anchor('download/dlSub/' . $ser->episode_id, __('Subtitles'));
+//        var_dump($subText);
     }
 
     ?>
@@ -71,7 +79,7 @@ foreach ($series as $ser) {
                 HTML::anchor($ser->download_link, sprintf("S%02dE%02d",$ser->season, $ser->episode), array(
                     'id' => $ser->episode_id,
                     'class' => 'downloadable'
-                ));?></div>
+                ));?> <?php echo $subText?></div>
                 <div><?php echo __('Next') . ': ' . $ser->next_episode?></div>
             </li>
     

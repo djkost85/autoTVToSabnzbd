@@ -2,6 +2,40 @@
 
 class Controller_Welcome extends Controller_Page {
 
+    protected function setRssSubFile() {
+        $filename = APPPATH.'cache/' . md5('subtitles').'.sub';
+        $rss = ORM::factory('rss');
+        $series = ORM::factory('series');
+
+        $lang = Kohana::config('subtitles.lang');
+        $result = array();
+        foreach ($rss->find_all() as $row) {
+            var_dump($row->guid);
+            $sub = Subtitles::facory($row->guid, $lang);
+            var_dump($sub);
+            if (count($sub) > 0) {
+                if (is_array($sub)) {
+                    $sub = $sub[0];
+                }
+                $parse = new NameParser($row->title);
+                $parsed = $parse->parse();
+                var_dump($parsed);
+                $ser = $series->where('series_name', '=', $parsed['name'])->find()->episodes
+                        ->where('episode', '=', $parsed['episode'])
+                        ->and_where('season', '=', $parsed['season'])
+                        ->find();
+
+    //            $ser = $series->where('series_name', '=', str_replace('.', ' ', $parsed['name']))->find();
+                $result[$ser->id] = array('guid' => $row->guid, 'file' => $sub, 'title' => $row->title);
+            }
+        }
+
+        if (count($result) > 0) {
+            $data = serialize($result);
+            file_put_contents($filename, $data);
+        }
+    }
+
     public function action_index() {
 //        $config = Kohana::config('default');
 //        $matrix = new NzbMatrix_Rss($config->default);
@@ -24,6 +58,16 @@ class Controller_Welcome extends Controller_Page {
 
 
 
+//        var_dump(Subtitles::facory('Lost.S06E17.HDTV.XviD-NoTV', 8));
+
+//        $this->setRssSubFile();
+   
+
+//        $filename = APPPATH.'cache/' . md5('subtitles').'.sub';
+//        $subs = unserialize(file_get_contents($filename));
+//        var_dump($subs);
+
+
         try {
             $count = ORM::factory('series')->count_all();
         } catch (ErrorException $e) {
@@ -42,7 +86,7 @@ class Controller_Welcome extends Controller_Page {
         $pagination = Pagination::factory( array (
             'base_url' => "",
             'total_items' => $count,
-            'items_per_page' => 12 // default 10
+            'items_per_page' => Kohana::config('default.welcome.numrows'),
         ));
 
 
@@ -62,6 +106,12 @@ class Controller_Welcome extends Controller_Page {
             ->set('banner', Model_Series::getRandBanner())
             ->set('rss', ORM::factory('rss'))
             ->set('series', $series);
+
+
+        $filename = APPPATH.'cache/' . md5('subtitles').'.sub';
+        if (Kohana::config('subtitles.download') && is_file($filename)) {
+            $xhtml->set('subtitles', unserialize(file_get_contents($filename)));
+        }
 
         $this->template->content = $xhtml;
         

@@ -8,6 +8,9 @@ return array_merge_recursive(array(
         'saveImagesAsNew' => false,
         'cacheTimeImages' => 7776000, //90 days
     ),
+    'welcome' => array(
+        'numrows' => 12,
+    ),
     ),
     (is_readable($filename)) ? unserialize(file_get_contents($filename)) : array()
 );

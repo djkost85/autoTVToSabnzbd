@@ -43,7 +43,7 @@ abstract class Tv_Info {
         return ($this->_httpCode == 200) ? $this->_content : $this->_httpCode;
     }
 
-    protected function getXml($url, array $options = array()) {
+    public function getXml($url, array $options = array()) {
         $str = $this->send($url, $options + array(CURLOPT_HEADER => false));
 
         if (is_numeric($str)) {
@@ -56,7 +56,7 @@ abstract class Tv_Info {
     }
 
 
-    protected function getJson($url) {
+    public function getJson($url) {
         $res = $this->send($url, array(CURLOPT_HEADER => false));
         if (is_numeric($res)) {
             $this->_httpCode = $res;

@@ -26,6 +26,7 @@ return array(
     'Genre' => 'Genre',
     'Actors' => 'Skådespelare',
     'Language' => 'Språk',
+    'Swedish' => 'Svenska',
     'List all specials' => 'Lista alla special - avsnitt',
     'Save' => 'Spara',
     'no results' => '"%s" gav inget resultat',
@@ -62,6 +63,8 @@ return array(
     'Completed' => 'Klar',
     'Failed' => 'Misslyckades',
     'Configure me' => 'Konfigurera mig',
+    'Subtitles Configuration saved' => 'Undertexter kofiguration sparad',
+    'Subtitles saved' => 'Undertexter sparade',
 
     'Order' => 'Ordning',
     'Category' => 'Kategori',
@@ -124,10 +127,12 @@ return array(
     'Download list' => 'Lista nedladdade',
     'Downloads' => 'Nedladdade',
     'Download' => 'Ladda ner',
+    'Download episode' => 'Ladda ner avsnitt',
     'Search' => 'Sök',
     'Queue' => 'Kö',
 
     'TheTVDB.com ID' => 'TheTVDB.com ID',
+    'Subtitles' => 'Undertexter',
 
 
     /*Pagination*/

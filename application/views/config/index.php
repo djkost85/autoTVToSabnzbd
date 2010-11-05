@@ -152,6 +152,28 @@
                 </p>
              </form>
 
+            <h2><?php echo __('Subtitles');?></h2>
+            <form id="submitform" class="config-form-renamer" action="<?php echo URL::site('config/subtitles')?>" method="get">
+                <p>
+                    <label for="dl_sub">Download subtitles</label>
+                    Yes: <input class="radio-button" type="radio" <?php if (isset($subtitles) && @$subtitles['download']) echo 'checked'?> name="download" value="1" />
+                    No: <input class="radio-button" type="radio" <?php if (isset($subtitles) && !@$subtitles['download']) echo 'checked'?> name="download" value="0" />
+                 </p>
+                 <p>
+                     <label for="save_dir"><?php echo __('Stored here')?></label>
+                     <input type="text" name="save_dir" id="save_dir" value="H:\usenet\subs" />
+                 </p>
+                <p>
+                    <label for="lang"><?php echo __('Language')?></label>
+                    <select name="lang" id="lang">
+                        <option value="8"><?php echo __('Swedish')?></option>
+                    </select>
+                </p>
+                <p>
+                    <input class="button"  type="submit" value="<?php echo __('Save')?>" />
+                </p>
+            </form>
+
             <?php echo HTML::anchor('#', HTML::image("images/black/banner/star-wars.jpg", array('alt' => 'Bottom Banner', 'class' => 'banner')));?>
         </div>
     <!-- main ends -->
