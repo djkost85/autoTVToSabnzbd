@@ -394,68 +394,80 @@ class Controller_Download extends Controller_Page {
             return;
         }
 
-        var_dump($id);
-
-//        MsgFlash::set("No subtitles found");
-//        $this->request->redirect("");
+        MsgFlash::set("No subtitles found");
+        $this->request->redirect("");
     }
 
     public function action_subMatch($id) {
-//        $subs = Session::instance()->get('subtitles', false);
         Session::instance()->delete('subtitles');
         $ep = ORM::factory('episode', array('id' => $id));
         $series = $ep->getSeriesInfo();
 
-//        if ($subs) {
-////            Session::instance()->delete('subtitles');
-//            $view = View::factory('download/subMatch');
-//            $view->set('title', __('Subtitles'))
-//                    ->set('subs', $subs)
-//                    ->set('series', $series)
-//                    ->set('ep', $ep);
-//
-//            $this->template->content = $view;
-//            return;
-//        }
-
         
         $this->auto_render = false;
         $this->_auto_update = false;
-//        var_dump($series);
 
         $config = Kohana::config('default');
         $lang = Kohana::config('subtitles.lang');
 
         $search = Helper_Search::searchName(Helper_Search::escapeSeriesName($series->series_name), $ep->season, $ep->episode);
 
-        $nzbs = new Nzbs($config->nzbs);
-        $xml = $nzbs->search($search);
+        $config = Kohana::config('default');
 
-        if (isset($xml->channel->item)) {
-            $result = array();
-            foreach($xml->channel->item as $item) {
-                $parse = new NameParser((string) $item->title);
-                $parsed = $parse->parse();
+        if ($config->default['useNzbSite'] == 'nzbs' || $config->default['useNzbSite'] == 'both') {
+            $nzbs = new Nzbs($config->nzbs);
+            $xml = $nzbs->search($search);
 
-                $parsed['name'] = str_replace('.', ' ', $parsed['name']);
+            if (isset($xml->channel->item)) {
+                $result = array();
+                foreach($xml->channel->item as $item) {
+                    $parse = new NameParser((string) $item->title);
+                    $parsed = $parse->parse();
 
-                $sub = Subtitles::facory((string) $item->title, $lang);
+                    $parsed['name'] = str_replace('.', ' ', $parsed['name']);
 
-                if (count($sub) > 0) {
-                    $result[uniqid()] = array('title' => (string) $item->title, 'sub' => $sub, 'id' => $ep->id, 'epLink' => (string) $item->link);
+                    $sub = Subtitles::facory((string) $item->title, $lang);
+
+                    if (count($sub) > 0) {
+                        $result[uniqid()] = array('title' => (string) $item->title, 'sub' => $sub, 'id' => $ep->id, 'epLink' => (string) $item->link);
+                    }
+
                 }
-
-            }
-            if (count($result) > 0) {
-                Session::instance()->set('subtitles', $result);
-                $this->request->redirect("download/selectSubMatch/$ep->id");
-            } else {
-                Session::instance()->delete('subtitles');
+                if (count($result) > 0) {
+                    Session::instance()->set('subtitles', $result);
+                    $this->request->redirect("download/selectSubMatch/$ep->id");
+                } 
             }
         }
 
-        MsgFlash::set("No subtitles found ($search)");
-        $this->request->redirect("episodes/$series->id");
+        if ($config->default['useNzbSite'] == 'nzbMatrix' || $config->default['useNzbSite'] == 'both') {
+            $matrix = new NzbMatrix(Kohana::config('default.default'));
+            $results = $matrix->search($search, $series->matrix_cat);
+
+            if (!isset($results[0]['error']) && !is_numeric($results)) {
+                $result = array();
+                foreach($results as $res) {
+                    $parse = new NameParser($res['nzbname']);
+                    $parsed = $parse->parse();
+
+                    $str = str_replace(' ', '.', $res['nzbname']);
+
+                    $sub = Subtitles::facory(substr_replace($str, '-', strrpos($str, "."), 1), $lang);
+ 
+                    if (count($sub) > 0) {
+                        $result[uniqid()] = array('title' => $res['nzbname'], 'sub' => $sub, 'id' => $ep->id, 'epLink' => $matrix->buildDownloadUrl($res['nzbid']));
+                    }
+
+                }
+                if (count($result) > 0) {
+                    Session::instance()->set('subtitles', $result);
+                    $this->request->redirect("download/selectSubMatch/$ep->id");
+                }
+            }
+        }
+
+//        MsgFlash::set("No subtitles found ($search)");
+//        $this->request->redirect("episodes/$series->id");
     }
 
     public function action_dlSub($id) {
