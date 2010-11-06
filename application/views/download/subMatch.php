@@ -39,7 +39,7 @@
                                         )); ?>
             <?php foreach($subs as $id => $sub) { ?>
                 <div><?php echo __('Download episode')?>: <?php echo HTML::anchor("download/episode/$id", $sub['title'], array('title' => __('Download episode'))); ?></div>
-                <?php echo  HTML::anchor("download/dlSub/$id", __('Download subtitle'), array('target' => '_blank')); ?>
+                <?php echo  HTML::anchor("download/dlSub/$id", __('Download subtitle'), array('target' => '_blank')); ?> (<?php echo $lang->name?>)
             <?php } ?>
                 </div>
         </div>

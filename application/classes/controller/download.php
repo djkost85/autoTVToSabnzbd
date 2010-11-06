@@ -388,6 +388,7 @@ class Controller_Download extends Controller_Page {
             $view->set('title', __('Subtitles'))
                     ->set('subs', $subs)
                     ->set('series', $series)
+                    ->set('lang', ORM::factory('language')->where('id', '=', Kohana::config('subtitles.lang'))->find())
                     ->set('ep', $ep);
 
             $this->template->content = $view;
@@ -416,7 +417,7 @@ class Controller_Download extends Controller_Page {
 
         if ($config->default['useNzbSite'] == 'nzbs' || $config->default['useNzbSite'] == 'both') {
             $nzbs = new Nzbs($config->nzbs);
-            $xml = $nzbs->search($search);
+            $xml = $nzbs->search($search,  Nzbs::matrixNum2Nzbs($series->matrix_cat));
 
             if (isset($xml->channel->item)) {
                 $result = array();
@@ -466,8 +467,8 @@ class Controller_Download extends Controller_Page {
             }
         }
 
-//        MsgFlash::set("No subtitles found ($search)");
-//        $this->request->redirect("episodes/$series->id");
+        MsgFlash::set("No subtitles found ($search)");
+        $this->request->redirect("episodes/$series->id");
     }
 
     public function action_dlSub($id) {
